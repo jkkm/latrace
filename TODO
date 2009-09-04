@@ -1,0 +1,33 @@
+
+latrace TODO - feel free to contact me with any feature idea
+-------------------------------------------------------------------------------
+olsajiri@gmail.com
+
+
+for 0.5.8
+	- config - arrays in structures
+	- add mask enum support (ORed values)
+	- add support for display number at different bases (2,8,10,16)
+
+for 0.6
+	- variable lenght argument output (printf like)
+	- config - long/float/double support
+	- config - X symbols config file 
+	- runtime configuration control
+	- segfault handling support (libSegFault.so loading support)
+	- statistics for recursive calls
+	- automated tests
+	- other LD_AUDIT interface functions utilization
+	- statistics check
+
+bugs
+	- make waiting for child exit more robust (suspend/continue...)
+	- library settings does not work properly
+	- testing, segfaults with skype (test with simple LD_AUDIT lib)
+	- test statistics counts
+	- fifo reading more inteligent
+	- detailed arguments buffer memory management (now fixed size)
+	- environment variables to the include path
+	- check we dont cross all the hardcoded limits
+	- consolidate leveled VERBOSE output 
+	- info doc (produce html, pdf... outputs)

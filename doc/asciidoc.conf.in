@@ -1,0 +1,6 @@
+[attributes]
+
+author    = Jiri Olsa
+email     = olsajiri@gmail.com
+date      = @LT_DATE@
+revision  = @LT_VER@

@@ -1,0 +1,100 @@
+
+/* arch specific */
+#include "arch-@CONFIG_SYSDEP_DIR@.conf"
+
+/* miscelaneous functions */
+#include "misc.conf"
+
+/* miscelaneous typedefs */
+#include "typedefs.conf"
+
+/* /usr/include/arpa/inet.h */
+#include "inet.conf"
+
+/* /usr/include/ctype.h */
+#include "ctype.conf"
+
+/* /usr/include/stdlib.h */
+#include "stdlib.conf"
+
+/* /usr/include/string.h */
+#include "string.conf"
+
+/* /usr/include/ctype.h */
+#include "ctype.conf"
+
+/* /usr/include/ncurses.h */
+#include "ncurses.conf"
+
+/* /usr/include/stdio.h */
+#include "stdio.conf"
+
+/* /usr/include/dirent.h */
+#include "dirent.conf"
+
+/* /usr/include/unistd.h */
+#include "unistd.conf"
+
+/* /usr/include/libintl.h */
+#include "libintl.conf"
+
+/* /usr/include/dlfcn.h */
+#include "dlfcn.conf"
+
+/* /usr/include/fcntl.h */
+#include "fcntl.conf"
+
+/* /usr/include/getopt.h */
+#include "getopt.conf"
+
+/* /usr/include/signal.h */
+#include "signal.conf"
+
+/* /usr/include/sys/ioctl.h */
+#include "ioctl.conf"
+
+/* /usr/include/sys/socket.h */
+#include "socket.conf"
+
+/* /usr/include/netdb.h */
+#include "netdb.conf"
+
+/* /usr/include/sys/stat.h */
+#include "stat.conf"
+
+/* /usr/include/sys/wait.h */
+#include "wait.conf"
+
+/* /usr/include/utmp.h */
+#include "utmp.conf"
+
+/* /usr/include/time.h */
+#include "time.conf"
+
+/* /usr/include/termios.h */
+#include "termios.conf"
+
+/* /usr/include/term.h */
+#include "term.conf"
+
+/* /usr/include/sys/syslog.h */
+#include "syslog.conf"
+
+/* /usr/include/pwd.h */
+#include "pwd.conf"
+
+/* /usr/include/libio.h */
+#include "libio.conf"
+
+/* /usr/include/locale.h */
+#include "locale.conf"
+
+/* /usr/include/pthread.h */
+#include "pthread.conf"
+
+/* /usr/include/sys/resource.h */
+#include "resource.conf"
+
+/* /etc/latrace.d/mman.conf */
+#include "mman.conf"
+

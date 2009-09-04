@@ -1,0 +1,247 @@
+2009-09-04  Jiri Olsa <olsajiri@gmail.com>
+	* 0.5.7 release changes
+
+2009-08-21  Jiri Olsa <olsajiri@gmail.com>
+	* added '-B' option to always display the { } around the symbol body
+	* minor code sttyle changes
+
+2009-08-20  Jiri Olsa <olsajiri@gmail.com>
+	* added C++ demangling support - "-d" option
+
+-------------------------------------------------------------------------------
+latrace 0.5.6
+
+2009-07-06  Jiri Olsa <olsajiri@gmail.com>
+	* changes for the rpm review
+	* 0.5.6 release changes
+
+2009-07-04  Jiri Olsa <olsajiri@gmail.com>
+	* minor changes for the rpm review
+
+2009-07-02  Jiri Olsa <olsajiri@gmail.com>
+	* adding --unsafe for asciidoc to workaround
+	  build on the Fedora Rawhide
+
+2009-07-01  Jiri Olsa <olsajiri@gmail.com>
+	* adding %postun %post to latrace.spec & several minor 
+	  changes based on the Fedora rpm review
+
+2009-06-13  Jiri Olsa <olsajiri@gmail.com>
+	* added latrace.spec for rpm pkg. building
+	* minor Makefile mrproper change
+
+2009-06-06  Jiri Olsa <olsajiri@gmail.com>
+	* added support pointers in typedef
+	* fixed minor bug for pointer output
+	* added more checks to configure.ac
+	* make mrproper real propper
+
+2009-05-13  Jiri Olsa <olsajiri@gmail.com>
+	* added DESTDIR makefile support
+
+-------------------------------------------------------------------------------
+latrace 0.5.5
+
+2009-04-25  Jiri Olsa <olsajiri@gmail.com>
+	* fixed arch dependent enum handling
+	* fixed config file line number tracking
+
+2009-04-25  Jiri Olsa <olsajiri@gmail.com>
+	* release notes for 0.5.5
+
+2009-04-22  Jiri Olsa <olsajiri@gmail.com>
+	* main Makefile changes - adding the package target
+
+2009-04-17  Jiri Olsa <olsajiri@gmail.com>
+	* install function - skip the install if the file does not exist
+
+2009-04-15  Jiri Olsa <olsajiri@gmail.com>
+	* adding syscall.conf for x86_64
+
+2009-04-10  Jiri Olsa <olsajiri@gmail.com>
+	* getstr_pod/enum redesign
+	* added etc/latrace.d/mman.conf
+
+2009-04-08  Jiri Olsa <olsajiri@gmail.com>
+	* enum minor changes
+	* added etc/latrace.d/resource.conf
+
+2009-04-07  Jiri Olsa <olsajiri@gmail.com>
+	* added 'pcC' options for x86_64, since it looks
+	  glibc bug 7055 got fixed somehow
+	  
+	  glibc bug 7055 - LD_AUDIT - gettimeofday function 
+	  segfaults if called from interface 
+
+2009-04-03  Jiri Olsa <olsajiri@gmail.com>
+	* added doc enum part
+
+2009-04-01  Jiri Olsa <olsajiri@gmail.com>
+	* added enum support
+
+2009-03-30  Jiri Olsa <olsajiri@gmail.com>
+	* stats - syntax changes
+	* stats - added -C sym, fixed -C lib
+
+2009-03-24  Jiri Olsa <olsajiri@gmail.com>
+	* removing stack.h include from generic parts
+	* fix PRINT_VERBOSE[12] for x86_64
+	* doc changes
+
+2009-03-17  Jiri Olsa <olsajiri@gmail.com>
+	* doc changes
+
+2009-03-14  Jiri Olsa <olsajiri@gmail.com>
+	* unify the PRINT_VERBOSE[12] to one method only PRINT_VERBOSE
+	* unify the ERROR[12] to one method only ERROR
+
+2009-03-09  Jiri Olsa <olsajiri@gmail.com>
+	* minor attribute changes
+
+2009-03-08  Jiri Olsa <olsajiri@gmail.com>
+	* adding cscope support
+
+2009-03-08  Jiri Olsa <olsajiri@gmail.com>
+	* adding Makefile support for checking prefix and CFLAGS changes
+	  (stolen from git sources)
+
+2009-03-07  Jiri Olsa <olsajiri@gmail.com>
+	* introducing asciidoc man page, needs more formatting changes...
+
+2009-03-06  Jiri Olsa <olsajiri@gmail.com>
+	* added -F option to disable fork following
+	* added -E option to disable exec following
+
+2009-03-05  Jiri Olsa <olsajiri@gmail.com>
+	* added -T option to hide thread id 
+
+2009-03-05  Jiri Olsa <olsajiri@gmail.com>
+	* x86_64 - fixed argument display (fixed glibc bug 9893,
+	  not sure when the glibc fix will be available,
+	  need to consider the option availibility before next
+	  release
+
+-------------------------------------------------------------------------------
+latrace 0.5.4
+
+2009-02-28  Jiri Olsa <olsajiri@gmail.com>
+	* release notes for 0.5.4
+	* man page update
+
+2009-02-28  Jiri Olsa <olsajiri@gmail.com>
+	* x86_64 code refactoring
+	* introduced glibc bug 9893, and disabled 'AaD' options because of that
+	  updated man page with this info
+	* added more functions to the test1.c
+	* removed i386 link as it was useless
+
+2009-02-16  Jiri Olsa <olsajiri@gmail.com>
+	* Akos Pasztory <akos.pasztory@gmail.com>
+	* License changes applied and better description in debian/control.
+	  Made debian/rules executable.
+
+2009-02-16  Jiri Olsa <olsajiri@gmail.com>
+	* licensed under GPLv3 - more changes
+
+2009-02-14  Jiri Olsa <olsajiri@gmail.com>
+	* licensed under GPLv3
+
+2009-02-05  Jiri Olsa <olsajiri@gmail.com>
+	* Akos Pasztory <akos.pasztory@gmail.com>
+	* initial Debian packaging
+
+2009-02-05  Jiri Olsa <olsajiri@gmail.com>
+	* Akos Pasztory <akos.pasztory@gmail.com>
+	* ARM EABI argument extraction support
+
+2009-02-05  Jiri Olsa <olsajiri@gmail.com>
+	* Akos Pasztory <akos.pasztory@gmail.com>
+	* added a test program
+	* Jiri Olsa - fixed x86 structure walkthrough
+
+2009-02-05  Jiri Olsa <olsajiri@gmail.com>
+	* Akos Pasztory <akos.pasztory@gmail.com>
+	* support for additional POD types
+
+	* Added support for `short', `float', `double', `llong' and `u_llong'
+	  (the last two are `long long's).
+	* Jiri Olsa - added ARGS_SPRINTF macro, to have code only on one place
+	  and small Makefile bugfix
+
+2009-02-02  Jiri Olsa <olsajiri@gmail.com>
+	* Akos Pasztory <akos.pasztory@gmail.com>
+	* Ignore `const' and `extern' in config files
+	  Make it easier to reuse ordinary .h files (though 
+	  it's still far away).
+
+2009-02-02  Jiri Olsa <olsajiri@gmail.com>
+	* Akos Pasztory <akos.pasztory@gmail.com>
+	* Made it compile in Scratchbox
+	  - works with an older `install' program that doesn't recognize `-t'
+	  - treat i.86 as i686
+	* configuration files are installed into $(sysconfdir); the program 
+	  now honors this setting at runtime
+
+2008-12-28  Jiri Olsa <olsajiri@gmail.com>
+	* code style changes
+
+-------------------------------------------------------------------------------
+latrace 0.5.3
+
+2008-12-12  Jiri Olsa <olsajiri@gmail.com>
+	* minor code style changes
+
+2008-12-10  Jiri Olsa <olsajiri@gmail.com>
+	* minor code style changes
+	* adding release notes for 0.5.3
+
+2008-12-10  Jiri Olsa <olsajiri@gmail.com>
+	* x86_64 - finished the case of returning structure by value,
+	  x86_64 argument display support is now complete.. bugs expected :)
+
+2008-12-10  Jiri Olsa <olsajiri@gmail.com>
+	* x86_64 - support for structure passed by value in function arguments
+	  still missing support for the same in the function return value
+
+2008-12-10  Jiri Olsa <olsajiri@gmail.com>
+	* x86_64 now working except for the structure detailed output
+
+2008-12-07  Jiri Olsa <olsajiri@gmail.com>
+	* complete redesign of the args <-> stack modules communication
+	  to be able to manage other ABI platforms properly
+
+2008-12-03  Jiri Olsa <olsajiri@gmail.com>
+	* added support for objsearch LD_AUDIT interface (-L option)
+
+2008-12-01  Jiri Olsa <olsajiri@gmail.com>
+	* added -b option to display flow only below requested symbols
+	* man page updated
+
+2008-11-28  Jiri Olsa <olsajiri@gmail.com>
+	* minors to make autoreconf work, suggested by Nix
+
+2008-11-26  Jiri Olsa <olsajiri@gmail.com>
+	* x86_64 - removed 'cCp' options support because of the glibc bug #7055
+
+2008-11-25  Jiri Olsa <olsajiri@gmail.com>
+	* x86_64, args, output - minor fixes
+
+2008-11-24  Jiri Olsa <olsajiri@gmail.com>
+	* x86_64 - initial changes for argument values display (works 
+	  for integer and pointers) need updates for arguments 
+	  passed/returned by value
+
+2008-11-22  Jiri Olsa <olsajiri@gmail.com>
+	* arch specific code redesign (x84, x86_64)
+	  x86 working, x86_64 compiles
+	* doc/latrace.1.in - minor change
+
+2008-11-16  Jiri Olsa <olsajiri@gmail.com>
+	* added generated date to the man page
+	* minor code style changes
+
+2008-11-14  Jiri Olsa <olsajiri@gmail.com>
+	* ./ChangeLog - added change log
+
+-------------------------------------------------------------------------------
+latrace 0.5.2

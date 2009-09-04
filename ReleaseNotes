@@ -1,0 +1,85 @@
+
+latrace release notes (olsajiri@gmail.com)
+-------------------------------------------------------------------------------
+
+[x] latrace 0.5.7 (9/4/2009)
+	* added '-B' option to always display the { } around the symbol body
+	* added C++ demangling support - "-d" option
+
+[x] latrace 0.5.6 (7/6/2009)
+	* Fedora rpm package release
+	* several minor fixies:
+		- added support pointers in typedef
+		- fixed minor bug for pointer output
+		- added more checks to configure.ac
+		- make mrproper real propper
+		- added DESTDIR makefile support
+
+[x] latrace 0.5.5 (4/25/2009)
+	x added enum support
+	x added -F option to disable fork following
+	x added -E option to disable exec following
+	x added -T option to hide thread id 
+	x x86_64 - added 'pcC' options , since it looks
+	  glibc bug 7055 got fixed somehow
+	x x86_64 - fixed argument display (fixed glibc bug 9893,
+	  not sure when the glibc fix will be available 2.10?)
+	x stats - added -C sym, fixed -C lib
+	x confs - added syscall.conf (x86_64), mman.conf, resource.conf
+	x asciidoc man/html/txt
+
+[x] latrace 0.5.4 (3/2/2009)
+	x ARM support (EABI)
+	x added config file support for 'float', 'double', 
+	  'long long' and 'unsigned long long'
+	x licensed under GPLv3
+	x initial Debian packaging
+	x ignore 'const' and 'extern' in config files
+	  Make it easier to reuse ordinary .h files (though 
+	  it's still far away).
+	x configuration files are installed into $(sysconfdir);
+	x x86_64 - disabled argument display (options 'AaD'),
+	  because of the glibc bug 9893
+	x x86 - structure display fix
+
+[x] latrace 0.5.3 (12/12/2008)
+	x x86_64 full support
+	x autoreconf compliant
+	x new '-b' option to display flow only below requested symbols
+	x new '-L' option to support objsearch LD_AUDIT interface
+	x bug fixes
+
+[x] latrace 0.5.2 (11/12/2008)
+	x bug fixes
+
+[x] latrace 0.5.1 (10/26/2008)
+	x C like syntax for the config file - typedef/struct/functions (bison/flex)
+	x optional detailed output for structures (by ptr and value)
+	x documentation - doc/expl in the man page
+
+[x] latrace 0.5 (7/7/2008)
+	x display arguments values
+	x compile on x86_64
+
+[x] latrace 0.4 (6/13/2008)
+	x multithread counts support
+	x separate verbose and debug ouput
+	x runtime for each thread
+	x stats - reallocation for symbol hashtable
+	x documentation - initial latrace man page
+
+[x] latrace 0.3 (6/7/2008)
+	x separate verbose logging
+	x indent size configurable
+	x sort counts by user parameter (calls, %, library)
+	x output to file
+	x more statistics counts, time spent in call
+
+[x] latrace 0.2 (5/26/2008)
+	x statistics (like strace -c)
+	x looking for programs in PATH, not just absolute path
+	x symbols deep indentation
+
+[x] latrace 0.1 (5/18/2008)
+	x config symbols to audit
+	x config libraries to audit

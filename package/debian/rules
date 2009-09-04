@@ -1,0 +1,47 @@
+#!/usr/bin/make -f
+
+.PHONY: build clean binary-arch binary-indep binary default
+
+pkg     := latrace
+pkgdir  := debian/$(pkg)
+docdir  := $(pkgdir)/usr/share/doc/$(pkg)
+checkdir = @test -e debian/control || ! echo wrong directory
+checkuid = @test "`id -u`" -eq 0 || ! echo need root permissions
+
+default:
+build: debian/stamp-build
+debian/stamp-build:
+	$(checkdir)
+	autoconf
+	./configure --prefix=/usr --sysconfdir=/etc --libdir=/usr/lib/latrace
+	make
+	touch $@
+clean:
+	$(checkdir)
+	$(checkuid)
+	rm -f debian/stamp-*
+	test ! -f src/autoconf.make || make mrproper
+	rm -rf debian/latrace
+	rm -f debian/files debian/substvars
+binary-indep:
+binary-arch: debian/stamp-build
+	$(checkdir)
+	$(checkuid)
+	install -d $(pkgdir)/DEBIAN $(docdir)
+	make install ROOTDIR="$(CURDIR)/$(pkgdir)"
+	cd $(pkgdir) && strip --strip-unneeded -R .note -R .comment \
+		usr/bin/latrace usr/lib/latrace/libltaudit.so
+	cp -p ChangeLog $(docdir)/changelog
+	cp -p README ReleaseNotes TODO debian/copyright $(docdir)
+	cp -p debian/changelog $(docdir)/changelog.Debian
+	cp -p debian/conffiles $(pkgdir)/DEBIAN
+	gzip -9f $(pkgdir)/usr/share/man/man1/latrace.1
+	gzip -9f $(docdir)/changelog $(docdir)/changelog.Debian
+	dpkg-shlibdeps $(pkgdir)/usr/bin/latrace
+	dpkg-gencontrol -P$(pkgdir)
+	cd $(pkgdir) && find * -path DEBIAN -prune -o -type f -print0 | \
+		xargs -r0 md5sum > DEBIAN/md5sums
+	chown -R root:root $(pkgdir)
+	chmod -R u+w,go=rX $(pkgdir)
+	dpkg-deb -b $(pkgdir) ..
+binary: binary-arch binary-indep

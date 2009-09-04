@@ -1,0 +1,434 @@
+latrace(1)
+==========
+Jiri Olsa <olsajiri@gmail.com>
+
+
+NAME
+----
+latrace - LD_AUDIT 2.4+ libc frontend
+
+
+SYNOPSIS
+--------
+*latrace* [-ltfsbcCpADaoyIiBdvTFELVh] command [arg ... ]
+
+
+DESCRIPTION
+-----------
+*latrace*  is  able  to run a command and display its dynamic library calls using
+a *LD_AUDIT* libc feature (available from libc version 2.4 onward - see <<DISCUSSION>>
+).  It is also capable to measure and display various statistics of
+dynamic calls.
+
+If the config file is provided, latrace will display symbol's arguments with
+detailed output for structures.  The config file syntax  is  similar to the C
+language, with several exceptions (see <<CONFIG>>).
+
+The latrace by default fully operates inside of the traced program.  However
+another pipe mode is available, to move the main work to the latrace binary
+(see <<PIPEMODE>>).
+
+Its use is very similar to strace(1) and ltrace(1).
+
+
+OPTIONS
+-------
+*-l, --libs lib1[,lib2,...]*::
+	audit from and to lib1, lib2 ...
+
+*-t, --libs-to lib1[,lib2,...]*::
+	audit to lib1, lib2 ...
+
+*-f, --libs-from lib1[,lib2,...]*::
+	audit from lib1, lib2 ...
+
+*-s, --sym sym1[,sym2,...]*::
+	audit symbols sym1, sym2 ...
+
+*-b, --flow-below sym1[,sym2,...]*::
+	display flow for sym1, sym2 ...
+
+*-c, --counts*::
+	display statistics counts of symbols - implies pipe mode (see <<PIPEMODE>>)
+	an no symbol output is displayed
+
+*-C, --sort-counts stat*:: 
+	implies -c, plus sort the statistics by stat with following values:
+	time,per,call,ucall,lib,sym (default is call)
+
+*-p, --pipe*:: 
+	use pipe to latrace process to send audit data (see <<PIPEMODE>>)
+
+*-o, --output file*::
+	store output to file
+
+*-A, --enable-args*::
+	enable arguments output (definitions from /etc/latrace.conf)
+
+*-D, --detail-args*::
+	display struct arguments in more detail
+
+*-a, --args file*::
+	specify arguments definition file, implies -A (without the default
+	definition file of course)
+
+*-y, --framesize number*::
+	framesize for storing the stack before pltexit (default 100)
+
+*-I, --no-indent-sym*::
+	do no indent symbols based on the their stack depth
+
+*-i, --indent-sym indent_size*::
+	indent size specification in indent_size
+
+*-B, --braces*::
+	allways display '{' '}' for the around the symbol body
+
+*-d, --demangle*::
+	C++ demangle symbols on the output
+
+*-v, --verbose*::
+	verbose output
+
+*-T, --hide-tid*::
+	dont display thread id
+
+*-F, --not-follow-fork*::
+	dont follow fork calls (childs). This is just supressing the latrace
+	output from new childs.  The nature of the *LD_AUDIT* feature  prevents to
+	disable it completely.
+
+*-E, --not-follow-exec*::
+	dont follow exec calls
+
+
+EXAMPLES
+--------
+- The simplest way to run latrace is like this:
++
+**	latrace cat**
+
+- To see the argument values specified by default config file run:
++
+**	latrace -A cat**
+
+- Same as above but using the pipe mode to get all the end symbols printed:
++
+**	latrace -Ap cat**
+
+- To see the argument values specified by specified config file run:
++
+**	latrace -a latrace.conf cat**
+
+- To get output only for specified symbol (eg. read and write) run:
++
+**	latrace -A -s read,write cat**
+
+- To get flow under the specified symbol (eg. sysconf) run:
++
+**	latrace -b sysconf kill**
+
+- To get output only for specified library (eg. libproc) run:
++
+**	latrace -Al libproc w**
+
+- To get symbol statistics run:
++
+**	latrace -c ls**
+
+- To get symbol statistics sorted by time run:
++
+**	latrace -C time ls**
+
+- To get output stored to the text file run:
++
+**	latrace -o output.latrace ls**
+
+- To change the libkrava1.so dependency to the libkrava2.so run one of these:
++
+**	latrace -L krava1%krava2 ex**
++
+**	latrace -L krava1~libkrava2.so ex**
++
+**	latrace -L libkrava1.so=libkrava2.so ex**
+
+
+[[DISCUSSION]]
+DISCUSSION
+----------
+LD_AUDIT
+~~~~~~~~
+This  is  just  a  brief  and  vague  description  of  the  *LD_AUDIT* feature.
+For more information look to *rtld-audit(7)* man done by Petr Baudis or study the 
+glibc/latrace source code. Very brief explanation follows.
+
+The libc dynamic linker audit feature allows to trace/audit program's
+symbols/libraries.  The feature is  enabled  by  the  *LD_AUDIT*  environment
+variable.  This  variable  must  contain  path to the audit shared library.
+This audit library needs to follow specific interface.  The interface functions
+will be then called by the dynamic linker appropriatelly.
+
+The audit library needs to export following symbols (the "la_PLTENTER" and
+"la_PLTEXIT" names are architecture dependent).
+
+	"la_activity"
+	"la_objsearch"
+	"la_objopen"
+	"la_preinit"
+	"la_symbind32"
+	"la_symbind64"
+	"la_PLTENTER"
+	"la_PLTEXIT"
+	"la_objclose"
++
+
+As for the latrace package the audit shared library is called libltaudit.so.
+
+OBJSEARCH
+~~~~~~~~~
+The objsearch *LD_AUDIT* interface provide means for changing traced program
+shared object names/locations.  The -L  option  argument  should  have
+following form:
+
+__-L s1[,s2,...]__  where sN is __src [=%~] dst__
+
+The _src_ is the source pattern/name and _dst_ is the destination name/pattern.
+
+[horizontal]
+=:: Comparing src with the library name. If matched, replace the library name with dst.
+
+           library name         - /lib/krava1.so
+           src                  - /lib/krava1.so
+           dst                  - /lib/krava2.so
+
+           final library name   - /lib/krava2.so
+
+%:: Looking for the src in the library name. If found, replace the src with dst part.
+
+           library name         - /lib/krava1.so
+           src                  - krava1
+           dst                  - krava2
+
+           final library name   - /lib/krava2.so
+
+~:: Looking for the src in the library name. If found, replace the library name with dst.
+
+           library name         - /lib/krava1.so
+           src                  - krava1
+           dst                  - /lib/krava2.so
+
+           final library name   - /lib/krava2.so
+
+
+[[PIPEMODE]]
+PIPE mode
+~~~~~~~~~
+The *latrace* can work in two modes. The first one *native* does does the
+output directly in the traced program process. The other one, *pipe* mode use
+the IPC fifo mechanism to send the data from the traced process to the latrace
+process.  The latrace process is then responsible for the  output.  Using the
+pipe mode you loose the traced program standard output context with printed
+symbols.
+
+By using the *pipe* mode, the latrace is not dependent on the trace program
+usage/manipulation of the standard output descriptor. Also the symbol
+statistics counts __-c, -C options__ use the *pipe* mode to transfer symbol
+information to the latrace binary, and  the  latrace  binary  does  the counts
+at the end.
+
+
+[[CONFIG]]
+CONFIG
+~~~~~~
+The  latrace  config  file  allows user to define symbols as an classic C
+functions with arguments.  Argument names will be display together with values
+as the latrace output. The more arguments are defined, the more performance and
+memory penalties should be expected.
+
+The package is delivered with several config files for the most commonly used
+functions.  List of the glibc header files used  follows  (the  list mostly
+follows the ltrace header files list, and author is willing to update it
+according to the needs.
+
+	/usr/include/arpa/inet.h
+	/usr/include/ctype.h
+	/usr/include/stdlib.h
+	/usr/include/string.h
+	/usr/include/ctype.h
+	/usr/include/ncurses.h
+	/usr/include/stdio.h
+	/usr/include/dirent.h
+	/usr/include/unistd.h
+	/usr/include/libintl.h
+	/usr/include/dlfcn.h
+	/usr/include/fcntl.h
+	/usr/include/getopt.h
+	/usr/include/signal.h
+	/usr/include/sys/ioctl.h
+	/usr/include/sys/socket.h
+	/usr/include/netdb.h
+	/usr/include/pthread.h
+	/usr/include/sys/resource.h
+	/usr/include/sys/mman.h
++
+
+The  config  file structure consists of */etc/latrace.conf* file, which is the
+default one read by latrace.  This config file includes other config files
+placed in the */etc/latrace.d* directory.  This directory contain all the config
+files for the above mentioned header files.
+
+As already mentioned, the latrace config file syntax lightly follows the C
+language syntax.  Following part describes  the  latrace  config  file
+language.
+
+
+
+- Several **POD types** (plain old data), are hardcoded in latrace. Size of those
+arguments is determined by the sizeof macro.  The list follows.
++
+	void
+	char    u_char
+	short   u_short
+	int     u_int
+	long    u_long
+	llong   u_llong  # (long long)
+	float   double
+
+- The *typedef* keyword allows to specify new type based on the already existing one 
+(POD or typedefed). Eventhough there's a way for multiple pointer layers in the type 
+definition (*), only one is taken.
++
+..............................
+typedef base_type new_type;
+typedef base_type * new_type;
+typedef base_type ** new_type;
+..............................
+
+- *Comments* follow the C style /\* \*/ logic.
++
+++ /\* comments \*/ ++
+
+- The *include* keyword allows to include another config file.
++
+++ #include "filename"++
+
+- The *struct* keyword allows to define the structure. The syntax folows following
+grammar rules.
++
+...........................................
+START::		struct NAME { STRUCT_DEF };
+STRUCT_DEF::	DEF | EMPTY
+DEF::		NAME NAME |
+		NAME '*' NAME |
+		struct NAME NAME |
+		struct NAME '*' NAME
+NAME::		[-0-9a-zA-Z_]+
+...........................................
+
+- The *function* definition follows following syntax (DEF and NAME are the same as
+for struct definition).
++
+..........................................
+START::         DEF '(' ARGS ')' ';'
+ARGS::          ARGS ',' DEF | DEF | EMPTY
+..........................................
+
+- The *enum* definition follows following syntax (NAME is same as for struct
+definition).
++
+..................................................
+START::         ENUM NAME '{' ENUM_DEF '}' ';'
+ENUM_DEF::      ENUM_DEF ',' ENUM_ELEM | ENUM_ELEM
+ENUM_ELEM::     NAME '=' NAME | NAME
+..................................................
+
+
+- Example of a simple latrace config file.
++
+............................................
+---[ cut here ]-----------------------------
+enum krava {
+	krava1 = 1,
+	krava2,
+	krava3 = 100
+};
+
+#include "krava.conf"
+
+typedef u_int pid_t;
+
+struct ex_st {
+	pid_t   p;
+	int     cnt;
+	char   *name;
+};
+
+int f1(pid_t p, struct ex_st *k);
+int f2(char* name, struct ex_st k, int k = krava);
+struct ex_st* f3(pid_t *p, struct ex_st k);
+---[ cut here ]-----------------------------
+............................................
+
+- Arrays  are not supported yet, so there's no way to define some structures. For
+such a structures use void* type where the structure argu- ment is passed by
+pointer. If it is passed by value, there's no workaround so far (aside from
+filling the structure body with POD types up to the actual length of the
+structure :).
+
+- Variable argument lists (va_list/...) are not supported yet. The function
+definition needs to stop before the first variable argument list argument.
+
+
+PORTS
+-----
+Author is willing to port the latrace to any architecture, as long as he got an
+access to corresponding system. Currently functional ports are:
+
+[horizontal]
+*x86*::     ok
+*x86_64*::  ok
+*arm*::     ok (contributed and maintained by Akos Pasztory)
+
+
+LD_AUDIT related glibc bugs:
+
+- *Bug 7055 (no longer reproducible)* 
+LD_AUDIT - gettimeofday function segfaults if called from interface
+<http://sources.redhat.com/bugzilla/show_bug.cgi?id=7055>
+
+
+- *Bug 9893 (FIXED in 2.10)*
+LD_AUDIT - misaligned _dl_call_pltexit parameter causing crash in audit library
+<http://sources.redhat.com/bugzilla/show_bug.cgi?id=9893>
+
+
+- *Bug 3924 (FIXED in 2.7-2)*
+LD_AUDIT implementation causing process segfaulting
+<http://sourceware.org/bugzilla/show_bug.cgi?id=3924>
+
+
+BUGS
+----
+MANY, plz report bugs to <olsajiri@gmail.com>.  You can also visit the
+latrace.sf.net page to see the latest release notes information.
+
+
+AUTHOR
+------
+Jiri Olsa <olsajiri@gmail.com>
+
+
+CONTRIBUTORS
+------------
+- Nix <nix@esperi.org.uk>
+- Akos Pasztory <akos.pasztory@gmail.com>
+
+
+LICENSE
+-------
+This is free software, distributed under the *GPLv3* license.
+
+
+SEE ALSO
+--------
+**strace(1), ltrace(1)**

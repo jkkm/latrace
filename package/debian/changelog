@@ -1,0 +1,5 @@
+latrace (0.5.3-1) unstable; urgency=low
+
+  * Debian packaging created.
+
+ -- Akos Pasztory <akos.pasztory@gmail.com>  Tue, 24 Feb 2009 21:26:14 +0300

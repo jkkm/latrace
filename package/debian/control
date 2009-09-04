@@ -1,0 +1,18 @@
+Source: latrace
+Section: utils
+Priority: optional
+Maintainer: Akos PASZTORY <akos.pasztory@gmail.com>
+Standards-Version: 3.8.0
+Build-Depends: flex, bison, autoconf
+
+Package: latrace
+Architecture: i386 amd64 armel
+Depends: libc6 (>= 2.5) [armel], libc6 (>= 2.7-1) [i386 amd64]
+Description: traces library calls in dynamically linked programs
+ latrace (similar to ltrace) displays dynamic library calls of a program
+ using the LD_AUDIT feature of newer glibc versions.  It is also capable to
+ measure and display various statistics of dynamic calls.  If a config file
+ is provided, latrace will display function arguments with detailed output
+ for structures.
+ .
+ See also http://latrace.sourceforge.net/
