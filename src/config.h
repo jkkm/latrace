@@ -102,6 +102,7 @@ struct lt_config_shared {
 	struct hsearch_data args_tab;
 
 	int verbose;
+	int timestamp;
 	int debug;
 	int indent_sym;
 	int indent_size;
@@ -379,10 +380,12 @@ int lt_args_cb_struct(struct lt_config_shared *cfg, int type,
 			struct lt_args_data *data, int last);
 
 /* output */
-int lt_out_entry(struct lt_config_shared *cfg, const char *symname, 
-		char *lib_to, char *argbuf, char *argdbuf);
-int lt_out_exit(struct lt_config_shared *cfg, const char *symname, 
-		char *lib_to, char *argbuf, char *argdbuf);
+int lt_out_entry(struct lt_config_shared *cfg, struct timeval *tv,
+		const char *symname, char *lib_to,
+		char *argbuf, char *argdbuf);
+int lt_out_exit(struct lt_config_shared *cfg, struct timeval *tv,
+		const char *symname, char *lib_to,
+		char *argbuf, char *argdbuf);
 
 /* stack handling */
 int lt_stack_process(struct lt_config_shared *cfg, struct lt_args_sym *asym, 

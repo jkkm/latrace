@@ -45,6 +45,9 @@ OPTIONS
 *-s, --sym sym1[,sym2,...]*::
 	audit symbols sym1, sym2 ...
 
+*-S, --timestamp*::
+	display timestamp for each symbol
+
 *-b, --flow-below sym1[,sym2,...]*::
 	display flow for sym1, sym2 ...
 

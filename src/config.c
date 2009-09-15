@@ -50,6 +50,7 @@ static void usage()
 	printf("    -F, --not-follow-fork           dont follow fork calls - childs\n");
 	printf("    -E, --not-follow-exec           dont follow exec calls\n");
 	printf("\n");
+	printf("    -S, --timestamp                 display timestamp for each symbol\n");
 	printf("    -b, --flow-below sym1,sym2...   display flow only for sym1, sym2 ... \n");
 	printf("    -I, --no-indent-sym             do not indent symbols based on the their stack depth\n");
 	printf("    -i, --indent-sym indent_size    specify indent size specification\n");
@@ -123,6 +124,7 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			{"indent-sym", required_argument, 0, 'i'},
 			{"braces", no_argument, 0, 'B'},
 			{"demangle", no_argument, 0, 'd'},
+			{"timestamp", required_argument, 0, 'S'},
 			{"flow-below", required_argument, 0, 'b'},
 			{"counts", no_argument, 0, 'c'},
 			{"sort-counts", required_argument, 0, 'C'},
@@ -142,7 +144,7 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			{0, 0, 0, 0}
 		};
 
-		c = getopt_long(argc, argv, "+s:l:t:f:vhi:BdIb:cC:y:L:po:a:ADVTFE",
+		c = getopt_long(argc, argv, "+s:l:t:f:vhi:BdISb:cC:y:L:po:a:ADVTFE",
 					long_options, &option_index);
 
 		if (c == -1)
@@ -186,6 +188,10 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 
 		case 'v':
 			cfg->sh.verbose++;
+			break;
+
+		case 'S':
+			cfg->sh.timestamp = 1;
 			break;
 
 		case 'T':

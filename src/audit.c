@@ -73,11 +73,15 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 {
 	int argret;
 	char *argbuf = "", *argdbuf = "";
+	struct timeval tv;
 
 	PRINT_VERBOSE(cfg.sh.verbose, 2, "%s@%s\n", symname, lib_to);
 
 	if (cfg.flow_below_cnt && !check_flow_below(symname, 1))
 		return 0;
+
+	if (cfg.sh.timestamp)
+		gettimeofday(&tv, NULL);
 
 	argret = cfg.sh.args_enabled ? 
 		lt_args_sym_entry(&cfg.sh, (char*) symname, regs, &argbuf, &argdbuf) : -1;
@@ -97,7 +101,7 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 
 	cfg.sh.indent_depth++;
 
-	lt_out_entry(&cfg.sh, symname, lib_to, 
+	lt_out_entry(&cfg.sh, &tv, symname, lib_to,
 			argbuf, argdbuf);
 
 	if (!argret) {
@@ -114,11 +118,15 @@ static int sym_exit(const char *symname, char *lib_from, char *lib_to,
 {
 	int argret;
 	char *argbuf = "", *argdbuf = "";
+	struct timeval tv;
 
 	PRINT_VERBOSE(cfg.sh.verbose, 2, "%s@%s\n", symname, lib_to);
 
 	if (cfg.flow_below_cnt && !check_flow_below(symname, 0))
 		return 0;
+
+	if (cfg.sh.timestamp)
+		gettimeofday(&tv, NULL);
 
 	argret = cfg.sh.args_enabled ? 
 		lt_args_sym_exit(&cfg.sh, (char*) symname, 
@@ -134,7 +142,7 @@ static int sym_exit(const char *symname, char *lib_from, char *lib_to,
 		return lt_fifo_send(&cfg, pipe_fd, buf, len);
 	}
 
-	lt_out_exit(&cfg.sh, symname, lib_from, 
+	lt_out_exit(&cfg.sh, &tv, symname, lib_from,
 			argbuf, argdbuf);
 
 	cfg.sh.indent_depth--;

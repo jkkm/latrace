@@ -19,6 +19,8 @@
 */
 
 #include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include "config.h"
 
@@ -35,6 +37,22 @@ do { \
 	fprintf(cfg->fout, "%5d   ", (pid_t) syscall(SYS_gettid)); \
 } while(0)
 
+#define PRINT_TIME(tv) \
+do { \
+	struct tm t; \
+\
+	gettimeofday(tv, NULL); \
+	localtime_r(&tv->tv_sec, &t); \
+	fprintf(cfg->fout, "[%02d/%02d/%4d %02d:%02d:%02d.%06u]   ", \
+		t.tm_mon, \
+		t.tm_mday, \
+		t.tm_year + 1900, \
+		t.tm_hour, \
+		t.tm_min, \
+		t.tm_sec, \
+		(unsigned int) tv->tv_usec); \
+} while(0)
+
 /* libiberty external */
 extern char* cplus_demangle(const char *mangled, int options);
 
@@ -48,10 +66,15 @@ do { \
 	} \
 } while(0)
 
-int lt_out_entry(struct lt_config_shared *cfg, const char *symname, char *lib_to, 
+int lt_out_entry(struct lt_config_shared *cfg,
+			struct timeval *tv,
+			const char *symname, char *lib_to,
 			char *argbuf, char *argdbuf)
 {
 	int demangled = 0;
+
+	if (cfg->timestamp && tv)
+		PRINT_TIME(tv);
 
 	/* Print thread ID */
 	if (!cfg->hide_tid)
@@ -84,13 +107,18 @@ int lt_out_entry(struct lt_config_shared *cfg, const char *symname, char *lib_to
 	return 0;
 }
 
-int lt_out_exit(struct lt_config_shared *cfg, const char *symname, char *lib_to, 
+int lt_out_exit(struct lt_config_shared *cfg,
+			struct timeval *tv,
+			const char *symname, char *lib_to,
 			char *argbuf, char *argdbuf)
 {
 	int demangled = 0;
 
 	if (!*argbuf && (!cfg->braces))
 		return 0;
+
+	if (cfg->timestamp && tv)
+		PRINT_TIME(tv);
 
 	/* Print thread ID */
 	if (!cfg->hide_tid)
