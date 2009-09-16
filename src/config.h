@@ -338,8 +338,9 @@ int lt_fifo_open(struct lt_config_app *cfg, char *name);
 int lt_fifo_send(struct lt_config_audit *cfg, int fd, char *buf, int len);
 int lt_fifo_recv(struct lt_config_app *cfg, struct lt_thread *t, 
 		void *buf, int bufsize);
-int lt_fifo_msym_get(struct lt_config_audit *cfg, char *buf, int type, 
-			char *symname, char *libto, char *arg, char *argd);
+int lt_fifo_msym_get(struct lt_config_audit *cfg, char *buf, int type,
+			struct timeval *tv, char *symname, char *libto,
+			char *arg, char *argd);
 
 /* counts */
 int lt_stats_init(struct lt_config_app *cfg);

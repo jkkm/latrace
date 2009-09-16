@@ -114,8 +114,9 @@ int lt_fifo_recv(struct lt_config_app *cfg, struct lt_thread *t, void *buf,
 	return 0;
 }
 
-int lt_fifo_msym_get(struct lt_config_audit *cfg, char *buf, int type, 
-			char *symname, char *libto, char *arg, char *argd)
+int lt_fifo_msym_get(struct lt_config_audit *cfg, char *buf, int type,
+			struct timeval *tv, char *symname, char *libto,
+			char *arg, char *argd)
 {
 	struct lt_fifo_msym *m = (struct lt_fifo_msym*) buf;
 	int len_data, len = sizeof(struct lt_fifo_msym);
@@ -123,7 +124,7 @@ int lt_fifo_msym_get(struct lt_config_audit *cfg, char *buf, int type,
 	/* TODO need proper buf size checking */
 	m->h.type = type;
 	m->h.tid = (pid_t) syscall(SYS_gettid);
-	gettimeofday(&m->h.tv, NULL);
+	m->h.tv = *tv;
 
 	m->sym = 0;
 	m->lib = strlen(symname);

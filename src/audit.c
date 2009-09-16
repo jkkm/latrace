@@ -80,7 +80,7 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 	if (cfg.flow_below_cnt && !check_flow_below(symname, 1))
 		return 0;
 
-	if (cfg.sh.timestamp)
+	if (cfg.sh.timestamp || cfg.sh.counts)
 		gettimeofday(&tv, NULL);
 
 	argret = cfg.sh.args_enabled ? 
@@ -93,7 +93,7 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 		if (!pipe_fd)
 			pipe_fd = lt_fifo_create(&cfg, cfg.dir);
 
-		len = lt_fifo_msym_get(&cfg, buf, FIFO_MSG_TYPE_ENTRY, 
+		len = lt_fifo_msym_get(&cfg, buf, FIFO_MSG_TYPE_ENTRY, &tv,
 				(char*) symname, lib_to, argbuf, argdbuf);
 
 		return lt_fifo_send(&cfg, pipe_fd, buf, len);
@@ -125,18 +125,18 @@ static int sym_exit(const char *symname, char *lib_from, char *lib_to,
 	if (cfg.flow_below_cnt && !check_flow_below(symname, 0))
 		return 0;
 
-	if (cfg.sh.timestamp)
+	if (cfg.sh.timestamp || cfg.sh.counts)
 		gettimeofday(&tv, NULL);
 
 	argret = cfg.sh.args_enabled ? 
-		lt_args_sym_exit(&cfg.sh, (char*) symname, 
+		lt_args_sym_exit(&cfg.sh, (char*) symname,
 			(La_regs*) inregs, outregs, &argbuf, &argdbuf) : -1;
 
 	if (cfg.sh.pipe) {
 		char buf[FIFO_MSG_MAXLEN];
 		int len;
 
-		len = lt_fifo_msym_get(&cfg, buf, FIFO_MSG_TYPE_EXIT, 
+		len = lt_fifo_msym_get(&cfg, buf, FIFO_MSG_TYPE_EXIT, &tv,
 				(char*) symname, lib_to, argbuf, argdbuf);
 
 		return lt_fifo_send(&cfg, pipe_fd, buf, len);
