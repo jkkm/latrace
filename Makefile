@@ -164,13 +164,8 @@ clean::
 	$(call remove, src/args-bison.c src/args-flex.c src/args-bison.h src/args-bison.output)
 	$(call remove, lib bin share deps.make latrace-$(LT_VER))
 
-mrproper:: 
-	@for i in `find . -type f -o -type d -o -type l | cut -c 3- | grep -v svn`; do \
-		svn info $$i > /dev/null 2>&1; \
-		if [ x"$$?" != x"0" ]; then \
-			echo "  CLEAN $$i"; rm -rf $$i; \
-		fi; \
-	done
+mrproper::
+	git clean -xdf
 
 snapshot:
 	@$(MAKE) $(PRINT_DIR) package PKG_VER=$(LT_VER)-`date "+%m%d%Y"`
@@ -181,8 +176,8 @@ release:
 package:
 	$(QUIET_PKG)rm -f latrace-$(PKG_VER); ln -s . latrace-$(PKG_VER); \
 	echo "latrace-$(PKG_VER)"; \
-	for i in `find . -type f | cut -c 3- | grep -v svn`; do \
-		svn info $$i > /dev/null 2>&1; \
+	for i in `find . -type f | cut -c 3- | grep -v git`; do \
+		git checkout $$i > /dev/null 2>&1; \
 		if [ x"$$?" == x"0" ]; then \
 			echo "latrace-$(PKG_VER)/$$i"; \
 		fi; \
