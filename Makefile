@@ -172,15 +172,21 @@ mrproper::
 		fi; \
 	done
 
+snapshot:
+	@$(MAKE) $(PRINT_DIR) package PKG_VER=$(LT_VER)-`date "+%m%d%Y"`
+
+release:
+	@$(MAKE) $(PRINT_DIR) package PKG_VER=$(LT_VER)
+
 package:
-	$(QUIET_PKG)rm -f latrace-$(LT_VER); ln -s . latrace-$(LT_VER); \
-	echo "latrace-$(LT_VER)"; \
+	$(QUIET_PKG)rm -f latrace-$(PKG_VER); ln -s . latrace-$(PKG_VER); \
+	echo "latrace-$(PKG_VER)"; \
 	for i in `find . -type f | cut -c 3- | grep -v svn`; do \
 		svn info $$i > /dev/null 2>&1; \
 		if [ x"$$?" == x"0" ]; then \
-			echo "latrace-$(LT_VER)/$$i"; \
+			echo "latrace-$(PKG_VER)/$$i"; \
 		fi; \
-	done | tar cjvf latrace-$(LT_VER).tar.bz2 -T- > /dev/null 2>&1
+	done | tar cjvf latrace-$(PKG_VER).tar.bz2 -T- > /dev/null 2>&1
 
 
 # dependencies

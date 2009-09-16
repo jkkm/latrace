@@ -1,5 +1,6 @@
 2009-09-16  Jiri Olsa <olsajiri@gmail.com>
 	* added support for pipe mode timestamp display
+	* added snapshot/release targets
 
 2009-09-15  Jiri Olsa <olsajiri@gmail.com>
 	* added initial support for timestamp display
