@@ -1,3 +1,6 @@
+2009-10-20  Jiri Olsa <olsajiri@gmail.com>
+	* added clone function
+
 2009-09-16  Jiri Olsa <olsajiri@gmail.com>
 	* added support for pipe mode timestamp display
 	* added snapshot/release targets
