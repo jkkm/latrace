@@ -5,11 +5,14 @@ olsajiri@gmail.com
 
 
 for 0.5.8
+	- testing/fixing bugs
+	- controled config feature
+	- disable feature
+
+for 0.6
 	- config - arrays in structures
 	- add mask enum support (ORed values)
 	- add support for display number at different bases (2,8,10,16)
-
-for 0.6
 	- variable lenght argument output (printf like)
 	- config - long/float/double support
 	- config - X symbols config file 

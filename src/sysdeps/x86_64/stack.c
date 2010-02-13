@@ -83,7 +83,7 @@ static int classificate_memory(struct lt_config_shared *cfg,
 			ass_memory += arg->type_len - naligned;
 	}
 
-	PRINT_VERBOSE(cfg->verbose, 2, "%s - ass %d\n", 
+	PRINT_VERBOSE(cfg, 2, "%s - ass %d\n",
 			arg->name, ass_memory);
 
 	ARCH_SET(arg, ARCH_FLAG_MEM, ass_memory);
@@ -110,7 +110,7 @@ static int classificate_integer(struct lt_config_shared *cfg,
 			ass_integer = LT_STACK_ALIGN(ass_integer);
 	}
 
-	PRINT_VERBOSE(cfg->verbose, 2, 
+	PRINT_VERBOSE(cfg, 2,
 			"ass %s - reg size %d - ass_integer %d\n", 
 			arg->name, regs_size, ass_integer);
 
@@ -130,7 +130,7 @@ static int classificate_integer(struct lt_config_shared *cfg,
 static int classificate_sse(struct lt_config_shared *cfg, struct lt_arg *arg,
 				int sse_cnt)
 {
-	PRINT_VERBOSE(cfg->verbose, 2, "ass %s %d %d\n", 
+	PRINT_VERBOSE(cfg, 2, "ass %s %d %d\n",
 			arg->name, ASS_REGS_SSE_CNT, ass_sse);
 
 	if (sse_cnt == ass_sse)
@@ -150,7 +150,7 @@ static void struct_arch(struct lt_config_shared *cfg, struct lt_arg *sarg,
 	   If the first argument is returned in memory, the structure takes
 	   this pointer, if it is register, we keep it NULL, and lt_args_cb_arg
 	    will print out the REG kw for value.*/
-	PRINT_VERBOSE(cfg->verbose, 2,
+	PRINT_VERBOSE(cfg, 2,
 			"first argument for struct %s has flag: %d\n", 
 			sarg->name, ARCH_GET_FLAG(farg));
 
@@ -213,7 +213,7 @@ static int get_sizeof(struct lt_config_shared *cfg, struct lt_arg *arg)
 		size += a->type_len;
 	}
 
-	PRINT_VERBOSE(cfg->verbose, 2, "sizeof(struct %s) = %d\n",
+	PRINT_VERBOSE(cfg, 2, "sizeof(struct %s) = %d\n",
 		arg->type_name, size);
 
 	return size;
@@ -232,7 +232,7 @@ static int classificate_struct(struct lt_config_shared *cfg, struct lt_arg *arg,
 	if ((size > 16) || (arg->pointer))
 		allmem = 1;
 
-	PRINT_VERBOSE(cfg->verbose, 2, 
+	PRINT_VERBOSE(cfg, 2,
 		"struct %s - length sum %d - allmem %d\n", 
 		arg->type_name, arg->type_len, allmem);
 
@@ -280,7 +280,7 @@ static int classificate_arg_type(struct lt_config_shared *cfg,
 
 	} while(0);
 
-	PRINT_VERBOSE(cfg->verbose, 2, 
+	PRINT_VERBOSE(cfg, 2,
 			"argument %s dtype %d - type %s(%d) - class %d\n", 
 			arg->name, arg->dtype, arg->type_name, arg->type_id, 
 			class);
@@ -293,7 +293,7 @@ static int classificate_arg(struct lt_config_shared *cfg, struct lt_arg *arg,
 	int class;
 	int class_failed = 0;
 
-	PRINT_VERBOSE(cfg->verbose, 2, "got arg \"%s\"\n",
+	PRINT_VERBOSE(cfg, 2, "got arg \"%s\"\n",
 			arg->name);
 
 	ARCH_ZERO(arg);
@@ -348,7 +348,7 @@ static int classificate(struct lt_config_shared *cfg, struct lt_args_sym *sym)
 	int i;
 	struct lt_arg *arg = sym->args[LT_ARGS_RET];
 
-	PRINT_VERBOSE(cfg->verbose, 2, "got symbol \"%s\"\n",
+	PRINT_VERBOSE(cfg, 2, "got symbol \"%s\"\n",
 			sym->name);
 
 	ASS_CLEANUP();
@@ -390,7 +390,7 @@ static void *get_value_mem(struct lt_config_shared *cfg, struct lt_arg *arg,
 		       offset;
 	}
 
-	PRINT_VERBOSE(cfg->verbose, 2, "offset = %ld, %s = %p, ret = %d\n", 
+	PRINT_VERBOSE(cfg, 2, "offset = %ld, %s = %p, ret = %d\n",
 			offset, arg->name, pval, ret);
 	return pval;
 }
@@ -407,7 +407,7 @@ static void *get_value_reg_integer(struct lt_config_shared *cfg,
 			    ass_regs_integer[offset / sizeof(long)];
 			
 
-	PRINT_VERBOSE(cfg->verbose, 2, 
+	PRINT_VERBOSE(cfg, 2,
 			"offset %ld - reg %ld - qoff %ld - ASS_REGS_CNT %ld - ret %d\n", 
 			offset, reg, qoff, ASS_REGS_INTEGER_CNT, ret);
 
@@ -437,7 +437,7 @@ static void *get_value_reg_integer(struct lt_config_shared *cfg,
 
 	pval += qoff;
 
-	PRINT_VERBOSE(cfg->verbose, 2, "argument %s = %p (%lx)\n", 
+	PRINT_VERBOSE(cfg, 2, "argument %s = %p (%lx)\n",
 			arg->name, pval, *((u_long*)pval));
 	return pval;
 }
@@ -466,7 +466,7 @@ static void *get_value_reg_sse(struct lt_config_shared *cfg,
 	}
 
 
-	PRINT_VERBOSE(cfg->verbose, 2, "argument %s = %p (%lx), ret %d\n",
+	PRINT_VERBOSE(cfg, 2, "argument %s = %p (%lx), ret %d\n",
 			arg->name, pval, *((u_long*)pval), ret);
 	return pval;
 }
@@ -476,7 +476,7 @@ static void* get_value(struct lt_config_shared *cfg, struct lt_arg *arg,
 {
 	void *pval = NULL;
 
-	PRINT_VERBOSE(cfg->verbose, 2, "get value for %s - arch = %lx, flag = %d\n", 
+	PRINT_VERBOSE(cfg, 2, "get value for %s - arch = %lx, flag = %d\n",
 			arg->name, ARCH_GET(arg), ARCH_GET_FLAG(arg));
 
 	switch(ARCH_GET_FLAG(arg)) {
@@ -504,7 +504,7 @@ static int process_struct_mem(struct lt_config_shared *cfg, struct lt_arg *arg,
 	struct lt_arg *a;
 	int i = 0;
 
-	PRINT_VERBOSE(cfg->verbose, 2, "for %s - arch = %llx\n", 
+	PRINT_VERBOSE(cfg, 2, "for %s - arch = %llx\n",
 			arg->name, ARCH_GET(arg));
 
 	lt_args_cb_struct(cfg, LT_ARGS_STRUCT_ITSELF, arg, NULL, data, 0);
@@ -527,7 +527,7 @@ static int process_struct_arg(struct lt_config_shared *cfg, struct lt_arg *arg,
 	struct lt_arg *a;
 	int i = 0;
 
-	PRINT_VERBOSE(cfg->verbose, 2, "for %s - arch = %llx\n", 
+	PRINT_VERBOSE(cfg, 2, "for %s - arch = %llx\n",
 			arg->name, ARCH_GET(arg));
 
 	lt_args_cb_struct(cfg, LT_ARGS_STRUCT_ITSELF, arg, NULL, data, 0);
@@ -580,7 +580,7 @@ int lt_stack_process(struct lt_config_shared *cfg, struct lt_args_sym *asym,
 		pval = get_value(cfg, arg, regs, 0);
 		if ((!pval) && 
 		    (arg->pointer || (LT_ARGS_DTYPE_STRUCT != arg->dtype))) {
-			PRINT_VERBOSE(cfg->verbose, 2,
+			PRINT_VERBOSE(cfg, 2,
 				"THIS SHOULD NEVER HAPPEN - arg '%s %s'\n",
 				arg->type_name, arg->name);
 			continue;
