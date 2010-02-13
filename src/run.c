@@ -51,7 +51,7 @@ static int store_config(struct lt_config_app *cfg, char *file)
 		return -1;
 	}
 
-        if (-1 == write(fd, &cfg->sh, sizeof(cfg->sh))) {
+        if (-1 == write(fd, cfg->sh, sizeof(*cfg->sh))) {
                 perror("read failed");
                 return -1;
         }
@@ -103,7 +103,7 @@ static int get_fifo(struct lt_config_app *cfg, int notify_fd,
 	sscanf(event->name, "fifo-%d", pid);
 	sprintf(str_fifo, "%s/%s", dir, event->name);
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "thread id %d, got fifo: %s\n", 
+	PRINT_VERBOSE(cfg, 1, "thread id %d, got fifo: %s\n",
 			*pid, str_fifo);
 
 	return lt_fifo_open(cfg, str_fifo);
@@ -120,20 +120,20 @@ static int process_fifo(struct lt_config_app *cfg, struct lt_thread *t)
 
 	if ((FIFO_MSG_TYPE_ENTRY != mbase->type) &&
 	    (FIFO_MSG_TYPE_EXIT  != mbase->type)) {
-		PRINT_VERBOSE(cfg->sh.verbose, 1, "unexpected message type %d\n", 
+		PRINT_VERBOSE(cfg, 1, "unexpected message type %d\n",
 				mbase->type);
 		return -1;
 	}
 
 	struct lt_fifo_msym *msym = (struct lt_fifo_msym*) buf;
 
-	if (cfg->sh.counts)
+	if (lt_sh(cfg, counts))
 		return lt_stats_sym(cfg, t, msym);
 
 	if (FIFO_MSG_TYPE_ENTRY == msym->h.type) {
 
-		cfg->sh.indent_depth++;
-		lt_out_entry(&cfg->sh, &msym->h.tv,
+		lt_sh(cfg, indent_depth)++;
+		lt_out_entry(cfg->sh, &msym->h.tv,
 				msym->data + msym->sym,
 				msym->data + msym->lib,
 				msym->data + msym->arg,
@@ -141,13 +141,13 @@ static int process_fifo(struct lt_config_app *cfg, struct lt_thread *t)
 
 	} else if (FIFO_MSG_TYPE_EXIT == msym->h.type) {
 
-		lt_out_exit(&cfg->sh, &msym->h.tv,
+		lt_out_exit(cfg->sh, &msym->h.tv,
 				msym->data + msym->sym,
 				msym->data + msym->lib,
 				msym->data + msym->arg,
 				msym->data + msym->argd);
 
-		cfg->sh.indent_depth--;
+		lt_sh(cfg, indent_depth)--;
 	}
 
 	return 0;
@@ -274,7 +274,7 @@ int lt_run(struct lt_config_app *cfg)
 	if (-1 == store_config(cfg, str_cfg)) 
 		return -1;
 
-	if (cfg->sh.pipe && 
+	if (lt_sh(cfg, pipe) &&
 	   (-1 == (notify_fd = set_dir_notify(str_dir))))
 		return -1;
 
@@ -287,7 +287,7 @@ int lt_run(struct lt_config_app *cfg)
 		setenv("LD_AUDIT", str_audit, 1);
 		setenv("LT_DIR", str_dir, 1);
 
-		PRINT_VERBOSE(cfg->sh.verbose, 1, "executing %s\n", cfg->prog);
+		PRINT_VERBOSE(cfg, 1, "executing %s\n", cfg->prog);
 
 		if (-1 == execvp(cfg->prog, cfg->arg)) {
 			printf("execve failed for \"%s\" : %s\n", 
@@ -299,7 +299,7 @@ int lt_run(struct lt_config_app *cfg)
 		return -1;
 	}
 
-	if (cfg->sh.pipe)
+	if (lt_sh(cfg, pipe))
 		status = process(cfg, child_pid, str_dir, notify_fd);
 	else
 		waitpid(child_pid, &status, 0);

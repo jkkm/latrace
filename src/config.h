@@ -120,10 +120,18 @@ struct lt_config_shared {
 
 	/* used by both app and lib */
 	unsigned int indent_depth;
+
+	/* XXX feel like an idiot.. find another way!!! */
+	struct lt_config_shared *sh;
 };
 
 struct lt_config_app {
-	struct lt_config_shared sh;
+	/*
+	 * This is to copy the lt_config_audit, so we can use
+	 * one PRINT_VERBOSE only.
+	 */
+	struct lt_config_shared *sh;
+	struct lt_config_shared sh_storage;
 
 	char *prog;
 #define LT_NUM_ARG 500
@@ -149,7 +157,14 @@ struct lt_objsearch {
 };
 
 struct lt_config_audit {
-	struct lt_config_shared sh;
+
+	/*
+	 * Normally sh points to the sh_storage. When using
+	 * ctl-config feature, the shared config is stored
+	 * in mmaped area.
+        */
+	struct lt_config_shared *sh;
+	struct lt_config_shared sh_storage;
 
 	char *libs_to[LT_NAMES_MAX];
 	int libs_to_cnt;
@@ -172,6 +187,8 @@ struct lt_config_audit {
 	char *dir;
 	int init_ok;
 };
+
+#define lt_sh(cfg, field) ((cfg)->sh->field)
 
 #define FIFO_MSG_MAXLEN       2000
 
@@ -410,9 +427,9 @@ do { \
 	printf(lpbuf, ## args); \
 } while(0)
 
-#define PRINT_VERBOSE(verbose, cond, fmt, args...) \
+#define PRINT_VERBOSE(cfg, cond, fmt, args...) \
 do { \
-	if (cond > verbose) \
+	if (cond > (cfg)->sh->verbose) \
 		break; \
 	PRINT(fmt, ## args); \
 } while(0)

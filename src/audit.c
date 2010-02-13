@@ -47,13 +47,13 @@ static int check_names(char *name, char **ptr)
 
 	for(n = *ptr; n; n = *(++ptr)) {
 		if (strstr(name, n)) {
-			PRINT_VERBOSE(cfg.sh.verbose, 2, 
+			PRINT_VERBOSE(&cfg, 2,
 				"return %d for name %s\n", 1, name);
 			return 1;
 		}
 	}
 
-	PRINT_VERBOSE(cfg.sh.verbose, 2, "return %d for name %s\n", 
+	PRINT_VERBOSE(&cfg, 2, "return %d for name %s\n",
 			0, name);
 	return 0;
 }
@@ -75,18 +75,18 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 	char *argbuf = "", *argdbuf = "";
 	struct timeval tv;
 
-	PRINT_VERBOSE(cfg.sh.verbose, 2, "%s@%s\n", symname, lib_to);
+	PRINT_VERBOSE(&cfg, 2, "%s@%s\n", symname, lib_to);
 
 	if (cfg.flow_below_cnt && !check_flow_below(symname, 1))
 		return 0;
 
-	if (cfg.sh.timestamp || cfg.sh.counts)
+	if (lt_sh(&cfg, timestamp) || lt_sh(&cfg, counts))
 		gettimeofday(&tv, NULL);
 
-	argret = cfg.sh.args_enabled ? 
-		lt_args_sym_entry(&cfg.sh, (char*) symname, regs, &argbuf, &argdbuf) : -1;
+	argret = lt_sh(&cfg, args_enabled) ?
+		lt_args_sym_entry(cfg.sh, (char*) symname, regs, &argbuf, &argdbuf) : -1;
 
-	if (cfg.sh.pipe) {
+	if (lt_sh(&cfg, pipe)) {
 		char buf[FIFO_MSG_MAXLEN];
 		int len;
 
@@ -99,14 +99,14 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 		return lt_fifo_send(&cfg, pipe_fd, buf, len);
 	}
 
-	cfg.sh.indent_depth++;
+	lt_sh(&cfg, indent_depth)++;
 
-	lt_out_entry(&cfg.sh, &tv, symname, lib_to,
+	lt_out_entry(cfg.sh, &tv, symname, lib_to,
 			argbuf, argdbuf);
 
 	if (!argret) {
 		free(argbuf);
-		if (cfg.sh.args_detailed && (*argdbuf))
+		if (lt_sh(&cfg, args_detailed) && (*argdbuf))
 			free(argdbuf);
 	}
 
@@ -120,19 +120,19 @@ static int sym_exit(const char *symname, char *lib_from, char *lib_to,
 	char *argbuf = "", *argdbuf = "";
 	struct timeval tv;
 
-	PRINT_VERBOSE(cfg.sh.verbose, 2, "%s@%s\n", symname, lib_to);
+	PRINT_VERBOSE(&cfg, 2, "%s@%s\n", symname, lib_to);
 
 	if (cfg.flow_below_cnt && !check_flow_below(symname, 0))
 		return 0;
 
-	if (cfg.sh.timestamp || cfg.sh.counts)
+	if (lt_sh(&cfg, timestamp) || lt_sh(&cfg, counts))
 		gettimeofday(&tv, NULL);
 
-	argret = cfg.sh.args_enabled ? 
-		lt_args_sym_exit(&cfg.sh, (char*) symname,
+	argret = lt_sh(&cfg, args_enabled) ?
+		lt_args_sym_exit(cfg.sh, (char*) symname,
 			(La_regs*) inregs, outregs, &argbuf, &argdbuf) : -1;
 
-	if (cfg.sh.pipe) {
+	if (lt_sh(&cfg, pipe)) {
 		char buf[FIFO_MSG_MAXLEN];
 		int len;
 
@@ -142,15 +142,15 @@ static int sym_exit(const char *symname, char *lib_from, char *lib_to,
 		return lt_fifo_send(&cfg, pipe_fd, buf, len);
 	}
 
-	lt_out_exit(&cfg.sh, &tv, symname, lib_from,
+	lt_out_exit(cfg.sh, &tv, symname, lib_from,
 			argbuf, argdbuf);
 
-	cfg.sh.indent_depth--;
+	lt_sh(&cfg, indent_depth)--;
 
 	if (!argret) {
 		free(argbuf);
 
-		if (cfg.sh.args_detailed && (*argdbuf))
+		if (lt_sh(&cfg, args_detailed) && (*argdbuf))
 			free(argdbuf);
 	}
 
@@ -161,10 +161,10 @@ static int check_pid()
 {
 	pid_t pid = getpid();
 
-	PRINT_VERBOSE(cfg.sh.verbose, 1, "tid = %d, cfg tid = %d\n",
-			pid, cfg.sh.pid);
+	PRINT_VERBOSE(&cfg, 1, "tid = %d, cfg tid = %d\n",
+			pid, lt_sh(&cfg, pid));
 
-	if (pid != cfg.sh.pid)
+	if (pid != lt_sh(&cfg, pid))
 		return -1;
 
 	return 0;
@@ -172,7 +172,7 @@ static int check_pid()
 
 #define CHECK_PID(ret) \
 do { \
-	if (cfg.sh.not_follow_fork && \
+	if (cfg.sh->not_follow_fork && \
 	    check_pid()) \
 		return ret; \
 } while(0)
@@ -230,7 +230,7 @@ static unsigned int la_symbind(const char *symname)
 
 void la_activity(uintptr_t *cookie, unsigned int act)
 {
-	PRINT_VERBOSE(cfg.sh.verbose, 2, "entry\n");
+	PRINT_VERBOSE(&cfg, 2, "entry\n");
 }
 
 char* la_objsearch(const char *name, uintptr_t *cookie, unsigned int flag)
@@ -243,12 +243,12 @@ char* la_objsearch(const char *name, uintptr_t *cookie, unsigned int flag)
 
 void la_preinit(uintptr_t *__cookie)
 {
-	PRINT_VERBOSE(cfg.sh.verbose, 2, "entry\n");
+	PRINT_VERBOSE(&cfg, 2, "entry\n");
 }
 
 unsigned int la_objclose(uintptr_t *__cookie)
 {
-	PRINT_VERBOSE(cfg.sh.verbose, 2, "entry\n");
+	PRINT_VERBOSE(&cfg, 2, "entry\n");
 	return 0;
 }
 
@@ -277,7 +277,7 @@ pltenter(ElfW(Sym) *sym, unsigned int ndx, uintptr_t *refcook,
 	CHECK_PID(sym->st_value);
 
 	sym_entry(symname, lr ? lr->l_name : NULL, ld ? ld->l_name : NULL, regs);
-	*framesizep = cfg.sh.framesize;
+	*framesizep = lt_sh(&cfg, framesize);
 	return sym->st_value;
 }
 

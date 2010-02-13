@@ -83,8 +83,7 @@ int lt_stats_alloc(struct lt_config_app *cfg, struct lt_thread *t)
 		return 0;
 	}
 
-
-	PRINT_VERBOSE(cfg->sh.verbose, 1, 
+	PRINT_VERBOSE(cfg, 1,
 		"too bad, out of symbols, reallocation... %p - %d\n", 
 		t->sym_array, t->sym_cnt);
 
@@ -92,7 +91,7 @@ int lt_stats_alloc(struct lt_config_app *cfg, struct lt_thread *t)
 	t->sym_max += LT_SYM_HMAX;
 	hdestroy_r(&t->sym_htab);
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "creating new hash table\n");
+	PRINT_VERBOSE(cfg, 1, "creating new hash table\n");
 
 	if (!hcreate_r(t->sym_max, &t->sym_htab)) {
 		perror("hcreate_r failed");
@@ -107,7 +106,7 @@ int lt_stats_alloc(struct lt_config_app *cfg, struct lt_thread *t)
 		return -1;
 	}
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, 
+	PRINT_VERBOSE(cfg, 1,
 		"adding symbols to new hash table %p\n", 
 		t->sym_array);
 
@@ -119,8 +118,7 @@ int lt_stats_alloc(struct lt_config_app *cfg, struct lt_thread *t)
 		e.key = sym->name;
 		e.data = sym;
 
-		PRINT_VERBOSE(cfg->sh.verbose, 1, 
-			"adding symbol %s\n", sym->name);
+		PRINT_VERBOSE(cfg, 1, "adding symbol %s\n", sym->name);
 
 		if (0 == hsearch_r(e, ENTER, &ep, &t->sym_htab)) {
 			printf("failed to add hash item during reallocation\n");
@@ -128,7 +126,7 @@ int lt_stats_alloc(struct lt_config_app *cfg, struct lt_thread *t)
 		}
 	}
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "reallocation ok\n");
+	PRINT_VERBOSE(cfg, 1, "reallocation ok\n");
 	return 0;
 }
 
@@ -175,7 +173,7 @@ int lt_stats_sym(struct lt_config_app *cfg, struct lt_thread *t,
 		t->sym_array[t->sym_cnt] = sym;
 		t->sym_cnt++;
 
-		PRINT_VERBOSE(cfg->sh.verbose, 1, 
+		PRINT_VERBOSE(cfg, 1,
 			"adding symbol %d %s\n", t->sym_cnt, sym->name);
 	} else
 		free(e.key);
@@ -246,7 +244,7 @@ static int lt_stats_show_thread(struct lt_config_app *cfg, struct lt_thread *t)
 	struct timeval tv_thread_accu = { 0, 0};
 	float time_global;
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "counting total time\n");
+	PRINT_VERBOSE(cfg, 1, "counting total time\n");
 	for(i = 0; i < t->sym_cnt; i++) {
 		struct lt_stats_sym *sym = t->sym_array[i];
 		tv_add(&tv_thread_accu, &tv_thread_accu, &sym->tv_all);
@@ -254,7 +252,7 @@ static int lt_stats_show_thread(struct lt_config_app *cfg, struct lt_thread *t)
 
 	time_global = tv_thread_accu.tv_sec * 1000000 + tv_thread_accu.tv_usec;
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1,  "counting post mortem statistics\n");
+	PRINT_VERBOSE(cfg, 1,  "counting post mortem statistics\n");
 
 	for(i = 0; i < t->sym_cnt; i++) {
 		struct lt_stats_sym *sym = t->sym_array[i];
@@ -264,12 +262,12 @@ static int lt_stats_show_thread(struct lt_config_app *cfg, struct lt_thread *t)
 		sym->usec_call = time_sym/sym->call;
 	}
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "sorting\n");
+	PRINT_VERBOSE(cfg, 1, "sorting\n");
 
 	csort = cfg->csort;
 	qsort(t->sym_array, t->sym_cnt, sizeof(struct lt_stats_sym*), qsort_compar);
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "printing\n");
+	PRINT_VERBOSE(cfg, 1, "printing\n");
 
 	tv_sub(&tv_thread_real, &t->tv_stop, &t->tv_start);
 	printf("\nThread %d (runtime %u.%06u sec)\n", 

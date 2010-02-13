@@ -56,7 +56,7 @@ static int add_subst(struct lt_config_audit *cfg, char *subst)
 
 	*dst++ = 0x0;
 
-	PRINT_VERBOSE(cfg->sh.verbose, 2, "adding subst type %d, src [%s], dst [%s]\n", 
+	PRINT_VERBOSE(cfg, 2, "adding subst type %d, src [%s], dst [%s]\n",
 			type, src, dst);
 
 	s = &cfg->subst[cfg->subst_cnt++];
@@ -80,7 +80,7 @@ static int add_subst(struct lt_config_audit *cfg, char *subst)
 static int match_path(struct lt_config_audit *cfg, const char *name, 
 			struct lt_objsearch *s, char **ret)
 {
-	PRINT_VERBOSE(cfg->sh.verbose, 2, "name [%s], src [%s], dst [%s]\n", 
+	PRINT_VERBOSE(cfg, 2, "name [%s], src [%s], dst [%s]\n",
 			name, s->src, s->dst);
 
 	*ret = s->dst;
@@ -106,7 +106,7 @@ static int match_ptn(struct lt_config_audit *cfg, const char *name,
 {
 	char *pat, *r;
 
-	PRINT_VERBOSE(cfg->sh.verbose, 2, "name [%s], src [%s], dst [%s]\n", 
+	PRINT_VERBOSE(cfg, 2, "name [%s], src [%s], dst [%s]\n",
 			name, s->src, s->dst);
 
 	pat = strstr(name, s->src);
@@ -124,7 +124,7 @@ static int match_ptn(struct lt_config_audit *cfg, const char *name,
 	strcpy(r, s->dst);
 	strcat(r, pat + strlen(s->src));
 
-	PRINT_VERBOSE(cfg->sh.verbose, 2, "return %s\n", *ret);
+	PRINT_VERBOSE(cfg, 2, "return %s\n", *ret);
 
 	return 1;
 }
@@ -142,7 +142,7 @@ static int match_ptn(struct lt_config_audit *cfg, const char *name,
 static int match_ptn2path(struct lt_config_audit *cfg, const char *name, 
 			struct lt_objsearch *s, char **ret)
 {
-	PRINT_VERBOSE(cfg->sh.verbose, 2, "name [%s], src [%s], dst [%s]\n", 
+	PRINT_VERBOSE(cfg, 2, "name [%s], src [%s], dst [%s]\n",
 			name, s->src, s->dst);
 
 	*ret = s->dst;

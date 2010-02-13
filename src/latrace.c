@@ -35,10 +35,10 @@ int main(int argc, char **argv)
 	if (-1 == lt_run(&cfg))
 		return -1;
 
-	if ((cfg.sh.pipe) && (*cfg.sh.output))
-		fclose(cfg.sh.fout);
+	if ((lt_sh(&cfg, pipe)) && (*lt_sh(&cfg, output)))
+		fclose(lt_sh(&cfg, fout));
 
-	if (cfg.sh.counts)
+	if (lt_sh(&cfg, counts))
 		lt_stats_show(&cfg);
 
 	return 0;

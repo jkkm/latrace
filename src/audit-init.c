@@ -47,7 +47,7 @@ static int read_config(char *dir)
 		return -1;
 	}
 
-	if (-1 == read(fd, &cfg.sh, sizeof(cfg.sh))) {
+	if (-1 == read(fd, &cfg.sh_storage, sizeof(cfg.sh_storage))) {
 		perror("read failed");
 		return -1;
 	}
@@ -57,16 +57,17 @@ static int read_config(char *dir)
 		return -1;
 	}
 
-	if (len != sizeof(cfg.sh)) {
+	if (len != sizeof(cfg.sh_storage)) {
 		printf("config file size differs\n");
 		return -1;
 	}
 
-	if (LT_MAGIC != cfg.sh.magic) {
+	if (LT_MAGIC != cfg.sh_storage.magic) {
 		printf("config file magic check failed\n");
 		return -1;
 	}
 
+	cfg.sh = cfg.sh_storage.sh = &cfg.sh_storage;
 	return 0;
 }
 
@@ -75,26 +76,26 @@ static int get_names(struct lt_config_audit *cfg, char *names, char **ptr)
 	char* s;
 	int cnt = 0;
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "names: [%s] max: %d\n", 
+	PRINT_VERBOSE(cfg, 1, "names: [%s] max: %d\n",
 			names, LT_NAMES_MAX);
 
 	s = strchr(names, LT_NAMES_SEP);
 	while(NULL != (s = strchr(names, LT_NAMES_SEP)) && (cnt < LT_NAMES_MAX)) {
 		*s = 0x0;
-		PRINT_VERBOSE(cfg->sh.verbose, 1, "got: %s", names);
+		PRINT_VERBOSE(cfg, 1, "got: %s", names);
 		ptr[cnt++] = names;
 		names = ++s;
 	}
 
 	if (cnt) {
 		ptr[cnt++] = names;
-		PRINT_VERBOSE(cfg->sh.verbose, 1, "got: %s\n", names);
+		PRINT_VERBOSE(cfg, 1, "got: %s\n", names);
 	}
 
 	if (!cnt && *names) {
 		ptr[0] = names;
 		cnt = 1;
-		PRINT_VERBOSE(cfg->sh.verbose, 1, "got: %s\n", names);
+		PRINT_VERBOSE(cfg, 1, "got: %s\n", names);
 	}
 
 	ptr[cnt] = NULL;
@@ -102,7 +103,7 @@ static int get_names(struct lt_config_audit *cfg, char *names, char **ptr)
 	if (!cnt)
 		return -1;
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "got %d entries\n", cnt);
+	PRINT_VERBOSE(cfg, 1, "got %d entries\n", cnt);
 	return cnt;
 }
 
@@ -112,51 +113,51 @@ int audit_init(int argc, char **argv, char **env)
 		return -1;
 
 	/* -Aa */
-	if (cfg.sh.args_enabled && lt_args_init(&cfg.sh))
+	if (lt_sh(&cfg, args_enabled) && lt_args_init(cfg.sh))
 		return -1;
 
 	/* -t */
-	if ((*cfg.sh.libs_to) && 
-	    (-1 == (cfg.libs_to_cnt = get_names(&cfg, cfg.sh.libs_to, cfg.libs_to)))) {
+	if ((*lt_sh(&cfg, libs_to)) &&
+	    (-1 == (cfg.libs_to_cnt = get_names(&cfg, lt_sh(&cfg, libs_to), cfg.libs_to)))) {
 		printf("latrace failed to parse libs to\n");
 		return -1;
 	}
 
 	/* -f */
-	if ((*cfg.sh.libs_from) && 
-	    (-1 == (cfg.libs_from_cnt = get_names(&cfg, cfg.sh.libs_from, cfg.libs_from)))) {
+	if ((*lt_sh(&cfg, libs_from)) &&
+	    (-1 == (cfg.libs_from_cnt = get_names(&cfg, lt_sh(&cfg, libs_from), cfg.libs_from)))) {
 		printf("latrace failed to parse libs from\n");
 		return -1;
 	}
 
 	/* -l */
-	if ((*cfg.sh.libs_both) && 
-	    (-1 == (cfg.libs_both_cnt = get_names(&cfg, cfg.sh.libs_both, cfg.libs_both)))) {
+	if ((*lt_sh(&cfg, libs_both)) &&
+	    (-1 == (cfg.libs_both_cnt = get_names(&cfg, lt_sh(&cfg, libs_both), cfg.libs_both)))) {
 		printf("latrace failed to parse libs from\n");
 		return -1;
 	}
 
 	/* -s */
-	if ((*cfg.sh.symbols) && 
-	    (-1 == (cfg.symbols_cnt = get_names(&cfg, cfg.sh.symbols, cfg.symbols)))) {
+	if ((*lt_sh(&cfg, symbols)) &&
+	    (-1 == (cfg.symbols_cnt = get_names(&cfg, lt_sh(&cfg, symbols), cfg.symbols)))) {
 		printf("latrace failed to parse symbols\n");
 		return -1;
 	}
 
 	/* -b */
-	if ((*cfg.sh.flow_below) && 
-	    (-1 == (cfg.flow_below_cnt = get_names(&cfg, cfg.sh.flow_below, cfg.flow_below)))) {
+	if ((*lt_sh(&cfg, flow_below)) &&
+	    (-1 == (cfg.flow_below_cnt = get_names(&cfg, lt_sh(&cfg, flow_below), cfg.flow_below)))) {
 		printf("latrace failed to parse symbols in flow-below option\n");
 		return -1;
 	}
 
 	/* -L */
-	if (*cfg.sh.libs_subst) {
+	if (*lt_sh(&cfg, libs_subst)) {
 
 		char *ptr[LT_NAMES_MAX];
 		int cnt;
 
-		if (-1 == (cnt = get_names(&cfg, cfg.sh.libs_subst, ptr))) {
+		if (-1 == (cnt = get_names(&cfg, lt_sh(&cfg, libs_subst), ptr))) {
 			printf("latrace failed to parse input for subst option\n");
 			return -1;
 		}
@@ -167,20 +168,21 @@ int audit_init(int argc, char **argv, char **env)
 		}
 	}
 
-	/* -o */
-	cfg.sh.fout = stdout;
-	if ((*cfg.sh.output) && (NULL == (cfg.sh.fout = fopen(cfg.sh.output, "w")))) {
-		printf("latrace failed to open output file %s\n", cfg.sh.output);
+	/* -o FIXME put fout out of the shared structure */
+	lt_sh(&cfg, fout) = stdout;
+	if ((*lt_sh(&cfg, output)) &&
+	    (NULL == (lt_sh(&cfg, fout) = fopen(lt_sh(&cfg, output), "w")))) {
+		printf("latrace failed to open output file %s\n", lt_sh(&cfg, output));
 		return -1;
 	}
 
 	/* -E */
-	if (cfg.sh.not_follow_exec)
+	if (lt_sh(&cfg, not_follow_exec))
 		unsetenv("LD_AUDIT");
 
 	/* -F */
-	if (cfg.sh.not_follow_fork)
-		cfg.sh.pid = getpid();
+	if (lt_sh(&cfg, not_follow_fork))
+		lt_sh(&cfg, pid) = getpid();
 
 	cfg.init_ok = 1;
 	return 0;
@@ -191,6 +193,6 @@ void finalize(void) __attribute__((destructor));
 void
 finalize(void)
 {
-	if ((!cfg.sh.pipe) && (*cfg.sh.output))
-		fclose(cfg.sh.fout);
+	if ((!lt_sh(&cfg, pipe)) && (*lt_sh(&cfg, output)))
+		fclose(lt_sh(&cfg, fout));
 }

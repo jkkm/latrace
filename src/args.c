@@ -238,10 +238,10 @@ static struct lt_enum* getenum(struct lt_config_shared *cfg, char *name)
 	struct lt_enum *en;
 	ENTRY e, *ep;
 
-	PRINT_VERBOSE(cfg->verbose, 1, "request for <%s>\n", name);
+	PRINT_VERBOSE(cfg, 1, "request for <%s>\n", name);
 
 	if (!enum_init) {
-		PRINT_VERBOSE(cfg->verbose, 1, "no enum added so far\n", name);
+		PRINT_VERBOSE(cfg, 1, "no enum added so far\n", name);
 		return NULL;
 	}
 
@@ -249,13 +249,13 @@ static struct lt_enum* getenum(struct lt_config_shared *cfg, char *name)
 	hsearch_r(e, FIND, &ep, &args_enum_tab);
 
 	if (!ep) {
-		PRINT_VERBOSE(cfg->verbose, 1, "failed to find enum <%s>\n", name);
+		PRINT_VERBOSE(cfg, 1, "failed to find enum <%s>\n", name);
 		return NULL;
 	}
 
 	en = (struct lt_enum*) ep->data;
 
-	PRINT_VERBOSE(cfg->verbose, 1, "found %p <%s>\n", en, en->name);
+	PRINT_VERBOSE(cfg, 1, "found %p <%s>\n", en, en->name);
 	return en;
 }
 
@@ -273,7 +273,7 @@ static struct lt_enum_elem* get_enumelem(struct lt_config_shared *cfg,
 	struct lt_enum_elem key;
 	key.val = val;
 
-	PRINT_VERBOSE(cfg->verbose, 1, "looking for %p <%s> value %ld\n",
+	PRINT_VERBOSE(cfg, 1, "looking for %p <%s> value %ld\n",
 			en, en->name, val);
 
 	return bsearch(&key, en->elems, en->cnt, 
@@ -311,7 +311,7 @@ int lt_args_add_enum(struct lt_config_shared *cfg, char *name,
 		free(en);
 		/* we dont want to exit just because 
 		   we ran out of our symbol limit */
-		PRINT_VERBOSE(cfg->verbose, 3, 
+		PRINT_VERBOSE(cfg, 3,
 			"reach the enum number limit %u\n", 
 			LT_ARGS_DEF_ENUM_NUM);
 	}
@@ -325,7 +325,7 @@ int lt_args_add_enum(struct lt_config_shared *cfg, char *name,
 	if (NULL == (en->elems = malloc(sizeof(struct lt_enum_elem) * en->cnt)))
 		return -1;
 
-	PRINT_VERBOSE(cfg->verbose, 3, "enum %s (%d elems)\n", 
+	PRINT_VERBOSE(cfg, 3, "enum %s (%d elems)\n",
 			en->name, en->cnt);
 
 	lt_list_for_each_entry(elem, h, list) {
@@ -338,7 +338,7 @@ int lt_args_add_enum(struct lt_config_shared *cfg, char *name,
 			elem->undef = 0;
 		}
 
-		PRINT_VERBOSE(cfg->verbose, 3, "\t %s = %d\n", 
+		PRINT_VERBOSE(cfg, 3, "\t %s = %d\n",
 			elem->name, elem->val);
 
 		en->elems[i++] = *elem;
@@ -372,7 +372,7 @@ struct lt_enum_elem* lt_args_get_enum(struct lt_config_shared *cfg,
 
 	elem->name = strdup(name);
 
-	PRINT_VERBOSE(cfg->verbose, 3, "enum elem %s = %d, undef = %d\n", 
+	PRINT_VERBOSE(cfg, 3, "enum elem %s = %d, undef = %d\n",
 			elem->name, elem->val, elem->undef);
 	return elem;
 }
@@ -396,12 +396,12 @@ int lt_args_add_struct(struct lt_config_shared *cfg, char *type_name,
 	sarg.type_name = type_name;
 	sarg.args_head = h;
 
-	PRINT_VERBOSE(cfg->verbose, 3, "struct [%s] type %d\n", 
-					sarg.type_name, sarg.type_id);
+	PRINT_VERBOSE(cfg, 3, "struct [%s] type %d\n",
+			sarg.type_name, sarg.type_id);
 
 	lt_list_for_each_entry(arg, sarg.args_head, args_list) {
 
-		PRINT_VERBOSE(cfg->verbose, 3, "\t %s %s %u\n", 
+		PRINT_VERBOSE(cfg, 3, "\t %s %s %u\n",
 				arg->type_name, arg->name, arg->type_len);
 
 		/* This is not what sizeof would return on the structure.
@@ -412,7 +412,7 @@ int lt_args_add_struct(struct lt_config_shared *cfg, char *type_name,
 
 	args_def_struct[args_def_struct_cnt++] = sarg;
 
-	PRINT_VERBOSE(cfg->verbose, 3, "%d.struct - final len = %u\n", 
+	PRINT_VERBOSE(cfg, 3, "%d.struct - final len = %u\n",
 			args_def_struct_cnt, sarg.type_len);
 	return 0;
 }
@@ -425,7 +425,7 @@ int lt_args_add_sym(struct lt_config_shared *cfg, struct lt_arg *ret,
 	struct lt_arg *arg;
 	int i = 0;
 
-	PRINT_VERBOSE(cfg->verbose, 3, "got symbol '%s %s'\n",
+	PRINT_VERBOSE(cfg, 3, "got symbol '%s %s'\n",
 			ret->type_name, ret->name);
 
 	if (NULL == (sym = (struct lt_args_sym*) malloc(sizeof(*sym))))
@@ -444,12 +444,12 @@ int lt_args_add_sym(struct lt_config_shared *cfg, struct lt_arg *ret,
 		   to exit the program anyway */
 		return -1;
 
-	PRINT_VERBOSE(cfg->verbose, 3, "got return %s, ptr %d\n", 
+	PRINT_VERBOSE(cfg, 3, "got return %s, ptr %d\n",
 			ret->type_name, ret->pointer);
 
 	sym->args[i++] = ret;
 	lt_list_for_each_entry(arg, h, args_list) {
-		PRINT_VERBOSE(cfg->verbose, 3, "\t '%s %s'\n", 
+		PRINT_VERBOSE(cfg, 3, "\t '%s %s'\n",
 				arg->type_name, arg->name);
 		sym->args[i++] = arg;
 	}
@@ -462,10 +462,10 @@ int lt_args_add_sym(struct lt_config_shared *cfg, struct lt_arg *ret,
 		free(sym);
 		/* we dont want to exit just because 
 		   we ran out of our symbol limit */
-		PRINT_VERBOSE(cfg->verbose, 3, "reach the symbol number limit %u\n", 
+		PRINT_VERBOSE(cfg, 3, "reach the symbol number limit %u\n",
 				LT_ARGS_TAB);
 	} else
-		PRINT_VERBOSE(cfg->verbose, 3, "got symbol %s (%d args)\n", 
+		PRINT_VERBOSE(cfg, 3, "got symbol %s (%d args)\n",
 				sym->name, sym->argcnt);
 
 	return 0;
@@ -476,7 +476,7 @@ static struct lt_arg* argdup(struct lt_config_shared *cfg, struct lt_arg *asrc)
 	struct lt_arg *arg, *a;
         struct lt_list_head *h;
 
-	PRINT_VERBOSE(cfg->verbose, 2, "got arg '%s %s', dtype %d\n",
+	PRINT_VERBOSE(cfg, 2, "got arg '%s %s', dtype %d\n",
 			asrc->type_name, asrc->name, asrc->dtype);
 
 	if (NULL == (arg = malloc(sizeof(*arg)))) {
@@ -522,7 +522,7 @@ static struct lt_arg* find_arg(struct lt_config_shared *cfg, char *type,
 		struct lt_arg *arg;
 		struct lt_arg adef = argsdef[i];
 
-		PRINT_VERBOSE(cfg->verbose, 3, "%d. looking for [%s] - [%s]\n", 
+		PRINT_VERBOSE(cfg, 3, "%d. looking for [%s] - [%s]\n",
 					i, type, adef.type_name);
 
 		if (strcmp(type, adef.type_name))
@@ -533,7 +533,7 @@ static struct lt_arg* find_arg(struct lt_config_shared *cfg, char *type,
 
 		arg = argdup(cfg, &adef);
 
-		PRINT_VERBOSE(cfg->verbose, 3, "found %d\n", arg->type_id);
+		PRINT_VERBOSE(cfg, 3, "found %d\n", arg->type_id);
 		return arg;
 	}
 
@@ -604,12 +604,12 @@ int lt_args_add_typedef(struct lt_config_shared *cfg, char *base,
 			args_def_typedef, args_def_typedef_cnt, 0)))
 			break;
 
-		PRINT_VERBOSE(cfg->verbose, 3, "%s not found\n", base);
+		PRINT_VERBOSE(cfg, 3, "%s not found\n", base);
 		return -1;
 
 	} while(0);
 
-	PRINT_VERBOSE(cfg->verbose, 3, "got [%s]\n", new);
+	PRINT_VERBOSE(cfg, 3, "got [%s]\n", new);
 
 	args_def_typedef[i = args_def_typedef_cnt++] = *arg;
 
@@ -619,7 +619,7 @@ int lt_args_add_typedef(struct lt_config_shared *cfg, char *base,
 
 	lt_init_list_head(&arg->args_list);
 
-	PRINT_VERBOSE(cfg->verbose, 3, "%d.typedef - got [%s] [%s]\n", 
+	PRINT_VERBOSE(cfg, 3, "%d.typedef - got [%s] [%s]\n",
 			args_def_typedef_cnt, base, arg->type_name);
 	return 0;
 }
@@ -639,7 +639,7 @@ int lt_args_init(struct lt_config_shared *cfg)
 	if (*cfg->args_def)
 		file = cfg->args_def;
 
-	PRINT_VERBOSE(cfg->verbose, 1, "arguments definition file %s\n", file);
+	PRINT_VERBOSE(cfg, 1, "arguments definition file %s\n", file);
 
 	if (lt_args_buf_open(cfg, file))
 		return -1;
@@ -662,7 +662,7 @@ static struct lt_args_sym* getsym(struct lt_config_shared *cfg, char *sym)
 	struct lt_args_sym *a;
 	ENTRY e, *ep;
 
-        PRINT_VERBOSE(cfg->verbose, 1, "request for <%s>\n", sym);
+        PRINT_VERBOSE(cfg, 1, "request for <%s>\n", sym);
 
 	e.key = sym;
 	hsearch_r(e, FIND, &ep, &cfg->args_tab);
@@ -672,7 +672,7 @@ static struct lt_args_sym* getsym(struct lt_config_shared *cfg, char *sym)
 
 	a = (struct lt_args_sym*) ep->data;
 
-        PRINT_VERBOSE(cfg->verbose, 1, "found %p <%s>\n", a, a->name);
+        PRINT_VERBOSE(cfg, 1, "found %p <%s>\n", a, a->name);
 	return a;
 }
 
@@ -700,7 +700,7 @@ static int getstr_pod(struct lt_config_shared *cfg, int dspname, struct lt_arg *
 	int len = 0, alen = *arglen;
 	int namelen = strlen(arg->name);
 
-	PRINT_VERBOSE(cfg->verbose, 1, "\t arg '%s %s', pval %p, len %d, pointer %d, dtype %d, type_id %d\n", 
+	PRINT_VERBOSE(cfg, 1, "\t arg '%s %s', pval %p, len %d, pointer %d, dtype %d, type_id %d\n",
 			arg->type_name, arg->name, pval, alen, arg->pointer, arg->dtype, arg->type_id);
 
 	if (alen < 5)
@@ -804,7 +804,7 @@ do {                                                                 \
 out:
 	*arglen += strlen(argbuf);
 
-	PRINT_VERBOSE(cfg->verbose, 1, "\t arg out len %d - [%s]\n", 
+	PRINT_VERBOSE(cfg, 1, "\t arg out len %d - [%s]\n",
 			*arglen, argbuf);
 	return 0;
 }
@@ -814,7 +814,7 @@ int lt_args_cb_arg(struct lt_config_shared *cfg, struct lt_arg *arg, void *pval,
 {
 	int len = data->arglen;
 
-	PRINT_VERBOSE(cfg->verbose, 1, "arg '%s %s', pval %p, last %d\n",
+	PRINT_VERBOSE(cfg, 1, "arg '%s %s', pval %p, last %d\n",
 				arg->type_name, arg->name, pval, last);
 
 	getstr_pod(cfg, dspname, arg, pval, 
@@ -832,7 +832,7 @@ int lt_args_cb_arg(struct lt_config_shared *cfg, struct lt_arg *arg, void *pval,
 int lt_args_cb_struct(struct lt_config_shared *cfg, int type, struct lt_arg *arg, 
 		      void *pval, struct lt_args_data *data, int last)
 {
-	PRINT_VERBOSE(cfg->verbose, 1, 
+	PRINT_VERBOSE(cfg, 1,
 		"type %d, arg '%s %s', pval %p, last %d, pointer %d\n",
 		type, arg->type_name, arg->name, pval, last, arg->pointer);
 
@@ -910,11 +910,11 @@ static FILE* open_include(struct lt_config_shared *cfg, char *file)
 
 	/* we got an absolute path */
 	if ((NULL != (f = fopen(file, "r")))) {
-		PRINT_VERBOSE(cfg->verbose, 1, "open ok [%s]\n", file);
+		PRINT_VERBOSE(cfg, 1, "open ok [%s]\n", file);
 		return f;
 	}
 
-	PRINT_VERBOSE(cfg->verbose, 1, "open failed [%s]: %s\n", 
+	PRINT_VERBOSE(cfg, 1, "open failed [%s]: %s\n",
 			file, strerror(errno));
 
 	/* give up if there was already the absolute name */
@@ -934,13 +934,13 @@ static FILE* open_include(struct lt_config_shared *cfg, char *file)
 	sprintf(fn, "%s/%s", LT_ARGS_DEF_DIR, file);
 
 	if ((NULL == (f = fopen(fn, "r")))) {
-		PRINT_VERBOSE(cfg->verbose, 1, "open failed [%s]: %s\n", 
+		PRINT_VERBOSE(cfg, 1, "open failed [%s]: %s\n",
 				fn, strerror(errno));
 		printf("open failed [%s]: %s\n", file, strerror(errno));
 		return NULL;
 	}
 
-	PRINT_VERBOSE(cfg->verbose, 1, "open ok [%s]\n", fn);
+	PRINT_VERBOSE(cfg, 1, "open ok [%s]\n", fn);
 	return f;
 }
 
@@ -948,7 +948,7 @@ int lt_args_buf_open(struct lt_config_shared *cfg, char *file)
 {
 	struct lt_args_include *inc;
 
-	PRINT_VERBOSE(cfg->verbose, 1, "opening buffer for [%s] depth %d\n", 
+	PRINT_VERBOSE(cfg, 1, "opening buffer for [%s] depth %d\n",
 			file, include_stack_ptr);
 
 	if ((include_stack_ptr + 1) == MAX_INCLUDE_DEPTH) {
@@ -969,7 +969,7 @@ int lt_args_buf_open(struct lt_config_shared *cfg, char *file)
 
 	yy_switch_to_buffer(inc->yybuf);
 
-	PRINT_VERBOSE(cfg->verbose, 1, "opened buffer for [%s] depth %d\n", 
+	PRINT_VERBOSE(cfg, 1, "opened buffer for [%s] depth %d\n",
 			file, include_stack_ptr);
 	return 0;
 }
@@ -978,7 +978,7 @@ int lt_args_buf_close(struct lt_config_shared *cfg)
 {
 	struct lt_args_include *inc = &include_stack[--include_stack_ptr];
 
-	PRINT_VERBOSE(cfg->verbose, 1, "buffer closed [%s], depth [%d]\n", 
+	PRINT_VERBOSE(cfg, 1, "buffer closed [%s], depth [%d]\n",
 			inc->file, include_stack_ptr);
 
 	free(inc->file);

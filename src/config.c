@@ -101,15 +101,16 @@ static int get_type(struct lt_config_app *cfg, struct lt_config_tv *tv,
 int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 {
 	memset(cfg, 0, sizeof(*cfg));
+	cfg->sh = &cfg->sh_storage;
 
 	/* default values settings */
-	cfg->sh.magic       = LT_MAGIC;
-	cfg->sh.framesize   = 1000;
-	cfg->sh.fout        = stdout;
-	cfg->sh.indent_sym  = 1;
-	cfg->sh.indent_size = 2;
-	cfg->sh.args_maxlen = LR_ARGS_MAXLEN;
-	cfg->sh.args_detail_maxlen = LR_ARGS_DETAIL_MAXLEN;
+	lt_sh(cfg, magic)       = LT_MAGIC;
+	lt_sh(cfg, framesize)   = 1000;
+	lt_sh(cfg, fout)        = stdout;
+	lt_sh(cfg, indent_sym)  = 1;
+	lt_sh(cfg, indent_size) = 2;
+	lt_sh(cfg, args_maxlen) = LR_ARGS_MAXLEN;
+	lt_sh(cfg, args_detail_maxlen) = LR_ARGS_DETAIL_MAXLEN;
 	cfg->csort = LT_CSORT_CALL;
 
 	while (1) {
@@ -155,82 +156,82 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			if (strlen(optarg) > LT_LIBS_MAXSIZE)
 				return -1;
 
-			strncpy(cfg->sh.libs_both, optarg, strlen(optarg));
+			strncpy(lt_sh(cfg, libs_both), optarg, strlen(optarg));
 			break;
 
 		case 't':
 			if (strlen(optarg) > LT_LIBS_MAXSIZE)
 				return -1;
 
-			strncpy(cfg->sh.libs_to, optarg, strlen(optarg));
+			strncpy(lt_sh(cfg, libs_to), optarg, strlen(optarg));
 			break;
 
 		case 'f':
 			if (strlen(optarg) > LT_LIBS_MAXSIZE)
 				return -1;
 
-			strncpy(cfg->sh.libs_from, optarg, strlen(optarg));
+			strncpy(lt_sh(cfg, libs_from), optarg, strlen(optarg));
 			break;
 
 		case 's':
 			if (strlen(optarg) > LT_SYMBOLS_MAXSIZE)
 				return -1;
 
-			strncpy(cfg->sh.symbols, optarg, strlen(optarg));
+			strncpy(lt_sh(cfg, symbols), optarg, strlen(optarg));
 			break;
 
 		case 'b':
 			if (strlen(optarg) > LT_SYMBOLS_MAXSIZE)
 				return -1;
 
-			strncpy(cfg->sh.flow_below, optarg, strlen(optarg));
+			strncpy(lt_sh(cfg, flow_below), optarg, strlen(optarg));
 			break;
 
 		case 'v':
-			cfg->sh.verbose++;
+			lt_sh(cfg, verbose)++;
 			break;
 
 		case 'S':
-			cfg->sh.timestamp = 1;
+			lt_sh(cfg, timestamp) = 1;
 			break;
 
 		case 'T':
-			cfg->sh.hide_tid = 1;
+			lt_sh(cfg, hide_tid) = 1;
 			break;
 
 		case 'F':
-			cfg->sh.not_follow_fork = 1;
+			lt_sh(cfg, not_follow_fork) = 1;
 			break;
 
 		case 'E':
-			cfg->sh.not_follow_exec = 1;
+			lt_sh(cfg, not_follow_exec) = 1;
 			break;
 
 		case 'i':
-			cfg->sh.indent_size = atoi(optarg);
+			lt_sh(cfg, indent_size) = atoi(optarg);
 			break;
 
 		case 'B':
-			cfg->sh.braces = 1;
+			lt_sh(cfg, braces) = 1;
 			break;
 
 		case 'd':
-			cfg->sh.demangle = 1;
+			lt_sh(cfg, demangle) = 1;
 			break;
 
 		case 'I':
-			cfg->sh.indent_sym = 0;
+			lt_sh(cfg, indent_sym) = 0;
 			break;
 
 		case 'y':
-			cfg->sh.framesize = atoi(optarg);
+			lt_sh(cfg, framesize) = atoi(optarg);
 			break;
 
 		case 'L':
 			if (strlen(optarg) > LT_SYMBOLS_MAXSIZE)
 				return -1;
 
-			strncpy(cfg->sh.libs_subst, optarg, strlen(optarg));
+			strncpy(lt_sh(cfg, libs_subst), optarg, strlen(optarg));
 			break;
 
 		case 'C':
@@ -239,25 +240,25 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 				usage();
 			/* falling through */
 		case 'c':
-			cfg->sh.counts = 1;
+			lt_sh(cfg, counts) = 1;
 			/* falling through */
 		case 'p':
-			cfg->sh.pipe = 1;
+			lt_sh(cfg, pipe) = 1;
 			break;
 
 		case 'a':
-			strcpy(cfg->sh.args_def, optarg);
+			strcpy(lt_sh(cfg, args_def), optarg);
 			/* falling through */
 		case 'A':
-			cfg->sh.args_enabled = 1;
+			lt_sh(cfg, args_enabled) = 1;
 			break;
 
 		case 'D':
-			cfg->sh.args_detailed = 1;
+			lt_sh(cfg, args_detailed) = 1;
 			break;
 
 		case 'o':
-			strcpy(cfg->sh.output, optarg);
+			strcpy(lt_sh(cfg, output), optarg);
 			break;
 
 		case 'V':
@@ -289,9 +290,9 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 		usage();
 	}
 
-	if ((cfg->sh.pipe) && (*cfg->sh.output) &&
-	    (NULL == (cfg->sh.fout = fopen(cfg->sh.output, "w")))) {
-		printf("failed to fopen output file %s\n", cfg->sh.output);
+	if ((lt_sh(cfg, pipe)) && (*lt_sh(cfg, output)) &&
+	    (NULL == (lt_sh(cfg, fout) = fopen(lt_sh(cfg, output), "w")))) {
+		printf("failed to fopen output file %s\n", lt_sh(cfg, output));
 		usage();
 	}
 

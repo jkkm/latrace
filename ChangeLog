@@ -1,3 +1,6 @@
+2010-02-12  Jiri Olsa <olsajiri@gmail.com>
+	* refactoring shared config
+
 2009-10-20  Jiri Olsa <olsajiri@gmail.com>
 	* added clone function
 

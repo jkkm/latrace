@@ -59,7 +59,7 @@ int lt_fifo_open(struct lt_config_app *cfg, char *name)
 	if (-1 == (fd = open(name, O_RDONLY)))
 		perror("open fifo failed");
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "pipe openned fd: %d\n", fd);
+	PRINT_VERBOSE(cfg, 1, "pipe openned fd: %d\n", fd);
 	return fd;
 }
 
@@ -73,7 +73,7 @@ int lt_fifo_send(struct lt_config_audit *cfg, int fd, char *buf, int len)
 	}
 
 	written += len;
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "sending %d, total %u\n", 
+	PRINT_VERBOSE(cfg, 1, "sending %d, total %u\n",
 			len, written);
 	return 0;
 }
@@ -95,7 +95,7 @@ int lt_fifo_recv(struct lt_config_app *cfg, struct lt_thread *t, void *buf,
 
 	red += size;
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "received %d\n", h->len);
+	PRINT_VERBOSE(cfg, 1, "received %d\n", h->len);
 
 	if ((size + h->len) > bufsize) {
 		printf("thread %d - buffer max size reached\n", t->tid);
@@ -109,7 +109,7 @@ int lt_fifo_recv(struct lt_config_app *cfg, struct lt_thread *t, void *buf,
 
 	red += size;
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "received %d, total %u\n", 
+	PRINT_VERBOSE(cfg, 1, "received %d, total %u\n",
 			size + sizeof(*h), red);
 	return 0;
 }
@@ -141,7 +141,7 @@ int lt_fifo_msym_get(struct lt_config_audit *cfg, char *buf, int type,
 	len += len_data;
 	m->h.len = len_data + (sizeof(*m) - sizeof(struct lt_fifo_mbase));
 
-	PRINT_VERBOSE(cfg->sh.verbose, 1, "sending data %d <%s> <%s> <%s> <%s>\n", 
+	PRINT_VERBOSE(cfg, 1, "sending data %d <%s> <%s> <%s> <%s>\n",
 						m->h.len, 
 						m->data + m->sym, 
 						m->data + m->lib,
