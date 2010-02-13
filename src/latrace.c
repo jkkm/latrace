@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <string.h>
 #include <stdio.h>
 
 #include "config.h"
@@ -26,8 +26,45 @@
 
 static struct lt_config_app cfg;
 
+enum {
+	LT_TYPE_UNKNOWN,
+	LT_TYPE_LATRACE,
+	LT_TYPE_CTL,
+};
 
-int main(int argc, char **argv)
+struct lt_type {
+	char *name;
+	int type;
+};
+
+static struct lt_type types[] = {
+	{ .name = "latrace",     .type = LT_TYPE_LATRACE },
+	{ .name = "latrace-ctl", .type = LT_TYPE_CTL },
+};
+
+#define TYPES_COUNT (sizeof(types)/sizeof(struct lt_type))
+
+static int get_type(char *name)
+{
+	int i;
+	char *cname = strrchr(name, '/');
+
+	if (!cname)
+		cname = name;
+	else
+		cname++;
+
+	for(i = 0; i < TYPES_COUNT; i++) {
+		struct lt_type *type = &types[i];
+
+		if (!strcmp(cname, type->name))
+			return type->type;
+	}
+
+	return LT_TYPE_UNKNOWN;
+}
+
+static int main_latrace(int argc, char **argv)
 {
 	if (-1 == lt_config(&cfg, argc, argv))
 		return -1;
@@ -42,4 +79,20 @@ int main(int argc, char **argv)
 		lt_stats_show(&cfg);
 
 	return 0;
+}
+
+int main(int argc, char **argv)
+{
+
+	switch(get_type(argv[0])) {
+
+	case LT_TYPE_LATRACE:
+		return main_latrace(argc, argv);
+
+	case LT_TYPE_CTL:
+		return main_ctl(argc, argv);
+	}
+
+	printf("wtf..\n");
+	return -1;
 }

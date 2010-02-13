@@ -43,9 +43,11 @@ install::
 
 # latrace binary
 LATRACE_BIN=latrace
+LATRACE_CTL=latrace-ctl
 LATRACE_LIB=-liberty
 LATRACE_OBJS=\
 	src/latrace.o \
+	src/ctl.o \
 	src/config.o \
 	src/run.o \
 	src/stats.o \
@@ -64,4 +66,5 @@ $(LATRACE_BIN): $(LATRACE_OBJS)
 
 install::
 	$(call install,$(LATRACE_BIN),$(bindir),755)
+	$(call link,$(LATRACE_BIN),$(LATRACE_CTL),$(bindir))
 

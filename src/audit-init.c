@@ -26,10 +26,37 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <errno.h>
 
 #include "config.h"
 
 struct lt_config_audit cfg;
+
+static int init_ctl_config(int fd)
+{
+	void *sh;
+	int len;
+	int page = sysconf(_SC_PAGE_SIZE);
+
+	/* align the shared config length */
+	len = sizeof(struct lt_config_shared);
+	len = (len + page) & ~(page - 1);
+
+	sh = mmap(NULL, len,
+		PROT_READ | PROT_WRITE,
+		MAP_SHARED, fd, 0);
+
+	if ((void *) -1 == sh) {
+		PRINT_VERBOSE(&cfg, 1,
+			"mmap failed: %s\n", strerror(errno));
+		return -1;
+	}
+
+	/* switching to the mmaped shared config */
+	cfg.sh = sh;
+	return 0;
+}
 
 static int read_config(char *dir)
 {
@@ -42,7 +69,7 @@ static int read_config(char *dir)
 	cfg.dir = dir;
 	sprintf(file, "%s/config", dir);
 
-	if (-1 == (fd = open(file, O_RDONLY))) {
+	if (-1 == (fd = open(file, O_RDWR))) {
 		perror("open failed");
 		return -1;
 	}
@@ -68,6 +95,10 @@ static int read_config(char *dir)
 	}
 
 	cfg.sh = cfg.sh_storage.sh = &cfg.sh_storage;
+
+	if (lt_sh(&cfg, ctl_config) && init_ctl_config(fd))
+		printf("ctl config failed, carring on with standard\n");
+
 	return 0;
 }
 

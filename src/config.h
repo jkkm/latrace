@@ -101,6 +101,8 @@ struct lt_config_shared {
 #define LT_ARGS_TAB 10000
 	struct hsearch_data args_tab;
 
+	int disabled;
+	int ctl_config;
 	int verbose;
 	int timestamp;
 	int debug;
@@ -142,6 +144,14 @@ struct lt_config_app {
 
 	struct lt_thread *threads;
 	struct lt_thread *iter;
+};
+
+struct lt_config_ctl {
+	struct lt_config_shared *sh;
+	char *config;
+
+	int set_disabled;
+	int disabled;
 };
 
 enum {
@@ -344,6 +354,9 @@ struct lt_args_data {
 	int   argsd_len;
 	int   argsd_totlen;
 };
+
+/* ctl */
+int main_ctl(int argc, char **argv);
 
 /* global */
 int lt_config(struct lt_config_app *cfg, int argc, char **argv);

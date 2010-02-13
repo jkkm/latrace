@@ -104,6 +104,12 @@ OPTIONS
 *-E, --not-follow-exec*::
 	dont follow exec calls
 
+*-R, --ctl-config*::
+	controled config feature
+
+*-q, --disable*::
+	run with disabled auditing (enabled -R)
+
 
 EXAMPLES
 --------

@@ -274,9 +274,17 @@ pltenter(ElfW(Sym) *sym, unsigned int ndx, uintptr_t *refcook,
 	struct link_map *lr = (struct link_map*) *refcook;
 	struct link_map *ld = (struct link_map*) *defcook;
 
-	CHECK_PID(sym->st_value);
+	do {
+		if (lt_sh(&cfg, disabled))
+			break;
 
-	sym_entry(symname, lr ? lr->l_name : NULL, ld ? ld->l_name : NULL, regs);
+		CHECK_PID(sym->st_value);
+
+		sym_entry(symname, lr ? lr->l_name : NULL,
+				   ld ? ld->l_name : NULL, regs);
+
+	} while(0);
+
 	*framesizep = lt_sh(&cfg, framesize);
 	return sym->st_value;
 }
@@ -288,8 +296,16 @@ unsigned int pltexit(ElfW(Sym) *sym, unsigned int ndx, uintptr_t *refcook,
 	struct link_map *lr = (struct link_map*) *refcook;
 	struct link_map *ld = (struct link_map*) *defcook;
 
-	CHECK_PID(0);
+	do {
+		if (lt_sh(&cfg, disabled))
+			break;
 
-	sym_exit(symname, lr ? lr->l_name : NULL, ld ? ld->l_name : NULL, inregs, outregs);
+		CHECK_PID(0);
+
+		sym_exit(symname, lr ? lr->l_name : NULL,
+				  ld ? ld->l_name : NULL, inregs, outregs);
+
+	} while(0);
+
 	return 0;
 }

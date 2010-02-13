@@ -59,6 +59,9 @@ static void usage()
 	printf("    -T, --hide-tid                  dont display thread id\n");
 	printf("    -o, --output file               store output to file\n");
 	printf("\n");
+	printf("    -R, --ctl-config                controled config\n");
+	printf("    -q, --disable                   disable auditing (enables -R)\n");
+	printf("\n");
 	printf("    -v, --verbose                   verbose output\n");
 	printf("    -V, --version                   display version\n");
 	printf("    -h, --help                      display help\n");
@@ -140,12 +143,14 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			{"hide-tid", no_argument, 0, 'T'},
 			{"not-follow-fork", no_argument, 0, 'F'},
 			{"not-follow-exec", no_argument, 0, 'E'},
+			{"disable", no_argument, 0, 'q'},
+			{"ctl-config", no_argument, 0, 'R'},
 			{"version", no_argument, 0, 'V'},
 			{"help", no_argument, 0, 'h'},
 			{0, 0, 0, 0}
 		};
 
-		c = getopt_long(argc, argv, "+s:l:t:f:vhi:BdISb:cC:y:L:po:a:ADVTFE",
+		c = getopt_long(argc, argv, "+s:l:t:f:vhi:BdISb:cC:y:L:po:a:ADVTFERq",
 					long_options, &option_index);
 
 		if (c == -1)
@@ -259,6 +264,13 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 
 		case 'o':
 			strcpy(lt_sh(cfg, output), optarg);
+			break;
+
+		case 'q':
+			lt_sh(cfg, disabled) = 1;
+			/* falling through */
+		case 'R':
+			lt_sh(cfg, ctl_config) = 1;
 			break;
 
 		case 'V':

@@ -44,9 +44,14 @@ extern struct timeval tv_program_stop;
 static int store_config(struct lt_config_app *cfg, char *file)
 {
 	int fd;
+	int mode = S_IRUSR;
 
-	if (-1 == (fd = open(file, O_CREAT | O_TRUNC | O_RDWR, 
-				S_IRUSR))) {
+	if (lt_sh(cfg, ctl_config)) {
+		printf("controled config: %s\n", file);
+		mode |= S_IWUSR;
+	}
+
+	if (-1 == (fd = open(file, O_CREAT | O_TRUNC | O_RDWR, mode))) {
 		perror("open failed");
 		return -1;
 	}
@@ -57,6 +62,7 @@ static int store_config(struct lt_config_app *cfg, char *file)
         }
 
 	close(fd);
+
 	return 0;
 }
 

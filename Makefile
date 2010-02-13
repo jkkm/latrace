@@ -63,6 +63,15 @@ define install
 	fi
 	
 endef
+# install file quietly, arguments:
+#    1 - source
+#    2 - destination
+#    3 - directory to install to
+define link
+	@echo "  LN      " $(ROOTDIR)$3/$(notdir $2); $(RM) -f $(ROOTDIR)$3/$(notdir $2); \
+	ln -s $(ROOTDIR)$3/$(notdir $1) $(ROOTDIR)$3/$(notdir $2)
+endef
+
 define remove
 	@echo "  CLEAN  " $1; $(RM) -rf $1
 endef

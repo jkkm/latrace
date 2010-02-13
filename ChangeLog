@@ -1,3 +1,7 @@
+2010-02-13  Jiri Olsa <olsajiri@gmail.com>
+	* controled config feature
+	* disable auditing feature
+
 2010-02-12  Jiri Olsa <olsajiri@gmail.com>
 	* refactoring shared config
 
