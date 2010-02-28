@@ -33,4 +33,7 @@
 /* x86_64 define. */
 #undef LT_ARCH_X86_64
 
+/* liberty */
+#undef LT_LIBERTY
+
 #endif

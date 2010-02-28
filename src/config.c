@@ -221,6 +221,12 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			break;
 
 		case 'd':
+			#ifndef LT_LIBERTY
+			printf("demangle support not compiled in," \
+				" liberty not found\n");
+			break;
+			#endif
+
 			lt_sh(cfg, demangle) = 1;
 			break;
 

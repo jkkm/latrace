@@ -33,11 +33,17 @@
 
 struct lt_config_audit cfg;
 
-static int init_ctl_config(int fd)
+static int init_ctl_config(char *file)
 {
 	void *sh;
 	int len;
 	int page = sysconf(_SC_PAGE_SIZE);
+	int fd;
+
+	if (-1 == (fd = open(file, O_RDWR))) {
+		perror("open failed");
+		return -1;
+	}
 
 	/* align the shared config length */
 	len = sizeof(struct lt_config_shared);
@@ -69,7 +75,7 @@ static int read_config(char *dir)
 	cfg.dir = dir;
 	sprintf(file, "%s/config", dir);
 
-	if (-1 == (fd = open(file, O_RDWR))) {
+	if (-1 == (fd = open(file, O_RDONLY))) {
 		perror("open failed");
 		return -1;
 	}
@@ -96,7 +102,13 @@ static int read_config(char *dir)
 
 	cfg.sh = cfg.sh_storage.sh = &cfg.sh_storage;
 
-	if (lt_sh(&cfg, ctl_config) && init_ctl_config(fd))
+	/*
+	 * If we are not controled, we can close the file,
+	 * since we read everything we needed.
+	 */
+	close(fd);
+
+	if (lt_sh(&cfg, ctl_config) && init_ctl_config(file))
 		printf("ctl config failed, carring on with standard\n");
 
 	return 0;

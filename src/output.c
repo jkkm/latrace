@@ -56,6 +56,7 @@ do { \
 /* libiberty external */
 extern char* cplus_demangle(const char *mangled, int options);
 
+#ifdef LT_LIBERTY
 #define DEMANGLE(sym, d) \
 do { \
 	char *dem; \
@@ -65,6 +66,9 @@ do { \
 		d = 1; \
 	} \
 } while(0)
+#else
+#define DEMANGLE(sym, d)
+#endif
 
 int lt_out_entry(struct lt_config_shared *cfg,
 			struct timeval *tv,

@@ -83,6 +83,17 @@ elif test "$unamem" = "i686"; then
 	AC_DEFINE(LT_ARCH_X86, 1, [The x86 arch.])
 fi
 
+CONFIG_LIBERTY=[]
+AC_SEARCH_LIBS(cplus_demangle,iberty,
+		[iberty_found=yes],
+		[iberty_found=no],[])
+if test "$iberty_found" = "yes"; then
+	AC_DEFINE(LT_LIBERTY, 1, "Liberty found.")
+	CONFIG_LIBERTY=[-liberty]
+fi
+
+AC_SUBST(CONFIG_LIBERTY)
+
 AC_CONFIG_HEADER([src/autoconf.h])
 AC_CONFIG_FILES([src/autoconf.make])
 AC_CONFIG_FILES([doc/asciidoc.conf])
