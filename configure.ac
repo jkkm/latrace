@@ -89,16 +89,17 @@ elif test "$unamem" = "i686"; then
 	AC_DEFINE(LT_ARCH_X86, 1, [The x86 arch.])
 fi
 
-CONFIG_LIBERTY=[]
+iberty_found=yes
 AC_SEARCH_LIBS(cplus_demangle,iberty,
-		[iberty_found=yes],
+		[AC_DEFINE(LT_LIBERTY, 1, "Liberty found.")],
 		[iberty_found=no],[])
-if test "$iberty_found" = "yes"; then
-	AC_DEFINE(LT_LIBERTY, 1, "Liberty found.")
-	CONFIG_LIBERTY=[-liberty]
+if test "$iberty_found" = "no"; then
+	AC_MSG_WARN(liberty not found trying liberty-pic)
+	AC_CHECK_LIB([iberty_pic], [cplus_demangle],
+		[AC_DEFINE(LT_LIBERTY, 1, "Liberty found.")],
+		[AC_MSG_WARN([liberty/libiberty_pic not found (install binutils-dev)])
+		 AC_MSG_WARN([demangle support not available])])
 fi
-
-AC_SUBST(CONFIG_LIBERTY)
 
 AC_CONFIG_HEADER([src/autoconf.h])
 AC_CONFIG_FILES([src/autoconf.make])

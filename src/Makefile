@@ -20,7 +20,7 @@
 # libltaudit.so 
 AUDIT_BIN=libltaudit.so.$(LT_VER)
 AUDIT_LDFLAGS="-Wl,-init=audit_init" "-Wl,-soname,$(AUDIT_BIN)" -fPIC -shared
-AUDIT_LIBS=$(CONFIG_LIBERTY) $(LEXLIB)
+AUDIT_LIBS=$(LIBS) $(LEXLIB)
 
 AUDIT_OBJS=\
 	src/audit.o \
@@ -45,7 +45,7 @@ install::
 # latrace binary
 LATRACE_BIN=latrace
 LATRACE_CTL=latrace-ctl
-LATRACE_LIB= $(CONFIG_LIBERTY)
+LATRACE_LIB= $(LIBS)
 
 LATRACE_OBJS=\
 	src/latrace.o \

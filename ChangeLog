@@ -1,6 +1,7 @@
 2009-02-16  Jiri Olsa <olsajiri@gmail.com>
 	* Akos Pasztory <akos.pasztory@gmail.com>
 	* added checks for asciidoc and xmlto
+	* added check for liberty-pic
 
 2010-02-28  Jiri Olsa <olsajiri@gmail.com>
 	* controled config bug fix

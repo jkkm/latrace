@@ -43,6 +43,5 @@ ASCIIDOC            = @ASCIIDOC@
 XMLTO               = @XMLTO@
 
 CONFIG_SYSDEP_DIR   = @CONFIG_SYSDEP_DIR@
-CONFIG_LIBERTY      = @CONFIG_LIBERTY@
 
 LT_VER              = @LT_VER@
