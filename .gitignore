@@ -6,7 +6,12 @@ configure
 deps.make
 
 doc/asciidoc.conf
+doc/latrace.1
+doc/latrace.html
+doc/latrace.xml
+
 etc/latrace.conf
+
 latrace
 libltaudit.so.0.5.7
 
@@ -18,3 +23,7 @@ src/autoconf.h
 src/autoconf.make
 
 *.o
+
+debian/files
+debian/stamp-build
+debian/substvars
