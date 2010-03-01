@@ -7,6 +7,7 @@
 	* added Debian packaging
 	* relaxed binutils-dev dependency
 	* generate conffiles automatically
+	* debian pkg docbook-xsl and docbook-xml
 
 2010-02-28  Jiri Olsa <olsajiri@gmail.com>
 	* controled config bug fix

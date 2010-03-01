@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Akos PASZTORY <akos.pasztory@gmail.com>
 Standards-Version: 3.8.0
 Build-Depends: flex, bison, autoconf, binutils-dev (>= 2.19.51),
-	       asciidoc, xmlto
+	       asciidoc, xmlto, docbook-xsl, docbook-xml
 
 Package: latrace
 Architecture: i386 amd64 armel
