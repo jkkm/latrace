@@ -1,7 +1,4 @@
 
-ASCIIDOC=asciidoc
-XMLTO=xmlto
-
 MANMAN=doc/latrace.1
 MANTXT=doc/latrace.txt
 MANXML=doc/latrace.xml
@@ -21,5 +18,7 @@ $(MANHTML): $(MANTXT)
 clean::
 	$(call remove, $(MANXML) $(MANHTML) $(MANMAN))
 
+ifneq ($(XMLTO),:)
 install:: doc
 	$(call install,$(MANMAN),$(mandir)/man1,644)
+endif

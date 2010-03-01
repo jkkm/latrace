@@ -23,8 +23,14 @@ AC_CONFIG_SRCDIR([src/latrace.c])
 
 AC_PROG_CC
 AC_PROG_LEX
+AS_IF([test "x$LEX" = "x:"],
+      [AC_MSG_ERROR([lex/flex is needed.])])
 AC_PROG_YACC
+AS_IF([test "x$YACC" = "x:"],
+      [AC_MSG_ERROR([yacc/bison is needed.])])
 AC_PROG_LN_S
+AC_PATH_PROG([ASCIIDOC], [asciidoc], [:])
+AC_PATH_PROG([XMLTO], [xmlto], [:])
 
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h])

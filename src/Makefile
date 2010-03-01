@@ -20,7 +20,7 @@
 # libltaudit.so 
 AUDIT_BIN=libltaudit.so.$(LT_VER)
 AUDIT_LDFLAGS="-Wl,-init=audit_init" "-Wl,-soname,$(AUDIT_BIN)" -fPIC -shared
-AUDIT_LIBS=$(CONFIG_LIBERTY)
+AUDIT_LIBS=$(CONFIG_LIBERTY) $(LEXLIB)
 
 AUDIT_OBJS=\
 	src/audit.o \

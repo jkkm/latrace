@@ -32,11 +32,15 @@ RM                  = rm
 FIND                = find
 CC                  = @CC@
 LEX                 = @LEX@
+LEXLIB              = @LEXLIB@
 YACC                = @YACC@
 CPPFLAGS            = @CPPFLAGS@
 CFLAGS              = @CFLAGS@
 LDFLAGS             = @LDFLAGS@
 LIBS                = @LIBS@
+
+ASCIIDOC            = @ASCIIDOC@
+XMLTO               = @XMLTO@
 
 CONFIG_SYSDEP_DIR   = @CONFIG_SYSDEP_DIR@
 CONFIG_LIBERTY      = @CONFIG_LIBERTY@

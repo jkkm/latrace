@@ -1,3 +1,7 @@
+2009-02-16  Jiri Olsa <olsajiri@gmail.com>
+	* Akos Pasztory <akos.pasztory@gmail.com>
+	* added checks for asciidoc and xmlto
+
 2010-02-28  Jiri Olsa <olsajiri@gmail.com>
 	* controled config bug fix
 	* liberty controled by autoconf now
