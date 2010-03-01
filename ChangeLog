@@ -3,6 +3,7 @@
 	* added checks for asciidoc and xmlto
 	* added check for liberty-pic
 	* updated .gitignore
+	* shlib doesn't need to be executable
 
 2010-02-28  Jiri Olsa <olsajiri@gmail.com>
 	* controled config bug fix
