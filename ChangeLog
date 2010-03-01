@@ -1,7 +1,8 @@
-2009-02-16  Jiri Olsa <olsajiri@gmail.com>
+2009-03-01  Jiri Olsa <olsajiri@gmail.com>
 	* Akos Pasztory <akos.pasztory@gmail.com>
 	* added checks for asciidoc and xmlto
 	* added check for liberty-pic
+	* updated .gitignore
 
 2010-02-28  Jiri Olsa <olsajiri@gmail.com>
 	* controled config bug fix
