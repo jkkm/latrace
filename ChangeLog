@@ -6,6 +6,7 @@
 	* shlib doesn't need to be executable
 	* added Debian packaging
 	* relaxed binutils-dev dependency
+	* generate conffiles automatically
 
 2010-02-28  Jiri Olsa <olsajiri@gmail.com>
 	* controled config bug fix

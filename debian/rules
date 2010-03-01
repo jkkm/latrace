@@ -34,7 +34,7 @@ binary-arch: debian/stamp-build
 	cp -p ChangeLog $(docdir)/changelog
 	cp -p README ReleaseNotes TODO debian/copyright $(docdir)
 	cp -p debian/changelog $(docdir)/changelog.Debian
-	cp -p debian/conffiles $(pkgdir)/DEBIAN
+	cd $(pkgdir) && find etc -type f -printf "/%p\n" > DEBIAN/conffiles
 	gzip -9f $(pkgdir)/usr/share/man/man1/latrace.1
 	gzip -9f $(docdir)/changelog $(docdir)/changelog.Debian
 	dpkg-shlibdeps $(pkgdir)/usr/bin/latrace
