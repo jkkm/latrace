@@ -3,7 +3,7 @@ Section: utils
 Priority: optional
 Maintainer: Akos PASZTORY <akos.pasztory@gmail.com>
 Standards-Version: 3.8.0
-Build-Depends: flex, bison, autoconf, binutils-dev (>= 2.19.51.20090714-1),
+Build-Depends: flex, bison, autoconf, binutils-dev (>= 2.19.51),
 	       asciidoc, xmlto
 
 Package: latrace
