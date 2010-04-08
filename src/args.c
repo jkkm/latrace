@@ -280,6 +280,22 @@ static struct lt_enum_elem* get_enumelem(struct lt_config_shared *cfg,
 		sizeof(struct lt_enum_elem), enum_comp);
 }
 
+static struct lt_enum_elem* find_enumelem(struct lt_config_shared *cfg,
+	char *name, struct lt_enum *en)
+{
+	struct lt_enum_elem *elem;
+	int i;
+
+	for(i = 0; en->cnt; i++) {
+		elem = &en->elems[i];
+
+		if (!strcmp(elem->name, name))
+			return elem;
+	}
+
+	return NULL;
+}
+
 int lt_args_add_enum(struct lt_config_shared *cfg, char *name, 
 			struct lt_list_head *h)
 {
@@ -325,26 +341,77 @@ int lt_args_add_enum(struct lt_config_shared *cfg, char *name,
 	if (NULL == (en->elems = malloc(sizeof(struct lt_enum_elem) * en->cnt)))
 		return -1;
 
-	PRINT_VERBOSE(cfg, 3, "enum %s (%d elems)\n",
+	PRINT_VERBOSE(cfg, 3, "enum %s (%d elems) not fixed\n",
 			en->name, en->cnt);
+
+	/*
+	 * The enum element can be:
+	 *
+	 * 1) defined
+	 * 2) undefined
+	 * 3) defined via string reference
+	 *
+	 * ad 1) no work
+	 * ad 2) value of previous element is used
+	 * ad 3) we look for the string reference in defined elements' names
+	 *
+	 * This being said, following actions will happen now:
+	 *
+	 * - copy all the values to the prepared array
+	 * - fix the values based on the above
+	 * - sort the array
+	 */
 
 	lt_list_for_each_entry(elem, h, list) {
 
-		if (elem->undef) {
+		PRINT_VERBOSE(cfg, 3, "\t %s = %d/%s\n",
+			elem->name, elem->val, elem->strval);
+
+		en->elems[i++] = *elem;
+	}
+
+	PRINT_VERBOSE(cfg, 3, "enum %s (%d elems) fixed\n",
+			en->name, en->cnt);
+
+	/* fixup values */
+	for(i = 0; i < en->cnt; i++) {
+		elem = &en->elems[i];
+
+		if (!elem->undef) {
+			last = elem;
+			continue;
+		}
+
+		if (elem->strval) {
+			/* undefined text value, try to find it in
+			 * previous enum definitions */
+
+			struct lt_enum_elem *e;
+
+			e = find_enumelem(cfg, elem->strval, en);
+			if (!e) {
+				printf("failed to find '%s=%s' enum definition\n",
+				       elem->name, elem->strval);
+				return -1;
+			}
+
+			elem->val = e->val;
+
+		} else {
+			/* undefined value -> take last defined + 1 */
 			if (!last)
 				elem->val = 0;
 			else
 				elem->val = last->val + 1;
-			elem->undef = 0;
 		}
 
 		PRINT_VERBOSE(cfg, 3, "\t %s = %d\n",
 			elem->name, elem->val);
 
-		en->elems[i++] = *elem;
 		last = elem;
 	}
 
+	/* finaly sort the array */
 	qsort(en->elems, en->cnt, sizeof(struct lt_enum_elem), enum_comp);
 	return 0;
 }
@@ -361,19 +428,32 @@ struct lt_enum_elem* lt_args_get_enum(struct lt_config_shared *cfg,
 	elem->undef = 1;
 
 	if (val) {
-		long num = strtol(val, (char **) NULL, 10);
+		long num;
+		char *endptr;
+
+		errno = 0;
+		num = strtol(val, &endptr, 10);
+
+		/* parse errors */
 		if ((errno == ERANGE && (num == LONG_MAX || num == LONG_MIN)) || 
 		    (errno != 0 && num == 0))
 			return NULL;
 
-		elem->val   = num;
-		elem->undef = 0;
+		if (endptr != val) {
+			elem->val   = num;
+			elem->undef = 0;
+		} else {
+			/* if no digits were found, we assume the
+			 * value is set by string reference */
+			elem->strval = strdup(val);
+		}
+
 	}
 
 	elem->name = strdup(name);
 
-	PRINT_VERBOSE(cfg, 3, "enum elem %s = %d, undef = %d\n",
-			elem->name, elem->val, elem->undef);
+	PRINT_VERBOSE(cfg, 3, "enum elem %s = %d, strval %s, undef = %d\n",
+			elem->name, elem->val, elem->strval, elem->undef);
 	return elem;
 }
 

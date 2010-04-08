@@ -281,6 +281,7 @@ enum {
 
 struct lt_enum_elem {
 	char *name;
+	char *strval;
 	long val;
 	int undef;
 	struct lt_list_head list;

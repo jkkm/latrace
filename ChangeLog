@@ -1,3 +1,7 @@
+2009-04-08  Jiri Olsa <olsajiri@gmail.com>
+	* fixed enum handling (strtol failure)
+	* added support for enum string refference definition
+
 2009-03-01  Jiri Olsa <olsajiri@gmail.com>
 	* Akos Pasztory <akos.pasztory@gmail.com>
 	* added checks for asciidoc and xmlto
