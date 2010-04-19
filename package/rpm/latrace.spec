@@ -1,5 +1,5 @@
 Name:           latrace
-Version:        0.5.7
+Version:        0.5.8
 Release:        1%{?dist}
 Summary:        LD_AUDIT feature frontend for glibc 2.4+
 Group:          Development/Debuggers

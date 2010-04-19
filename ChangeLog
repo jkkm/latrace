@@ -1,3 +1,9 @@
+-------------------------------------------------------------------------------
+latrace 0.5.8
+
+2010-04-19  Jiri Olsa <olsajiri@gmail.com>
+	* 0.5.8 release changes
+
 2009-04-08  Jiri Olsa <olsajiri@gmail.com>
 	* fixed enum handling (strtol failure)
 	* added support for enum string refference definition

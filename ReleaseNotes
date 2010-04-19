@@ -2,6 +2,24 @@
 latrace release notes (olsajiri@gmail.com)
 -------------------------------------------------------------------------------
 
+[x] latrace 0.5.8 (4/19/2010)
+	* controled config
+	* added support for enum string refference definition
+	* several fixies
+		- fixed enum handling (strtol failure)
+		- liberty controled by autoconf now
+		- added clone function
+		- added support for pipe mode timestamp display
+		- added snapshot/release targets
+		- added checks for asciidoc and xmlto
+		- added check for liberty-pic
+		- updated .gitignore
+		- shlib doesn't need to be executable
+		- added Debian packaging
+		- relaxed binutils-dev dependency
+		- generate conffiles automatically
+		- debian pkg docbook-xsl and docbook-xml
+
 [x] latrace 0.5.7 (9/4/2009)
 	* added '-B' option to always display the { } around the symbol body
 	* added C++ demangling support - "-d" option
