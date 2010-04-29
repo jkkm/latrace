@@ -19,7 +19,8 @@
 
 -include src/autoconf.make
 
-confdir := $(sysconfdir)/latrace.d
+confdir  := $(sysconfdir)/latrace.d
+confarch := $(sysconfdir)/latrace.d/sysdeps/$(CONFIG_SYSDEP_DIR)
 
 # looks like DESTDIR is a standard, but prioritize ROOTDIR anyway
 ifdef DESTDIR
@@ -47,54 +48,42 @@ ifndef V
 	QUIET_ASCIIDOC    = @echo "  ASCIIDOC" $@;
 	QUIET_XMLTO       = @echo "  XMLTO" $@;
 	QUIET_PKG         = @echo -n "  PKG ";
+	QUIET_INSTALL     = @echo -n "  INSTALL ";
+	QUIET_LN          = @echo -n "  LN ";
+	QUIET_RM          = @echo -n "  CLEAN ";
+	QUIET_MKDIR       = @echo -n "  MKDIR ";
+endif
 
-# install file quietly, arguments:
+# install file, arguments:
 #    1 - file to install
 #    2 - directory to install to
 #    3 - permissions
-#    4 - bool - skip the install if the file does not exist
 define install
-	@if [ -n "$4" -a ! -e $1 ]; then \
-		echo "  SKIP     $(ROOTDIR)$2/$(notdir $1)"; \
-	else \
-		echo -n "  INSTALL " `echo $(ROOTDIR)$2/$(notdir $1) | sed 's:[/]\+:/:g'` ; \
-		mkdir -p $(ROOTDIR)$2; \
-		install -m $3 $1 $(ROOTDIR)$2; echo; \
-	fi
-	
+	$(QUIET_INSTALL) echo $(ROOTDIR)$2/$(notdir $1) | sed 's:[/]\+:/:g'; \
+	mkdir -p $(ROOTDIR)$2; \
+	install -m $3 $1 $(ROOTDIR)$2;
 endef
-# install file quietly, arguments:
+
+# install link, arguments:
 #    1 - source
-#    2 - destination
-#    3 - directory to install to
+#    2 - dest
 define link
-	@echo "  LN      " $(ROOTDIR)$3/$(notdir $2); $(RM) -f $(ROOTDIR)$3/$(notdir $2); \
+	$(QUIET_LN) echo $(ROOTDIR)$3/$(notdir $2) | sed 's:[/]\+:/:g'; \
+	$(RM) -f $(ROOTDIR)$3/$(notdir $2); \
 	ln -s $(ROOTDIR)$3/$(notdir $1) $(ROOTDIR)$3/$(notdir $2)
 endef
 
+# remove file/dir
 define remove
-	@echo "  CLEAN  " $1; $(RM) -rf $1
+	$(QUIET_RM) echo $1; $(RM) -rf $1
 endef
-else
-define remove
-	$(RM) -rf $1
-endef
-define install
-	if [ -n "$4" -a ! -e $1 ]; then \
-		echo "  SKIP     $(ROOTDIR)$2/$(notdir $1)"; \
-	else \
-		mkdir -p $(ROOTDIR)$2; \
-		install -m $3 $1 $(ROOTDIR)$2; echo; \
-	fi
-endef
-endif
-
 
 .PHONY: all clean tags install package .FORCE-LATRACE-CFLAGS
 
 all::
 
 install:: all
+	$(call install,etc/latrace.conf,$(sysconfdir),644)
 	$(call install,etc/latrace.d/ctype.conf,$(confdir),644)
 	$(call install,etc/latrace.d/inet.conf,$(confdir),644)
 	$(call install,etc/latrace.d/misc.conf,$(confdir),644)
@@ -127,10 +116,10 @@ install:: all
 	$(call install,etc/latrace.d/pthread.conf,$(confdir),644)
 	$(call install,etc/latrace.d/resource.conf,$(confdir),644)
 	$(call install,etc/latrace.d/mman.conf,$(confdir),644)
-	$(call install,etc/latrace.d/arch-$(CONFIG_SYSDEP_DIR).conf,$(confdir),644)
-	$(call install,etc/latrace.conf,$(sysconfdir),644)
 ifeq ($(CONFIG_SYSDEP_DIR),x86_64)
-	$(call install,etc/sysdeps/$(CONFIG_SYSDEP_DIR)/syscall.conf,$(confdir),644,1)
+	@mkdir -p $(ROOTDIR)/$(confarch)
+	$(call install,etc/sysdeps/$(CONFIG_SYSDEP_DIR)/latrace.conf,$(confarch),644)
+	$(call install,etc/sysdeps/$(CONFIG_SYSDEP_DIR)/syscall.conf,$(confarch),644)
 endif
 
 

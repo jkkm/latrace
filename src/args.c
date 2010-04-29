@@ -729,6 +729,18 @@ int lt_args_init(struct lt_config_shared *cfg)
 		ret = -1;
 	}
 
+#if defined(LT_ARGS_ARCH_CONF)
+	/* Some architectures provides specific
+	 * configuration file. */
+	if (lt_args_buf_open(cfg, lt_args_arch_conf(cfg)))
+		return -1;
+
+	if (yyparse()) {
+		printf("failed to parse config file %s\n", file);
+		ret = -1;
+	}
+#endif
+
 	if (fclose(yyin)) {
 		perror("failed to close " LT_ARGS_DEF_CONF);
 		return -1;

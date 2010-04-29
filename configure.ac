@@ -104,6 +104,5 @@ fi
 AC_CONFIG_HEADER([src/autoconf.h])
 AC_CONFIG_FILES([src/autoconf.make])
 AC_CONFIG_FILES([doc/asciidoc.conf])
-AC_CONFIG_FILES([etc/latrace.conf])
 
 AC_OUTPUT

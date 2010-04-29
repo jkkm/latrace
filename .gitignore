@@ -10,8 +10,6 @@ doc/latrace.1
 doc/latrace.html
 doc/latrace.xml
 
-etc/latrace.conf
-
 latrace
 libltaudit.so.0.5.7
 

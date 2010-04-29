@@ -449,4 +449,8 @@ do { \
 } while(0)
 
 
+#if defined(__x86_64)
+#include "sysdeps/x86_64/args.h"
+#endif
+
 #endif // !CONFIG_H
