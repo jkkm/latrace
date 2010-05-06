@@ -1,5 +1,7 @@
 2010-05-07  Jiri Olsa <olsajiri@gmail.com>
 	* fix autoconf search for iberty lib
+	* Akos Pasztory <akos.pasztory@gmail.com>
+		- debian/rules made executable
 
 2010-04-29  Jiri Olsa <olsajiri@gmail.com>
 	* refactoring sysdep configuration
