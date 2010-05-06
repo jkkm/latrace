@@ -2,6 +2,7 @@
 	* fix autoconf search for iberty lib
 	* Akos Pasztory <akos.pasztory@gmail.com>
 		- debian/rules made executable
+		- check for libiberty_pic and libiberty in this order
 
 2010-04-29  Jiri Olsa <olsajiri@gmail.com>
 	* refactoring sysdep configuration
