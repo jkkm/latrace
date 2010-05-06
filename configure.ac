@@ -90,14 +90,15 @@ elif test "$unamem" = "i686"; then
 fi
 
 iberty_found=yes
-AC_SEARCH_LIBS(cplus_demangle,iberty,
+AC_SEARCH_LIBS([cplus_demangle],[iberty-pic],
 		[AC_DEFINE(LT_LIBERTY, 1, "Liberty found.")],
 		[iberty_found=no],[])
 if test "$iberty_found" = "no"; then
-	AC_MSG_WARN(liberty not found trying liberty-pic)
-	AC_CHECK_LIB([iberty_pic], [cplus_demangle],
+	# unset previous AC_SEARCH_LIBS cached result
+	unset ac_cv_search_cplus_demangle
+	AC_SEARCH_LIBS([cplus_demangle],[iberty],
 		[AC_DEFINE(LT_LIBERTY, 1, "Liberty found.")],
-		[AC_MSG_WARN([liberty/libiberty_pic not found (install binutils-dev)])
+		[AC_MSG_WARN([liberty/libiberty_pic not found (install binutils-devel)])
 		 AC_MSG_WARN([demangle support not available])])
 fi
 

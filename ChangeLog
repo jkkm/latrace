@@ -1,3 +1,6 @@
+2010-05-07  Jiri Olsa <olsajiri@gmail.com>
+	* fix autoconf search for iberty lib
+
 2010-04-29  Jiri Olsa <olsajiri@gmail.com>
 	* refactoring sysdep configuration
 
