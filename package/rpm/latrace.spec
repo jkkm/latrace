@@ -1,5 +1,5 @@
 Name:           latrace
-Version:        0.5.8
+Version:        0.5.9
 Release:        1%{?dist}
 Summary:        LD_AUDIT feature frontend for glibc 2.4+
 Group:          Development/Debuggers
@@ -39,18 +39,9 @@ rm -rf %{buildroot}
 %config(noreplace)  %{_sysconfdir}/*
 %{_libdir}/libltaudit.so.%{version}
 %{_bindir}/latrace
+%{_bindir}/latrace-ctl
 %{_mandir}/man1/*
 
 %changelog
-* Tue Sep 08 2009 Jiri Olsa <olsajiri@gmail.com> 0.5.7-1
+* Tue May 11 2010 Jiri Olsa <olsajiri@gmail.com> 0.5.9-1
 - updated to new version
-- upstream download moved
-
-* Sun Jul 05 2009 Jiri Olsa <olsajiri@gmail.com> 0.5.6-1
-- updates based on the Fedora review comments
-
-* Thu Jul 02 2009 Jiri Olsa <olsajiri@gmail.com> 0.5.5-2
-- minor updates based on the Fedora review comments
-
-* Sat Jun 13 2009 Jiri Olsa <olsajiri@gmail.com> 0.5.5-1
-- initial spec file

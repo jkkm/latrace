@@ -4,10 +4,8 @@ latrace TODO - feel free to contact me with any feature ideas
 olsajiri@gmail.com
 
 
-for 0.5.8
+for 0.5.10
 	- testing/fixing bugs
-	- controled config feature
-	- disable feature
 
 for 0.6
 	- config - arrays in structures

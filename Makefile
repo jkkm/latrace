@@ -67,10 +67,11 @@ endef
 # install link, arguments:
 #    1 - source
 #    2 - dest
+#    3 - directory
 define link
 	$(QUIET_LN) echo $(ROOTDIR)$3/$(notdir $2) | sed 's:[/]\+:/:g'; \
 	$(RM) -f $(ROOTDIR)$3/$(notdir $2); \
-	ln -s $(ROOTDIR)$3/$(notdir $1) $(ROOTDIR)$3/$(notdir $2)
+	(cd $(ROOTDIR)/$3; ln -s $1 $2)
 endef
 
 # remove file/dir
@@ -174,11 +175,8 @@ release:
 package:
 	$(QUIET_PKG)rm -f latrace-$(PKG_VER); ln -s . latrace-$(PKG_VER); \
 	echo "latrace-$(PKG_VER)"; \
-	for i in `find . -type f | cut -c 3- | grep -v git`; do \
-		git checkout $$i > /dev/null 2>&1; \
-		if [ x"$$?" == x"0" ]; then \
-			echo "latrace-$(PKG_VER)/$$i"; \
-		fi; \
+	for i in `git ls-tree -r --name-only HEAD`; do \
+		echo "latrace-$(PKG_VER)/$$i"; \
 	done | tar cjvf latrace-$(PKG_VER).tar.bz2 -T- > /dev/null 2>&1
 
 

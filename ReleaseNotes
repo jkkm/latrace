@@ -2,6 +2,10 @@
 latrace release notes (olsajiri@gmail.com)
 -------------------------------------------------------------------------------
 
+[x] latrace 0.5.9 (5/14/2010)
+	* fix autoconf search for iberty lib
+	* refactoring sysdep configuration (fix for BZ#586210)
+
 [x] latrace 0.5.8 (4/19/2010)
 	* controled config
 	* added support for enum string refference definition
