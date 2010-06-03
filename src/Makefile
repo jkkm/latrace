@@ -40,7 +40,7 @@ $(AUDIT_BIN): $(AUDIT_OBJS)
 	$(QUIET_LD)$(CC) $(AUDIT_LDFLAGS) -o $@ $(AUDIT_OBJS) $(AUDIT_LIBS)
 
 install::
-	$(call install,$(AUDIT_BIN),$(libdir),644)
+	$(call install,$(AUDIT_BIN),$(libdir),755)
 
 # latrace binary
 LATRACE_BIN=latrace

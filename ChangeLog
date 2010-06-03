@@ -1,3 +1,6 @@
+2010-06-03  Jiri Olsa <olsajiri@gmail.com>
+	* changing permissions of libltaudit.so to 755
+
 -------------------------------------------------------------------------------
 latrace 0.5.9
 
