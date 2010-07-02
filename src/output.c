@@ -32,9 +32,9 @@ static int print_details(struct lt_config_shared *cfg, char *argdbuf)
 	return 0;
 }
 
-#define PRINT_TID() \
+#define PRINT_TID(tid) \
 do { \
-	fprintf(cfg->fout, "%5d   ", (pid_t) syscall(SYS_gettid)); \
+	fprintf(cfg->fout, "%5d   ", tid); \
 } while(0)
 
 #define PRINT_TIME(tv) \
@@ -71,7 +71,8 @@ do { \
 #endif
 
 int lt_out_entry(struct lt_config_shared *cfg,
-			struct timeval *tv,
+			struct timeval *tv, pid_t tid,
+			int indent_depth,
 			const char *symname, char *lib_to,
 			char *argbuf, char *argdbuf)
 {
@@ -82,11 +83,11 @@ int lt_out_entry(struct lt_config_shared *cfg,
 
 	/* Print thread ID */
 	if (!cfg->hide_tid)
-		PRINT_TID();
+		PRINT_TID(tid);
 
 	/* Print indentation. */
-	if (cfg->indent_depth && cfg->indent_sym)
-		fprintf(cfg->fout, "%.*s", cfg->indent_depth * cfg->indent_size, spaces);
+	if (indent_depth && cfg->indent_sym)
+		fprintf(cfg->fout, "%.*s", indent_depth * cfg->indent_size, spaces);
 
 	/* Demangle the symbol if needed */
 	if (cfg->demangle)
@@ -112,7 +113,8 @@ int lt_out_entry(struct lt_config_shared *cfg,
 }
 
 int lt_out_exit(struct lt_config_shared *cfg,
-			struct timeval *tv,
+			struct timeval *tv, pid_t tid,
+			int indent_depth,
 			const char *symname, char *lib_to,
 			char *argbuf, char *argdbuf)
 {
@@ -126,11 +128,11 @@ int lt_out_exit(struct lt_config_shared *cfg,
 
 	/* Print thread ID */
 	if (!cfg->hide_tid)
-		PRINT_TID();
+		PRINT_TID(tid);
 
 	/* Print indentation. */
-	if (cfg->indent_depth && cfg->indent_sym)
-		fprintf(cfg->fout, "%.*s", cfg->indent_depth * cfg->indent_size, spaces);
+	if (indent_depth && cfg->indent_sym)
+		fprintf(cfg->fout, "%.*s", indent_depth * cfg->indent_size, spaces);
 
 	/* We got here, because we have '-B' option enabled. */
 	if (!*argbuf && (cfg->braces)) {

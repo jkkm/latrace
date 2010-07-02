@@ -118,8 +118,8 @@ static int get_fifo(struct lt_config_app *cfg, int notify_fd,
 static int process_fifo(struct lt_config_app *cfg, struct lt_thread *t)
 {
 	static char buf[FIFO_MSG_MAXLEN];
-
 	struct lt_fifo_mbase *mbase = (struct lt_fifo_mbase*) buf;
+	struct lt_fifo_msym *msym = (struct lt_fifo_msym*) buf;
 
 	if (-1 == lt_fifo_recv(cfg, t, mbase, FIFO_MSG_MAXLEN))
 		return -1;
@@ -131,15 +131,14 @@ static int process_fifo(struct lt_config_app *cfg, struct lt_thread *t)
 		return -1;
 	}
 
-	struct lt_fifo_msym *msym = (struct lt_fifo_msym*) buf;
-
 	if (lt_sh(cfg, counts))
 		return lt_stats_sym(cfg, t, msym);
 
 	if (FIFO_MSG_TYPE_ENTRY == msym->h.type) {
 
-		lt_sh(cfg, indent_depth)++;
-		lt_out_entry(cfg->sh, &msym->h.tv,
+		t->indent_depth++;
+		lt_out_entry(cfg->sh, &msym->h.tv, msym->h.tid,
+				t->indent_depth,
 				msym->data + msym->sym,
 				msym->data + msym->lib,
 				msym->data + msym->arg,
@@ -147,13 +146,14 @@ static int process_fifo(struct lt_config_app *cfg, struct lt_thread *t)
 
 	} else if (FIFO_MSG_TYPE_EXIT == msym->h.type) {
 
-		lt_out_exit(cfg->sh, &msym->h.tv,
+		lt_out_exit(cfg->sh, &msym->h.tv, msym->h.tid,
+				t->indent_depth,
 				msym->data + msym->sym,
 				msym->data + msym->lib,
 				msym->data + msym->arg,
 				msym->data + msym->argd);
 
-		lt_sh(cfg, indent_depth)--;
+		t->indent_depth--;
 	}
 
 	return 0;

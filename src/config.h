@@ -120,9 +120,6 @@ struct lt_config_shared {
 	/* for 'not_follow_fork' */
 	pid_t pid;
 
-	/* used by both app and lib */
-	unsigned int indent_depth;
-
 	/* XXX feel like an idiot.. find another way!!! */
 	struct lt_config_shared *sh;
 };
@@ -242,6 +239,8 @@ struct lt_thread {
 	/* global */
 	int fifo_fd;
         pid_t tid;
+
+	int indent_depth;
 
 	/* start/stop time */
 	struct timeval tv_start;
@@ -413,9 +412,11 @@ int lt_args_cb_struct(struct lt_config_shared *cfg, int type,
 
 /* output */
 int lt_out_entry(struct lt_config_shared *cfg, struct timeval *tv,
+		pid_t tid, int indent_depth,
 		const char *symname, char *lib_to,
 		char *argbuf, char *argdbuf);
 int lt_out_exit(struct lt_config_shared *cfg, struct timeval *tv,
+		pid_t tid, int indent_depth,
 		const char *symname, char *lib_to,
 		char *argbuf, char *argdbuf);
 

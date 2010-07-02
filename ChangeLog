@@ -1,3 +1,8 @@
+2010-07-02  Jiri Olsa <olsajiri@gmail.com>
+	* fixing output for thread applications
+	  - proper tid displayed for pipe mode
+	  - proper indentation for pipe mode
+
 2010-06-03  Jiri Olsa <olsajiri@gmail.com>
 	* changing permissions of libltaudit.so to 755
 

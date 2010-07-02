@@ -39,6 +39,7 @@ extern struct lt_config_audit cfg;
 
 static __thread int pipe_fd = 0;
 static __thread int flow_below_stack = 0;
+static __thread int indent_depth = 0;
 
 
 static int check_names(char *name, char **ptr)
@@ -99,9 +100,11 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 		return lt_fifo_send(&cfg, pipe_fd, buf, len);
 	}
 
-	lt_sh(&cfg, indent_depth)++;
+	indent_depth++;
 
-	lt_out_entry(cfg.sh, &tv, symname, lib_to,
+	lt_out_entry(cfg.sh, &tv, syscall(SYS_gettid),
+			indent_depth,
+			symname, lib_to,
 			argbuf, argdbuf);
 
 	if (!argret) {
@@ -142,10 +145,12 @@ static int sym_exit(const char *symname, char *lib_from, char *lib_to,
 		return lt_fifo_send(&cfg, pipe_fd, buf, len);
 	}
 
-	lt_out_exit(cfg.sh, &tv, symname, lib_from,
+	lt_out_exit(cfg.sh, &tv, syscall(SYS_gettid),
+			indent_depth,
+			symname, lib_from,
 			argbuf, argdbuf);
 
-	lt_sh(&cfg, indent_depth)--;
+	indent_depth--;
 
 	if (!argret) {
 		free(argbuf);
