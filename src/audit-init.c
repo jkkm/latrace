@@ -95,7 +95,7 @@ static int read_config(char *dir)
 		return -1;
 	}
 
-	if (LT_MAGIC != cfg.sh_storage.magic) {
+	if (LT_CONFIG_MAGIC != cfg.sh_storage.magic) {
 		printf("config file magic check failed\n");
 		return -1;
 	}

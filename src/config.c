@@ -107,7 +107,7 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 	cfg->sh = &cfg->sh_storage;
 
 	/* default values settings */
-	lt_sh(cfg, magic)       = LT_MAGIC;
+	lt_sh(cfg, magic)       = LT_CONFIG_MAGIC;
 	lt_sh(cfg, framesize)   = 1000;
 	lt_sh(cfg, fout)        = stdout;
 	lt_sh(cfg, indent_sym)  = 1;

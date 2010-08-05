@@ -42,11 +42,6 @@
 #endif
 #endif
 
-/* TODO put this to autoconf.h */
-#define LT_VERSION_MINOR	1
-#define LT_VERSION_MAJOR	0
-#define LT_VERSION (LT_VERSION_MAJOR*256 + LT_VERSION_MINOR)
-
 #define LT_NAMES_MAX  50
 #define LT_NAMES_SEP  ','
 
@@ -72,7 +67,8 @@ struct lt_config_tv {
 };
 
 struct lt_config_shared {
-#define LT_MAGIC  ((LT_VERSION << 16) + 0xdead)
+#define LT_CONFIG_VERSION	1
+#define LT_CONFIG_MAGIC		((LT_CONFIG_VERSION << 16) + 0xdead)
 	unsigned int magic;
 
 #define LT_LIBS_MAXSIZE     200

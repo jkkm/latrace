@@ -1,3 +1,6 @@
+2010-08-05  Jiri Olsa <olsajiri@gmail.com>
+	* changed config file magic defines
+
 2010-07-02  Jiri Olsa <olsajiri@gmail.com>
 	* fixing output for thread applications
 	  - proper tid displayed for pipe mode
