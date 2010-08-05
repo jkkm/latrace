@@ -1,7 +1,7 @@
 /*
   ARM EABI argument extraction
 
-  Copyright (C) 2009 Akos Pasztory <akos.pasztory@gmail.com>
+  Copyright (C) 2009, 2010 Akos Pasztory <akos.pasztory@gmail.com>
 
   This file is part of the latrace.
 

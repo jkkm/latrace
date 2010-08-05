@@ -1,4 +1,4 @@
-#  Copyright (C) 2008, 2009 Jiri Olsa <olsajiri@gmail.com>
+#  Copyright (C) 2008, 2009, 2010 Jiri Olsa <olsajiri@gmail.com>
 #
 #  This file is part of the latrace.
 #
