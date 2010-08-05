@@ -289,7 +289,8 @@ int lt_run(struct lt_config_app *cfg)
 	if (0 == (child_pid = fork())) {
 		char str_audit[100];
 
-		sprintf(str_audit, "%s/libltaudit.so.%s", CONFIG_LIBDIR, LT_VER);
+		sprintf(str_audit, "%s/libltaudit.so.%s", CONFIG_LIBDIR,
+			CONFIG_VERSION);
 		setenv("LD_AUDIT", str_audit, 1);
 		setenv("LT_DIR", str_dir, 1);
 

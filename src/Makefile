@@ -18,7 +18,7 @@
 
 
 # libltaudit.so 
-AUDIT_BIN=libltaudit.so.$(LT_VER)
+AUDIT_BIN=libltaudit.so.$(CONFIG_VERSION)
 AUDIT_LDFLAGS="-Wl,-init=audit_init" "-Wl,-soname,$(AUDIT_BIN)" -fPIC -shared
 AUDIT_LIBS=$(LIBS) $(LEXLIB)
 
@@ -26,12 +26,16 @@ AUDIT_OBJS=\
 	src/audit.o \
 	src/audit-init.o \
 	src/fifo.o \
+	src/output.o \
+	src/objsearch.o
+
+ifeq ($(CONFIG_ARCH_HAVE_ARGS),y)
+AUDIT_OBJS+=\
 	src/args-bison.o \
 	src/args-flex.o \
 	src/args.o \
-	src/output.o \
-	src/objsearch.o \
 	src/sysdeps/$(CONFIG_SYSDEP_DIR)/stack.o
+endif
 
 OBJS+=$(AUDIT_OBJS)
 PROGRAMS+= $(AUDIT_BIN)

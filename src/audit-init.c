@@ -155,9 +155,11 @@ int audit_init(int argc, char **argv, char **env)
 	if (-1 == read_config(getenv("LT_DIR")))
 		return -1;
 
+#ifdef CONFIG_ARCH_HAVE_ARGS
 	/* -Aa */
 	if (lt_sh(&cfg, args_enabled) && lt_args_init(cfg.sh))
 		return -1;
+#endif
 
 	/* -t */
 	if ((*lt_sh(&cfg, libs_to)) &&

@@ -25,15 +25,12 @@
 #undef CONFIG_LT_CONFIG
 
 /* Version define. */
-#undef LT_VER
+#undef CONFIG_VERSION
 
-/* x86 define. */
-#undef LT_ARCH_X86
-
-/* x86_64 define. */
-#undef LT_ARCH_X86_64
+/* Argument display support. */
+#undef CONFIG_ARCH_HAVE_ARGS
 
 /* liberty */
-#undef LT_LIBERTY
+#undef CONFIG_LIBERTY
 
 #endif

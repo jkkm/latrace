@@ -76,21 +76,23 @@ AC_TYPE_UINT8_T
 date=`date "+%B %G"`
 unamem=`uname -m | sed 's/i.86/i686/'`
 
-AC_SUBST(LT_DATE, "$date")
+AC_SUBST(CONFIG_DATE, "$date")
 AC_SUBST(CONFIG_SYSDEP_DIR, "$unamem")
-AC_SUBST(LT_VER, "AC_PACKAGE_VERSION")
+AC_SUBST(CONFIG_VERSION, "AC_PACKAGE_VERSION")
 
 AC_DEFINE(CONFIG_LT_CONFIG, "/tmp/lt-config", [Temporary directory prefix.])
-AC_DEFINE(LT_VER, "AC_PACKAGE_VERSION", [Version of latrace.])
+AC_DEFINE(CONFIG_VERSION, "AC_PACKAGE_VERSION", [Version of latrace.])
 
-if test "$unamem" = "x86_64"; then
-	AC_DEFINE(LT_ARCH_X86_64, 1, [The x86_64 arch.])
-elif test "$unamem" = "i686"; then
-	AC_DEFINE(LT_ARCH_X86, 1, [The x86 arch.])
+# for following architectures we have argument display support
+if test "$unamem" = "x86_64" -o\
+	"$unamem" = "i686" -o\
+	"$unamem" = "arm"; then
+	AC_DEFINE(CONFIG_ARCH_HAVE_ARGS)
+	AC_SUBST(CONFIG_ARCH_HAVE_ARGS, "y")
 fi
 
 AC_SEARCH_LIBS([cplus_demangle], [iberty_pic iberty],
-	[AC_DEFINE(LT_LIBERTY, 1, "Liberty found.")],
+	[AC_DEFINE(CONFIG_LIBERTY, 1, "Liberty found.")],
 	[AC_MSG_WARN([libiberty not found, no demangle support (install binutils-dev)])])
 
 AC_CONFIG_HEADER([src/autoconf.h])

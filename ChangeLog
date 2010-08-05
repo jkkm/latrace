@@ -1,5 +1,7 @@
 2010-08-05  Jiri Olsa <olsajiri@gmail.com>
 	* changed config file magic defines
+	* separate arguments display code, so it could be
+	  disabled for not supported architectures
 
 2010-07-02  Jiri Olsa <olsajiri@gmail.com>
 	* fixing output for thread applications

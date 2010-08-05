@@ -72,7 +72,7 @@ static int check_flow_below(const char *symname, int in)
 static int sym_entry(const char *symname, char *lib_from, char *lib_to, 
 			La_regs *regs)
 {
-	int argret;
+	int argret = -1;
 	char *argbuf = "", *argdbuf = "";
 	struct timeval tv;
 
@@ -84,8 +84,10 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 	if (lt_sh(&cfg, timestamp) || lt_sh(&cfg, counts))
 		gettimeofday(&tv, NULL);
 
+#ifdef CONFIG_ARCH_HAVE_ARGS
 	argret = lt_sh(&cfg, args_enabled) ?
 		lt_args_sym_entry(cfg.sh, (char*) symname, regs, &argbuf, &argdbuf) : -1;
+#endif
 
 	if (lt_sh(&cfg, pipe)) {
 		char buf[FIFO_MSG_MAXLEN];
@@ -119,7 +121,7 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 static int sym_exit(const char *symname, char *lib_from, char *lib_to, 
 			const La_regs *inregs, La_retval *outregs)
 {
-	int argret;
+	int argret = -1;
 	char *argbuf = "", *argdbuf = "";
 	struct timeval tv;
 
@@ -131,9 +133,11 @@ static int sym_exit(const char *symname, char *lib_from, char *lib_to,
 	if (lt_sh(&cfg, timestamp) || lt_sh(&cfg, counts))
 		gettimeofday(&tv, NULL);
 
+#ifdef CONFIG_ARCH_HAVE_ARGS
 	argret = lt_sh(&cfg, args_enabled) ?
 		lt_args_sym_exit(cfg.sh, (char*) symname,
 			(La_regs*) inregs, outregs, &argbuf, &argdbuf) : -1;
+#endif
 
 	if (lt_sh(&cfg, pipe)) {
 		char buf[FIFO_MSG_MAXLEN];

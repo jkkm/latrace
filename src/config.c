@@ -42,9 +42,13 @@ static void usage()
 	printf("    -p, --pipe                      use pipe to latrace process to send audit data\n");
 	printf("                                    latrace app is then the one displaying the output\n");
 	printf("\n");
+#ifndef CONFIG_ARCH_HAVE_ARGS
+	printf("    -[ADa]                          arguments display support not compiled in\n");
+#else
 	printf("    -A, --enable-args               enable arguments output (definitions from /etc/latrace.conf)\n");
 	printf("    -D, --detail-args               display struct arguments in more detail\n");
 	printf("    -a, --args file                 arguments definition file, implies \'-A\'\n");
+#endif
 	printf("\n");
 	printf("    -y, --framesize number          framesize for storing the stack before pltexit (default 1000)\n");
 	printf("    -F, --not-follow-fork           dont follow fork calls - childs\n");
@@ -73,7 +77,7 @@ static void usage()
 static void version() NORETURN;
 static void version()
 {
-	printf("latrace version " LT_VER "\n");
+	printf("latrace version " CONFIG_VERSION "\n");
 	exit(0);
 }
 
@@ -221,7 +225,7 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			break;
 
 		case 'd':
-			#ifndef LT_LIBERTY
+			#ifndef CONFIG_LIBERTY
 			printf("demangle support not compiled in," \
 				" liberty not found\n");
 			break;
@@ -257,16 +261,25 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			lt_sh(cfg, pipe) = 1;
 			break;
 
+		#ifndef CONFIG_ARCH_HAVE_ARGS
+		case 'a':
+		case 'A':
+		case 'D':
+			printf("Arguments display support not compiled in");
+			break;
+		#else
 		case 'a':
 			strcpy(lt_sh(cfg, args_def), optarg);
 			/* falling through */
 		case 'A':
+
 			lt_sh(cfg, args_enabled) = 1;
 			break;
 
 		case 'D':
 			lt_sh(cfg, args_detailed) = 1;
 			break;
+		#endif /* CONFIG_ARCH_HAVE_ARGS */
 
 		case 'o':
 			strcpy(lt_sh(cfg, output), optarg);

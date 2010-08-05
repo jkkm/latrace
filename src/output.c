@@ -56,7 +56,7 @@ do { \
 /* libiberty external */
 extern char* cplus_demangle(const char *mangled, int options);
 
-#ifdef LT_LIBERTY
+#ifdef CONFIG_LIBERTY
 #define DEMANGLE(sym, d) \
 do { \
 	char *dem; \

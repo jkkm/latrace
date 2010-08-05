@@ -161,16 +161,16 @@ all:: $(PROGRAMS) LATRACE-CFLAGS
 clean::
 	$(call remove, $(OBJS) $(PROGRAMS))
 	$(call remove, src/args-bison.c src/args-flex.c src/args-bison.h src/args-bison.output)
-	$(call remove, lib bin share deps.make latrace-$(LT_VER))
+	$(call remove, lib bin share deps.make latrace-$(CONFIG_VERSION))
 
 mrproper::
 	git clean -xdf
 
 snapshot:
-	@$(MAKE) $(PRINT_DIR) package PKG_VER=$(LT_VER)-`date "+%m%d%Y"`
+	@$(MAKE) $(PRINT_DIR) package PKG_VER=$(CONFIG_VERSION)-`date "+%m%d%Y"`
 
 release:
-	@$(MAKE) $(PRINT_DIR) package PKG_VER=$(LT_VER)
+	@$(MAKE) $(PRINT_DIR) package PKG_VER=$(CONFIG_VERSION)
 
 package:
 	$(QUIET_PKG)rm -f latrace-$(PKG_VER); ln -s . latrace-$(PKG_VER); \
