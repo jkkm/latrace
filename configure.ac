@@ -18,7 +18,7 @@
 
 
 AC_PREREQ(2.61)
-AC_INIT(latrace, 0.5.9, olsajiri@gmail.com)
+AC_INIT(latrace, 0.5.10, olsajiri@gmail.com)
 AC_CONFIG_SRCDIR([src/latrace.c])
 
 AC_PROG_CC
@@ -89,6 +89,8 @@ if test "$unamem" = "x86_64" -o\
 	"$unamem" = "arm"; then
 	AC_DEFINE(CONFIG_ARCH_HAVE_ARGS)
 	AC_SUBST(CONFIG_ARCH_HAVE_ARGS, "y")
+else
+	AC_MSG_WARN([Arguments display support disabled])
 fi
 
 AC_SEARCH_LIBS([cplus_demangle], [iberty_pic iberty],
