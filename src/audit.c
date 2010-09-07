@@ -294,7 +294,8 @@ pltenter(ElfW(Sym) *sym, unsigned int ndx, uintptr_t *refcook,
 
 	} while(0);
 
-	*framesizep = lt_sh(&cfg, framesize);
+	*framesizep = lt_stack_framesize(&cfg, regs);
+
 	return sym->st_value;
 }
 

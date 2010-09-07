@@ -51,6 +51,7 @@ static void usage()
 #endif
 	printf("\n");
 	printf("    -y, --framesize number          framesize for storing the stack before pltexit (default 1000)\n");
+	printf("    -Y, --not-framesize-check       disable framesize check\n");
 	printf("    -F, --not-follow-fork           dont follow fork calls - childs\n");
 	printf("    -E, --not-follow-exec           dont follow exec calls\n");
 	printf("\n");
@@ -111,12 +112,13 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 	cfg->sh = &cfg->sh_storage;
 
 	/* default values settings */
-	lt_sh(cfg, magic)       = LT_CONFIG_MAGIC;
-	lt_sh(cfg, framesize)   = 1000;
-	lt_sh(cfg, fout)        = stdout;
-	lt_sh(cfg, indent_sym)  = 1;
-	lt_sh(cfg, indent_size) = 2;
-	lt_sh(cfg, args_maxlen) = LR_ARGS_MAXLEN;
+	lt_sh(cfg, magic)           = LT_CONFIG_MAGIC;
+	lt_sh(cfg, framesize)       = 1000;
+	lt_sh(cfg, framesize_check) = 1;
+	lt_sh(cfg, fout)            = stdout;
+	lt_sh(cfg, indent_sym)      = 1;
+	lt_sh(cfg, indent_size)     = 2;
+	lt_sh(cfg, args_maxlen)     = LR_ARGS_MAXLEN;
 	lt_sh(cfg, args_detail_maxlen) = LR_ARGS_DETAIL_MAXLEN;
 	cfg->csort = LT_CSORT_CALL;
 
@@ -142,6 +144,7 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			{"enable-args", required_argument, 0, 'A'},
 			{"detail-args", required_argument, 0, 'D'},
 			{"framesize", required_argument, 0, 'y'},
+			{"not-framesize-check ", no_argument, 0, 'Y'},
 			{"lib-subst", required_argument, 0, 'L'},
 			{"verbose", no_argument, 0, 'v'},
 			{"hide-tid", no_argument, 0, 'T'},
@@ -154,7 +157,7 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			{0, 0, 0, 0}
 		};
 
-		c = getopt_long(argc, argv, "+s:l:t:f:vhi:BdISb:cC:y:L:po:a:ADVTFERq",
+		c = getopt_long(argc, argv, "+s:l:t:f:vhi:BdISb:cC:y:YL:po:a:ADVTFERq",
 					long_options, &option_index);
 
 		if (c == -1)
@@ -240,6 +243,10 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 
 		case 'y':
 			lt_sh(cfg, framesize) = atoi(optarg);
+			break;
+
+		case 'Y':
+			lt_sh(cfg, framesize_check) = 0;
 			break;
 
 		case 'L':

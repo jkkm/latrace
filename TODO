@@ -6,6 +6,7 @@ olsajiri@gmail.com
 
 for 0.5.10
 	- testing/fixing bugs
+	- make automated tests
 
 for 0.6
 	- config - arrays in structures

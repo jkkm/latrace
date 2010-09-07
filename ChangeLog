@@ -1,3 +1,8 @@
+2010-09-07 Jiri Olsa <olsajiri@gmail.com>
+	* adding stack limits dynamic check
+		- based on proposal from Akos Pasztory
+		- enabled by default, disable by new '-Y' option
+
 2010-08-05  Jiri Olsa <olsajiri@gmail.com>
 	* changed config file magic defines
 	* separate arguments display code, so it could be

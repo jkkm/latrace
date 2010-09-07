@@ -78,6 +78,9 @@ OPTIONS
 *-y, --framesize number*::
 	framesize for storing the stack before pltexit (default 100)
 
+*-Y, --not-framesize-check*::
+	disable framesize check
+
 *-I, --no-indent-sym*::
 	do no indent symbols based on the their stack depth
 

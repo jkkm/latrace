@@ -115,6 +115,7 @@ struct lt_config_shared {
 	int hide_tid;
 	int not_follow_exec;
 	int not_follow_fork;
+	int framesize_check;
 	unsigned int framesize;
 
 	/* for 'not_follow_fork' */
@@ -298,6 +299,9 @@ int lt_out_exit(struct lt_config_shared *cfg, struct timeval *tv,
 int lt_objsearch_init(struct lt_config_audit *cfg, char **ptr, int cnt);
 char* lt_objsearch(struct lt_config_audit *cfg, const char *name, 
 		uintptr_t *cookie, unsigned int flag);
+
+/* stack */
+int lt_stack_framesize(struct lt_config_audit *cfg, La_regs *regs);
 
 #define PRINT(fmt, args...) \
 do { \

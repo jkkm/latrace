@@ -29,18 +29,21 @@
 # define pltenter la_i86_gnu_pltenter
 # define pltexit la_i86_gnu_pltexit
 # define La_regs La_i86_regs
+# define sp_reg lr_esp
 # define La_retval La_i86_retval
 # define int_retval lrv_eax
 #elif defined __x86_64__
 # define pltenter la_x86_64_gnu_pltenter
 # define pltexit la_x86_64_gnu_pltexit
 # define La_regs La_x86_64_regs
+# define sp_reg lr_rsp
 # define La_retval La_x86_64_retval
 # define int_retval lrv_rax
 #elif defined __arm__
 # define pltenter la_arm_gnu_pltenter
 # define pltexit la_arm_gnu_pltexit
 # define La_regs La_arm_regs
+# define sp_reg lr_sp
 # define La_retval La_arm_retval
 # define int_retval lrv_reg[0]
 #elif defined __powerpc__ && __WORDSIZE == 32
