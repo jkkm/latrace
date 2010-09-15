@@ -1,6 +1,7 @@
 2010-09-15 Jiri Olsa <olsajiri@gmail.com>
 	* dynamic rlimit stack check
 	* recognize [stack] map arrea and handle it properly
+	* synchronize --no-* option names
 
 2010-09-07 Jiri Olsa <olsajiri@gmail.com>
 	* adding stack limits dynamic check

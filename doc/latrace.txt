@@ -78,7 +78,7 @@ OPTIONS
 *-y, --framesize number*::
 	framesize for storing the stack before pltexit (default 100)
 
-*-Y, --not-framesize-check*::
+*-Y, --no-framesize-check*::
 	disable framesize check
 
 *-I, --no-indent-sym*::
@@ -99,12 +99,12 @@ OPTIONS
 *-T, --hide-tid*::
 	dont display thread id
 
-*-F, --not-follow-fork*::
+*-F, --no-follow-fork*::
 	dont follow fork calls (childs). This is just supressing the latrace
 	output from new childs.  The nature of the *LD_AUDIT* feature  prevents to
 	disable it completely.
 
-*-E, --not-follow-exec*::
+*-E, --no-follow-exec*::
 	dont follow exec calls
 
 *-R, --ctl-config*::

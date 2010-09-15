@@ -51,9 +51,9 @@ static void usage()
 #endif
 	printf("\n");
 	printf("    -y, --framesize number          framesize for storing the stack before pltexit (default 1000)\n");
-	printf("    -Y, --not-framesize-check       disable framesize check\n");
-	printf("    -F, --not-follow-fork           dont follow fork calls - childs\n");
-	printf("    -E, --not-follow-exec           dont follow exec calls\n");
+	printf("    -Y, --no-framesize-check        disable framesize check\n");
+	printf("    -F, --no-follow-fork            dont follow fork calls - childs\n");
+	printf("    -E, --no-follow-exec            dont follow exec calls\n");
 	printf("\n");
 	printf("    -S, --timestamp                 display timestamp for each symbol\n");
 	printf("    -b, --flow-below sym1,sym2...   display flow only for sym1, sym2 ... \n");
@@ -144,12 +144,12 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			{"enable-args", required_argument, 0, 'A'},
 			{"detail-args", required_argument, 0, 'D'},
 			{"framesize", required_argument, 0, 'y'},
-			{"not-framesize-check ", no_argument, 0, 'Y'},
+			{"no-framesize-check ", no_argument, 0, 'Y'},
 			{"lib-subst", required_argument, 0, 'L'},
 			{"verbose", no_argument, 0, 'v'},
 			{"hide-tid", no_argument, 0, 'T'},
-			{"not-follow-fork", no_argument, 0, 'F'},
-			{"not-follow-exec", no_argument, 0, 'E'},
+			{"no-follow-fork", no_argument, 0, 'F'},
+			{"no-follow-exec", no_argument, 0, 'E'},
 			{"disable", no_argument, 0, 'q'},
 			{"ctl-config", no_argument, 0, 'R'},
 			{"version", no_argument, 0, 'V'},
