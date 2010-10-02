@@ -43,27 +43,27 @@ static int load_stack(struct lt_config_audit *cfg, void *sp)
 	if (!stack_size)
 		return -1;
 
+	/* scan all memory maps to see if we fit inside one */
 	while (!found && fgets(line, sizeof(line), maps)) {
+		int m = -1;
 
-		if (2 != sscanf(line, "%p-%p", &start, &end))
+		/* we care only about private rw mappings */
+		if (2 != sscanf(line, "%p-%p rw%*cp %*x %*x:%*x %*u %n",
+				&start, &end, &m))
+			continue;
+		if (m < 0)
 			continue;
 
-		PRINT_VERBOSE(cfg, 1, "line  start %p, end %p\n", start, end);
+		PRINT_VERBOSE(cfg, 1, "line  start %08lx, end %08lx\n",
+				start, end);
 
-		/* FIXME someone smart please figure out faster way,
-		* (somehow within the sscanf call?)
-		*
-		* Also what if the new stack is not GROWSDOWN,
-		* bounded by RLIMIT_STACK?
-		*/
-		if (strstr(line, "[stack]")) {
-			void *new_start = end - get_stack_size(cfg);
+		/* What if the new stack is not GROWSDOWN,
+		   bounded by RLIMIT_STACK? */
+		if (!strncmp(&line[m], "[stack]", 7)) {
+			void *new_start = end - stack_size;
 
-			/* FIXME weird, need to investigate, looks like the stack
-			* area could grow more than the stack limit (eg for xpdf)
-			*
-			* taking the lower value for now
-			*/
+			/* [stack] might not yet be mapped,
+			   use rlimit as lower bound */
 			if (new_start < start)
 				start = new_start;
 		}
@@ -107,7 +107,7 @@ int lt_stack_framesize(struct lt_config_audit *cfg, La_regs *regs)
 	sp_top = sp + framesize;
 
 	if (sp_top > stack_end) {
-		framesize = stack_end - sp - 1;
+		framesize = stack_end - sp - sizeof(void*);
 		PRINT_VERBOSE(cfg, 1,
 			"top reached, framesize changed to %lu\n",
 			framesize);
