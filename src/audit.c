@@ -229,9 +229,14 @@ static unsigned int la_symbind(const char *symname)
 	unsigned int flags = 0;
 
 	if (cfg.symbols_cnt) {
-		flags = LA_SYMB_NOPLTENTER;
+		flags = LA_SYMB_NOPLTENTER|LA_SYMB_NOPLTEXIT;
 		if (check_names((char*) symname, cfg.symbols))
 			flags = 0;
+	}
+
+	if (cfg.symbols_omit_cnt) {
+		if (check_names((char*) symname, cfg.symbols_omit))
+			flags = LA_SYMB_NOPLTENTER|LA_SYMB_NOPLTEXIT;
 	}
 
 	return flags;

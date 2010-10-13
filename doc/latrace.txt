@@ -10,7 +10,7 @@ latrace - LD_AUDIT 2.4+ libc frontend
 
 SYNOPSIS
 --------
-*latrace* [-ltfsbcCpADaoyIiBdvTFELVh] command [arg ... ]
+*latrace* [-ltfsnbcCpADaoyIiBdvTFELVh] command [arg ... ]
 
 
 DESCRIPTION
@@ -44,6 +44,9 @@ OPTIONS
 
 *-s, --sym sym1[,sym2,...]*::
 	audit symbols sym1, sym2 ...
+
+*-n, --sym-omit sym1[,sym2,...]*::
+	omit symbols sym1, sym2 ...
 
 *-S, --timestamp*::
 	display timestamp for each symbol
@@ -434,6 +437,7 @@ CONTRIBUTORS
 ------------
 - Nix <nix@esperi.org.uk>
 - Akos Pasztory <akos.pasztory@gmail.com>
+- Artur Skawina <art.08.09@gmail.com>
 
 
 LICENSE

@@ -34,6 +34,7 @@ static void usage()
 	printf("    -t, --libs-to lib1,lib2...      audit to lib1, lib2 ...\n");
 	printf("    -f, --libs-from lib1,lib2...    audit from lib1, lib2 ...\n");
 	printf("    -s, --sym sym1,sym2...          audit symbols sym1, sym2 ... \n");
+	printf("    -n, --sym-omit sym1,sym2...     omit symbols sym1, sym2 ... \n");
 	printf("    -L, --lib-subst s1,s2...        objsearch LD_AUDIT interface (see man page)\n");
 	printf("\n");
 	printf("    -c, --counts                    display statistics counts of symbols\n");
@@ -127,6 +128,7 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 		int option_index = 0;
 		static struct option long_options[] = {
 			{"sym", required_argument, 0, 's'},
+			{"sym-omit", required_argument, 0, 'n'},
 			{"libs", required_argument, 0, 'l'},
 			{"libs-to", required_argument, 0, 't'},
 			{"libs-from", required_argument, 0, 'f'},
@@ -157,7 +159,7 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			{0, 0, 0, 0}
 		};
 
-		c = getopt_long(argc, argv, "+s:l:t:f:vhi:BdISb:cC:y:YL:po:a:ADVTFERq",
+		c = getopt_long(argc, argv, "+s:n:l:t:f:vhi:BdISb:cC:y:YL:po:a:ADVTFERq",
 					long_options, &option_index);
 
 		if (c == -1)
@@ -190,6 +192,13 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 				return -1;
 
 			strncpy(lt_sh(cfg, symbols), optarg, strlen(optarg));
+			break;
+
+		case 'n':
+			if (strlen(optarg) > LT_SYMBOLS_MAXSIZE)
+				return -1;
+
+			strncpy(lt_sh(cfg, symbols_omit), optarg, strlen(optarg));
 			break;
 
 		case 'b':

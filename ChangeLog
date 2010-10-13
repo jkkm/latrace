@@ -1,3 +1,7 @@
+2010-10-13 Jiri Olsa <olsajiri@gmail.com>
+	* Artur Skawina <art.08.09@gmail.com>
+		-  add '-n' option, allowing to omit tracing certain symbols
+
 2010-10-02 Jiri Olsa <olsajiri@gmail.com>
 	* Akos Pasztory <akos.pasztory@gmail.com>
 		- more sophisticated parsing of /proc/self/maps

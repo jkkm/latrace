@@ -84,6 +84,7 @@ struct lt_config_shared {
 
 #define LT_SYMBOLS_MAXSIZE  200
 	char symbols[LT_SYMBOLS_MAXSIZE];
+	char symbols_omit[LT_SYMBOLS_MAXSIZE];
 
 	char flow_below[LT_SYMBOLS_MAXSIZE];
 
@@ -185,6 +186,9 @@ struct lt_config_audit {
 
 	char *symbols[LT_NAMES_MAX];
 	int symbols_cnt;
+
+	char *symbols_omit[LT_NAMES_MAX];
+	int symbols_omit_cnt;
 
 	char *flow_below[LT_NAMES_MAX];
 	int flow_below_cnt;

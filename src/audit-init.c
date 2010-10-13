@@ -163,35 +163,48 @@ int audit_init(int argc, char **argv, char **env)
 
 	/* -t */
 	if ((*lt_sh(&cfg, libs_to)) &&
-	    (-1 == (cfg.libs_to_cnt = get_names(&cfg, lt_sh(&cfg, libs_to), cfg.libs_to)))) {
+	    (-1 == (cfg.libs_to_cnt = get_names(&cfg, lt_sh(&cfg, libs_to),
+						cfg.libs_to)))) {
 		printf("latrace failed to parse libs to\n");
 		return -1;
 	}
 
 	/* -f */
 	if ((*lt_sh(&cfg, libs_from)) &&
-	    (-1 == (cfg.libs_from_cnt = get_names(&cfg, lt_sh(&cfg, libs_from), cfg.libs_from)))) {
+	    (-1 == (cfg.libs_from_cnt = get_names(&cfg, lt_sh(&cfg, libs_from),
+						  cfg.libs_from)))) {
 		printf("latrace failed to parse libs from\n");
 		return -1;
 	}
 
 	/* -l */
 	if ((*lt_sh(&cfg, libs_both)) &&
-	    (-1 == (cfg.libs_both_cnt = get_names(&cfg, lt_sh(&cfg, libs_both), cfg.libs_both)))) {
+	    (-1 == (cfg.libs_both_cnt = get_names(&cfg, lt_sh(&cfg, libs_both),
+						  cfg.libs_both)))) {
 		printf("latrace failed to parse libs from\n");
 		return -1;
 	}
 
 	/* -s */
 	if ((*lt_sh(&cfg, symbols)) &&
-	    (-1 == (cfg.symbols_cnt = get_names(&cfg, lt_sh(&cfg, symbols), cfg.symbols)))) {
+	    (-1 == (cfg.symbols_cnt = get_names(&cfg, lt_sh(&cfg, symbols),
+						cfg.symbols)))) {
 		printf("latrace failed to parse symbols\n");
+		return -1;
+	}
+
+	/* -n */
+	if ((*lt_sh(&cfg, symbols_omit)) &&
+	    (-1 == (cfg.symbols_omit_cnt = get_names(&cfg, lt_sh(&cfg, symbols_omit),
+						     cfg.symbols_omit)))) {
+		printf("latrace failed to parse symbols to omit\n");
 		return -1;
 	}
 
 	/* -b */
 	if ((*lt_sh(&cfg, flow_below)) &&
-	    (-1 == (cfg.flow_below_cnt = get_names(&cfg, lt_sh(&cfg, flow_below), cfg.flow_below)))) {
+	    (-1 == (cfg.flow_below_cnt = get_names(&cfg, lt_sh(&cfg, flow_below),
+						   cfg.flow_below)))) {
 		printf("latrace failed to parse symbols in flow-below option\n");
 		return -1;
 	}
