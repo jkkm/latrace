@@ -424,8 +424,9 @@ LD_AUDIT implementation causing process segfaulting
 
 BUGS
 ----
-MANY, plz report bugs to <olsajiri@gmail.com>.  You can also visit the
-latrace.sf.net page to see the latest release notes information.
+MANY, plz report bugs to <latrace@lists.fedorahosted.org> or <olsajiri@gmail.com>.
+You can also visit the http://people.redhat.com/jolsa/latrace/ page to see the
+latest release notes information.
 
 
 AUTHOR

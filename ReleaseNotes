@@ -2,6 +2,21 @@
 latrace release notes (olsajiri@gmail.com)
 -------------------------------------------------------------------------------
 
+[x] latrace 0.5.10 (10/13/2010)
+	* added '-n' option, allowing to omit tracing certain symbols
+	* adding stack limits dynamic check (fixing several SIGSEGV issues)
+		- enabled by default, disable by new '-Y' option
+	* several fixies
+		- synchronize --no-* option names
+		- changed config file magic defines
+		- separate arguments display code, so it could be
+		  disabled for not supported architectures
+		- updating license info
+		- fixing output for thread applications
+		  proper tid displayed for pipe mode
+		  proper indentation for pipe mode
+		- changing permissions of libltaudit.so to 755
+
 [x] latrace 0.5.9 (5/14/2010)
 	* fix autoconf search for iberty lib
 	* refactoring sysdep configuration (fix for BZ#586210)
