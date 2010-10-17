@@ -18,7 +18,7 @@
 
 
 AC_PREREQ(2.61)
-AC_INIT(latrace, 0.5.10, olsajiri@gmail.com)
+AC_INIT(latrace, 0.5.11, olsajiri@gmail.com)
 AC_CONFIG_SRCDIR([src/latrace.c])
 
 AC_PROG_CC

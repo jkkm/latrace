@@ -47,7 +47,8 @@ static int check_names(char *name, char **ptr)
 	char *n;
 
 	for(n = *ptr; n; n = *(++ptr)) {
-		if (strstr(name, n)) {
+		if ((n[0] == '*' && strstr(name, n + 1)) ||
+		    strcmp(name, n) == 0) {
 			PRINT_VERBOSE(&cfg, 2,
 				"return %d for name %s\n", 1, name);
 			return 1;

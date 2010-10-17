@@ -171,6 +171,18 @@ EXAMPLES
 [[DISCUSSION]]
 DISCUSSION
 ----------
+NAMES CHECK
+~~~~~~~~~~~
+For options *"-l -t -f -s -n -b"* the *** symbol can be used to switch to the
+substring search. If it is not specified, the exact search for the name is done.
+
+Examples:
+
+	-s "*krava" checks for symbols with "krava" substring.
+
+	-s "krava"  checks only for "krava" symbol
+
+
 LD_AUDIT
 ~~~~~~~~
 This  is  just  a  brief  and  vague  description  of  the  *LD_AUDIT* feature.

@@ -1,3 +1,8 @@
+2010-10-17 Jiri Olsa <olsajiri@gmail.com>
+	* Artur Skawina <art.08.09@gmail.com>
+		- enhancing names check with *-logic for
+		  "-l -t -f -s -n -b" options
+
 -------------------------------------------------------------------------------
 latrace 0.5.10
 
