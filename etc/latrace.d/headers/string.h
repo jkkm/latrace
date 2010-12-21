@@ -62,7 +62,7 @@ char*   rindex(char *s, int c);
 int     ffs(int i);
 int     ffsl(long l);
 
-/*	we dont do big numbers so far 
+/*	we dont do big numbers so far
 
 __extension__ extern int ffsll (long long int __ll)
 

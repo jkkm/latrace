@@ -1,5 +1,5 @@
 
-/* /usr/include/ncurses.conf */
+/* /usr/include/ncurses.h */
 
 typedef int     attr_t;
 typedef attr_t  chtype;

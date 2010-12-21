@@ -67,7 +67,7 @@ OBJS+=$(LATRACE_OBJS)
 PROGRAMS+=$(LATRACE_BIN)
 CPPFLAGS+=-DCONFIG_LIBDIR=\"$(libdir)\"
 CPPFLAGS+=-DLT_ARGS_DEF_DIR=\"$(confdir)\"
-CPPFLAGS+=-DLT_ARGS_DEF_CONF=\"$(sysconfdir)/latrace.conf\"
+CPPFLAGS+=-DLT_ARGS_DEF_CONF=\"$(sysconfdir)/headers/latrace.h\"
 
 $(LATRACE_BIN): $(LATRACE_OBJS)
 	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(LATRACE_OBJS) $(LATRACE_LIBS) $(LATRACE_LIB)

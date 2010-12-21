@@ -1,0 +1,18 @@
+
+INCLUDE krava.conf
+
+GLOBAL {
+	# headers definition
+	HEADERS = @sysconfdir@/latrace.d/headers/latrace.h
+
+	# options definitions
+
+	# -l, --libs
+	OPT_LIBS = krava
+
+	# -t, --libs-to
+	OPT_LIBS_TO = krava
+
+	# -p, --pipe
+	OPT_PIPE = yes
+}

@@ -16,7 +16,7 @@ enum PF_TYPE {
 	PF_ROSE      = 11,     /* Amateur Radio X.25 PLP       */
 	PF_DECnet    = 12,     /* Reserved for DECnet project  */
 	PF_NETBEUI   = 13,     /* Reserved for 802.2LLC project*/
-	PF_SECURITY  = 14,     /* Security callback pseudo AF */ 
+	PF_SECURITY  = 14,     /* Security callback pseudo AF */
 	PF_KEY       = 15,     /* PF_KEY key management API */
 	PF_NETLINK   = 16,
 	PF_ROUTE     = 16,        /* Alias to emulate 4.4BSD */
@@ -40,7 +40,7 @@ enum PF_TYPE {
 };
 
 enum SOCK_TYPE {
-        SOCK_STREAM     = 1, 
+        SOCK_STREAM     = 1,
         SOCK_DGRAM      = 2,
         SOCK_RAW        = 3,
         SOCK_RDM        = 4,

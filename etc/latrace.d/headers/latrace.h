@@ -1,97 +1,97 @@
 
 /* miscelaneous functions */
-#include "misc.conf"
+#include "misc.h"
 
 /* miscelaneous typedefs */
-#include "typedefs.conf"
+#include "typedefs.h"
 
 /* /usr/include/arpa/inet.h */
-#include "inet.conf"
+#include "inet.h"
 
 /* /usr/include/ctype.h */
-#include "ctype.conf"
+#include "ctype.h"
 
 /* /usr/include/stdlib.h */
-#include "stdlib.conf"
+#include "stdlib.h"
 
 /* /usr/include/string.h */
-#include "string.conf"
+#include "string.h"
 
 /* /usr/include/ctype.h */
-#include "ctype.conf"
+#include "ctype.h"
 
 /* /usr/include/ncurses.h */
-#include "ncurses.conf"
+#include "ncurses.h"
 
 /* /usr/include/stdio.h */
-#include "stdio.conf"
+#include "stdio.h"
 
 /* /usr/include/dirent.h */
-#include "dirent.conf"
+#include "dirent.h"
 
 /* /usr/include/unistd.h */
-#include "unistd.conf"
+#include "unistd.h"
 
 /* /usr/include/libintl.h */
-#include "libintl.conf"
+#include "libintl.h"
 
 /* /usr/include/dlfcn.h */
-#include "dlfcn.conf"
+#include "dlfcn.h"
 
 /* /usr/include/fcntl.h */
-#include "fcntl.conf"
+#include "fcntl.h"
 
 /* /usr/include/getopt.h */
-#include "getopt.conf"
+#include "getopt.h"
 
 /* /usr/include/signal.h */
-#include "signal.conf"
+#include "signal.h"
 
 /* /usr/include/sys/ioctl.h */
-#include "ioctl.conf"
+#include "ioctl.h"
 
 /* /usr/include/sys/socket.h */
-#include "socket.conf"
+#include "socket.h"
 
 /* /usr/include/netdb.h */
-#include "netdb.conf"
+#include "netdb.h"
 
 /* /usr/include/sys/stat.h */
-#include "stat.conf"
+#include "stat.h"
 
 /* /usr/include/sys/wait.h */
-#include "wait.conf"
+#include "wait.h"
 
 /* /usr/include/utmp.h */
-#include "utmp.conf"
+#include "utmp.h"
 
 /* /usr/include/time.h */
-#include "time.conf"
+#include "time.h"
 
 /* /usr/include/termios.h */
-#include "termios.conf"
+#include "termios.h"
 
 /* /usr/include/term.h */
-#include "term.conf"
+#include "term.h"
 
 /* /usr/include/sys/syslog.h */
-#include "syslog.conf"
+#include "syslog.h"
 
 /* /usr/include/pwd.h */
-#include "pwd.conf"
+#include "pwd.h"
 
 /* /usr/include/libio.h */
-#include "libio.conf"
+#include "libio.h"
 
 /* /usr/include/locale.h */
-#include "locale.conf"
+#include "locale.h"
 
 /* /usr/include/pthread.h */
-#include "pthread.conf"
+#include "pthread.h"
 
 /* /usr/include/sys/resource.h */
-#include "resource.conf"
+#include "resource.h"
 
-/* /etc/latrace.d/mman.conf */
-#include "mman.conf"
+/* /etc/latrace.d/mman.h */
+#include "mman.h"
 
