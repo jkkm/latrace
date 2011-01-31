@@ -28,7 +28,8 @@ AUDIT_OBJS=\
 	src/fifo.o \
 	src/output.o \
 	src/objsearch.o \
-	src/stack.o
+	src/stack.o \
+	src/symbol.o
 
 ifeq ($(CONFIG_ARCH_HAVE_ARGS),y)
 AUDIT_OBJS+=\

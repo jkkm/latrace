@@ -23,6 +23,7 @@
 #define ARGS_H
 
 struct lt_config_shared;
+struct lt_symbol;
 
 enum {
 	LT_ARGS_DTYPE_POD = 1,
@@ -126,10 +127,13 @@ struct lt_args_data {
 
 /* arguments */
 int lt_args_init(struct lt_config_shared *cfg);
-int lt_args_sym_entry(struct lt_config_shared *cfg, char *sym, La_regs *regs,
+struct lt_args_sym* lt_args_sym_get(struct lt_config_shared *cfg,
+					const char *sym);
+int lt_args_sym_entry(struct lt_config_shared *cfg, struct lt_symbol *sym,
+			La_regs *regs, char **argbuf, char **argdbuf);
+int lt_args_sym_exit(struct lt_config_shared *cfg, struct lt_symbol *sym,
+			La_regs *inregs, La_retval *outregs,
 			char **argbuf, char **argdbuf);
-int lt_args_sym_exit(struct lt_config_shared *cfg, char *sym, La_regs *inregs,
-			La_retval *outregs, char **argbuf, char **argdbuf);
 int lt_args_add_enum(struct lt_config_shared *cfg, char *name,
 			struct lt_list_head *h);
 struct lt_enum_elem* lt_args_get_enum(struct lt_config_shared *cfg, char *name, char *val);

@@ -749,25 +749,6 @@ int lt_args_init(struct lt_config_shared *cfg)
 	return ret;
 }
 
-static struct lt_args_sym* getsym(struct lt_config_shared *cfg, char *sym)
-{
-	struct lt_args_sym *a;
-	ENTRY e, *ep;
-
-        PRINT_VERBOSE(cfg, 1, "request for <%s>\n", sym);
-
-	e.key = sym;
-	hsearch_r(e, FIND, &ep, &cfg->args_tab);
-
-	if (!ep)
-		return NULL;
-
-	a = (struct lt_args_sym*) ep->data;
-
-        PRINT_VERBOSE(cfg, 1, "found %p <%s>\n", a, a->name);
-	return a;
-}
-
 static int getstr_addenum(struct lt_config_shared *cfg, struct lt_arg *arg,
 			char *argbuf, int alen, long val)
 {
@@ -1096,12 +1077,32 @@ struct lt_args_include* lt_args_buf_get(void)
 	return inc;
 }
 
-int lt_args_sym_entry(struct lt_config_shared *cfg, char *sym, La_regs *regs, 
-			char **argbuf, char **argdbuf)
+struct lt_args_sym* lt_args_sym_get(struct lt_config_shared *cfg,
+				    const char *sym)
 {
-	struct lt_args_sym *asym;
+	struct lt_args_sym *a;
+	ENTRY e, *ep;
 
-	if (NULL == (asym = getsym(cfg, sym)))
+	PRINT_VERBOSE(cfg, 1, "request for <%s>\n", sym);
+
+	e.key = (char*) sym;
+	hsearch_r(e, FIND, &ep, &cfg->args_tab);
+
+	if (!ep)
+		return NULL;
+
+	a = (struct lt_args_sym*) ep->data;
+
+	PRINT_VERBOSE(cfg, 1, "found %p <%s>\n", a, a->name);
+	return a;
+}
+
+int lt_args_sym_entry(struct lt_config_shared *cfg, struct lt_symbol *sym,
+			La_regs *regs, char **argbuf, char **argdbuf)
+{
+	struct lt_args_sym *asym = sym ? sym->args : NULL;
+
+	if (!asym)
 		return -1;
 
 	return getargs(cfg, asym, regs, argbuf, argdbuf);
@@ -1146,12 +1147,13 @@ static int getargs_ret(struct lt_config_shared *cfg, struct lt_args_sym *asym,
 	return lt_stack_process_ret(cfg, asym, regs, &data);
 }
 
-int lt_args_sym_exit(struct lt_config_shared *cfg, char *sym, La_regs *inregs, La_retval *outregs, 
+int lt_args_sym_exit(struct lt_config_shared *cfg, struct lt_symbol *sym,
+			La_regs *inregs, La_retval *outregs,
 			char **argbuf, char **argdbuf)
 {
-	struct lt_args_sym *asym;
+	struct lt_args_sym *asym = sym ? sym->args : NULL;
 
-	if (NULL == (asym = getsym(cfg, sym)))
+	if (!asym)
 		return -1;
 
 	return getargs_ret(cfg, asym, outregs, argbuf, argdbuf);

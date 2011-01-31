@@ -118,6 +118,7 @@ struct lt_config_shared {
 	int not_follow_fork;
 	int framesize_check;
 	unsigned int framesize;
+	int global_symbols;
 
 	/* for 'not_follow_fork' */
 	pid_t pid;
@@ -260,6 +261,15 @@ struct lt_thread {
 	struct lt_thread *next;
 };
 
+struct lt_symbol {
+	struct lt_args_sym *args;
+
+	/* symbol name */
+	const char *name;
+	/* symbol address */
+	void *ptr;
+};
+
 /* ctl */
 int main_ctl(int argc, char **argv);
 
@@ -307,6 +317,12 @@ char* lt_objsearch(struct lt_config_audit *cfg, const char *name,
 /* stack */
 int lt_stack_framesize(struct lt_config_audit *cfg, La_regs *regs);
 
+/* symbol */
+struct lt_symbol* lt_symbol_bind(struct lt_config_shared *cfg,
+				void *ptr, const char *name);
+struct lt_symbol* lt_symbol_get(struct lt_config_shared *cfg,
+				void *ptr, const char *name);
+
 #define PRINT(fmt, args...) \
 do { \
 	char lpbuf[1024]; \
@@ -316,6 +332,7 @@ do { \
 		__LINE__, \
 		fmt); \
 	printf(lpbuf, ## args); \
+	fflush(NULL); \
 } while(0)
 
 #define PRINT_VERBOSE(cfg, cond, fmt, args...) \

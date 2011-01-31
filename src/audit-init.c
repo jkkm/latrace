@@ -242,6 +242,10 @@ int audit_init(int argc, char **argv, char **env)
 	if (lt_sh(&cfg, not_follow_fork))
 		lt_sh(&cfg, pid) = getpid();
 
+	/* enable global symbols if needed */
+	lt_sh(&cfg, global_symbols) = lt_sh(&cfg, args_enabled);
+	PRINT_VERBOSE(&cfg, 1, "global_symbols %d\n", lt_sh(&cfg, global_symbols));
+
 	cfg.init_ok = 1;
 	return 0;
 }

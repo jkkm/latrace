@@ -70,12 +70,13 @@ static int check_flow_below(const char *symname, int in)
 	return ret;
 }
 
-static int sym_entry(const char *symname, char *lib_from, char *lib_to, 
-			La_regs *regs)
+static int sym_entry(const char *symname, void *ptr,
+		     char *lib_from, char *lib_to, La_regs *regs)
 {
 	int argret = -1;
 	char *argbuf = "", *argdbuf = "";
 	struct timeval tv;
+	struct lt_symbol *sym = NULL;
 
 	PRINT_VERBOSE(&cfg, 2, "%s@%s\n", symname, lib_to);
 
@@ -85,9 +86,12 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 	if (lt_sh(&cfg, timestamp) || lt_sh(&cfg, counts))
 		gettimeofday(&tv, NULL);
 
+	if (lt_sh(&cfg, global_symbols))
+		sym = lt_symbol_get(cfg.sh, ptr, symname);
+
 #ifdef CONFIG_ARCH_HAVE_ARGS
 	argret = lt_sh(&cfg, args_enabled) ?
-		lt_args_sym_entry(cfg.sh, (char*) symname, regs, &argbuf, &argdbuf) : -1;
+		lt_args_sym_entry(cfg.sh, sym, regs, &argbuf, &argdbuf) : -1;
 #endif
 
 	if (lt_sh(&cfg, pipe)) {
@@ -119,12 +123,14 @@ static int sym_entry(const char *symname, char *lib_from, char *lib_to,
 	return 0;
 }
 
-static int sym_exit(const char *symname, char *lib_from, char *lib_to, 
-			const La_regs *inregs, La_retval *outregs)
+static int sym_exit(const char *symname, void *ptr,
+			 char *lib_from, char *lib_to,
+			 const La_regs *inregs, La_retval *outregs)
 {
 	int argret = -1;
 	char *argbuf = "", *argdbuf = "";
 	struct timeval tv;
+	struct lt_symbol *sym = NULL;
 
 	PRINT_VERBOSE(&cfg, 2, "%s@%s\n", symname, lib_to);
 
@@ -134,9 +140,12 @@ static int sym_exit(const char *symname, char *lib_from, char *lib_to,
 	if (lt_sh(&cfg, timestamp) || lt_sh(&cfg, counts))
 		gettimeofday(&tv, NULL);
 
+	if (lt_sh(&cfg, global_symbols))
+		sym = lt_symbol_get(cfg.sh, ptr, symname);
+
 #ifdef CONFIG_ARCH_HAVE_ARGS
 	argret = lt_sh(&cfg, args_enabled) ?
-		lt_args_sym_exit(cfg.sh, (char*) symname,
+		lt_args_sym_exit(cfg.sh, sym,
 			(La_regs*) inregs, outregs, &argbuf, &argdbuf) : -1;
 #endif
 
@@ -225,7 +234,7 @@ unsigned int la_objopen(struct link_map *l, Lmid_t a, uintptr_t *cookie)
 	return 0;
 }
 
-static unsigned int la_symbind(const char *symname)
+static unsigned int la_symbind(ElfW(Sym) *sym, const char *symname)
 {
 	unsigned int flags = 0;
 
@@ -239,6 +248,10 @@ static unsigned int la_symbind(const char *symname)
 		if (check_names((char*) symname, cfg.symbols_omit))
 			flags = LA_SYMB_NOPLTENTER|LA_SYMB_NOPLTEXIT;
 	}
+
+	/* we are interested in this symbol */
+	if (!(flags & LA_SYMB_NOPLTENTER))
+		lt_symbol_bind(cfg.sh, (void*) sym->st_value, symname);
 
 	return flags;
 }
@@ -267,19 +280,21 @@ unsigned int la_objclose(uintptr_t *__cookie)
 	return 0;
 }
 
+#if __ELF_NATIVE_CLASS == 32
 uintptr_t la_symbind32(Elf32_Sym *sym, unsigned int ndx, uintptr_t *refcook,
 		uintptr_t *defcook, unsigned int *flags, const char *symname)
 {
-	*flags = la_symbind(symname);
+	*flags = la_symbind(sym, symname);
 	return sym->st_value;
 }
-
+#elif __ELF_NATIVE_CLASS == 64
 uintptr_t la_symbind64(Elf64_Sym *sym, unsigned int ndx, uintptr_t *refcook,
 		uintptr_t *defcook, unsigned int *flags, const char *symname)
 {
-	*flags = la_symbind(symname);
+	*flags = la_symbind(sym, symname);
 	return sym->st_value;
 }
+#endif
 
 ElfW(Addr)
 pltenter(ElfW(Sym) *sym, unsigned int ndx, uintptr_t *refcook,
@@ -295,8 +310,10 @@ pltenter(ElfW(Sym) *sym, unsigned int ndx, uintptr_t *refcook,
 
 		CHECK_PID(sym->st_value);
 
-		sym_entry(symname, lr ? lr->l_name : NULL,
-				   ld ? ld->l_name : NULL, regs);
+		sym_entry(symname, (void*) sym->st_value,
+			  lr ? lr->l_name : NULL,
+			  ld ? ld->l_name : NULL,
+			  regs);
 
 	} while(0);
 
@@ -318,8 +335,10 @@ unsigned int pltexit(ElfW(Sym) *sym, unsigned int ndx, uintptr_t *refcook,
 
 		CHECK_PID(0);
 
-		sym_exit(symname, lr ? lr->l_name : NULL,
-				  ld ? ld->l_name : NULL, inregs, outregs);
+		sym_exit(symname, (void*) sym->st_value,
+			 lr ? lr->l_name : NULL,
+			 ld ? ld->l_name : NULL,
+			 inregs, outregs);
 
 	} while(0);
 
