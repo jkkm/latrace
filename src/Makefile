@@ -19,7 +19,7 @@
 
 # libltaudit.so 
 AUDIT_BIN=libltaudit.so.$(CONFIG_VERSION)
-AUDIT_LDFLAGS="-Wl,-init=audit_init" "-Wl,-soname,$(AUDIT_BIN)" -fPIC -shared
+AUDIT_LDFLAGS="-Wl,-init=audit_init" "-Wl,-soname,$(AUDIT_BIN)" -fPIC -shared $(LDFLAGS)
 AUDIT_LIBS=$(LIBS) $(LEXLIB)
 
 AUDIT_OBJS=\
@@ -43,7 +43,7 @@ OBJS+=$(AUDIT_OBJS)
 PROGRAMS+= $(AUDIT_BIN)
 
 $(AUDIT_BIN): $(AUDIT_OBJS)
-	$(QUIET_LD)$(CC) $(AUDIT_LDFLAGS) -o $@ $(AUDIT_OBJS) $(AUDIT_LIBS)
+	$(QUIET_LD)$(CC) $(CFLAGS) $(AUDIT_LDFLAGS) -o $@ $(AUDIT_OBJS) $(AUDIT_LIBS)
 
 install::
 	$(call install,$(AUDIT_BIN),$(libdir),755)
@@ -70,7 +70,7 @@ CPPFLAGS+=-DLT_ARGS_DEF_DIR=\"$(confdir)\"
 CPPFLAGS+=-DLT_ARGS_DEF_CONF=\"$(sysconfdir)/latrace.conf\"
 
 $(LATRACE_BIN): $(LATRACE_OBJS)
-	$(QUIET_LD)$(CC) $(LDFLAGS) -o $@ $(LATRACE_OBJS) $(LATRACE_LIBS) $(LATRACE_LIB)
+	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(LATRACE_OBJS) $(LATRACE_LIBS) $(LATRACE_LIB)
 
 install::
 	$(call install,$(LATRACE_BIN),$(bindir),755)
