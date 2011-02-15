@@ -30,11 +30,11 @@ binary-arch: debian/stamp-build
 	install -d $(pkgdir)/DEBIAN $(docdir)
 	make install ROOTDIR="$(CURDIR)/$(pkgdir)"
 	cd $(pkgdir) && strip --strip-unneeded -R .note -R .comment \
-		usr/bin/latrace usr/lib/latrace/libltaudit.so
+		usr/bin/latrace usr/lib/latrace/libltaudit.so*
 	cp -p ChangeLog $(docdir)/changelog
 	cp -p README ReleaseNotes TODO debian/copyright $(docdir)
 	cp -p debian/changelog $(docdir)/changelog.Debian
-	cp -p debian/conffiles $(pkgdir)/DEBIAN
+	cd $(pkgdir) && find etc -type f -printf "/%p\n" > DEBIAN/conffiles
 	gzip -9f $(pkgdir)/usr/share/man/man1/latrace.1
 	gzip -9f $(docdir)/changelog $(docdir)/changelog.Debian
 	dpkg-shlibdeps $(pkgdir)/usr/bin/latrace

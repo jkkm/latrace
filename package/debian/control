@@ -3,7 +3,8 @@ Section: utils
 Priority: optional
 Maintainer: Akos PASZTORY <akos.pasztory@gmail.com>
 Standards-Version: 3.8.0
-Build-Depends: flex, bison, autoconf
+Build-Depends: flex, bison, autoconf, binutils-dev (>= 2.19.51),
+	       asciidoc, xmlto, docbook-xsl, docbook-xml
 
 Package: latrace
 Architecture: i386 amd64 armel
@@ -15,4 +16,4 @@ Description: traces library calls in dynamically linked programs
  is provided, latrace will display function arguments with detailed output
  for structures.
  .
- See also http://latrace.sourceforge.net/
+ See also http://people.redhat.com/jolsa/latrace/index.shtml
