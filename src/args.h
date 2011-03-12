@@ -98,13 +98,6 @@ struct lt_args_sym {
 	struct lt_arg **args;
 };
 
-struct lt_args_include {
-	FILE *yyin;
-	void *yybuf;
-	char *file;
-	int   lineno;
-};
-
 /* used in lt_args_cb_struct for argument type */
 enum {
 	LT_ARGS_STRUCT_ITSELF = 0,

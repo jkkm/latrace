@@ -1,18 +1,60 @@
+# latrace configuration file - version @CONFIG_VERSION@
 
-INCLUDE krava.conf
+# include another configuration file
+# INCLUDE "latrace-user.conf"
 
-GLOBAL {
-	# headers definition
-	HEADERS = @sysconfdir@/latrace.d/headers/latrace.h
+OPTIONS {
+	# -a, --args
+	# arguments definition file, implies '-A'
+	# defaults to $sysconfdir/etc/latrace.d/headers/latrace.h
+	# HEADERS = "headers.h"
 
-	# options definitions
-
-	# -l, --libs
-	OPT_LIBS = krava
-
-	# -t, --libs-to
-	OPT_LIBS_TO = krava
+	# -i, --indent-sym
+	# specify indent size specification
+	INDENT_SYM = 2
 
 	# -p, --pipe
-	OPT_PIPE = yes
+	# use pipe to latrace process to send audit data
+	# latrace app is then the one displaying the output
+	PIPE = YES
+
+	# -S, --timestamp
+	# display timestamp for each symbol
+	TIMESTAMP = NO
+
+	# -y, --framesize
+	# framesize for storing the stack before pltexit
+	FRAMESIZE = 1000
+
+	# -Y, --no-framesize-check
+	# framesize check
+	FRAMESIZE_CHECK = YES
+
+	# -T, --hide-tid
+	# dont display thread id
+	HIDE_TID = NO
+
+	# -F, --no-follow-fork
+	# dont follow fork calls - childs
+	FOLLOW_FORK = YES
+
+	# -E, --no-follow-exec
+	# dont follow exec calls
+	FOLLOW_EXEC = YES
+
+	# -d, --demangle
+	# run the symbol name throught the C++ demangler
+	DEMANGLE = NO
+
+	# -B, --braces
+	# always display braces {}
+	BRACES = NO
+
+	# -A, --enable-args
+	# enable arguments output (definitions from headers)
+	ENABLE_ARGS = NO
+
+	# -D, --detail-args
+	# display struct arguments in more detail
+	DETAIL_ARGS = NO
 }

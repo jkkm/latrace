@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
+%option prefix="lt_args_"
 
 %{
 
@@ -25,8 +26,9 @@
 
 #include "config.h"
 #include "args-bison.h"
+#include "lib-include.h"
 
-struct lt_args_include* lt_args_buf_get(void);
+extern struct lt_include *lt_args_sinc;
 
 %}
 
@@ -40,11 +42,11 @@ filename	([-0-9a-zA-Z\./_])+
 "/*"			BEGIN(comment);
 <comment>[^*\n]*	/* eat anything that's not a '*' */
 <comment>"*"+[^*/\n]*	/* eat up '*'s not followed by '/'s */
-<comment>\n		{ lt_args_buf_get()->lineno++; }
+<comment>\n		{ lt_inc_stack(lt_args_sinc)->lineno++; }
 <comment>"*"+"/"	BEGIN(INITIAL);
 
 "#include"		{ BEGIN(include); return INCLUDE; }
-<include>{filename}	{ yylval.s = strdup(yytext); return FILENAME; } 
+<include>{filename}	{ lt_args_lval.s = strdup(lt_args_text); return FILENAME; }
 <include>"\""		{ return '"'; }
 <include>\n		{ BEGIN(INITIAL); }
 <include>.		{ ; }
@@ -55,7 +57,7 @@ filename	([-0-9a-zA-Z\./_])+
 "struct"		{ return STRUCT; }
 "enum"			{ return ENUM; }
 "typedef"		{ return TYPEDEF; }
-{name}			{ yylval.s = strdup(yytext); return NAME; }   
+{name}			{ lt_args_lval.s = strdup(lt_args_text); return NAME; }
 "\*"+			{ return POINTER; }
 ")"			{ return ')'; }
 "("			{ return '('; }
@@ -65,7 +67,7 @@ filename	([-0-9a-zA-Z\./_])+
 ","			{ return ','; }
 "="			{ return '='; }
 \			{ ; }
-\n			{ lt_args_buf_get()->lineno++; }
+\n			{ lt_inc_stack(lt_args_sinc)->lineno++; }
 .			{ ; }
 
 %%
@@ -80,10 +82,10 @@ int yywrap()
 }
 #endif
 
-void yyerror(const char *m)
+void lt_args_error(const char *m)
 {
-	printf("latrace config file [%s] line %d: %s\n", 
-		lt_args_buf_get()->file, 
-		lt_args_buf_get()->lineno, 
-		m); 
+	printf("header file [%s] line %d: %s\n",
+		lt_inc_stack(lt_args_sinc)->file,
+		lt_inc_stack(lt_args_sinc)->lineno,
+		m);
 }

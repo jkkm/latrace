@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
+%name-prefix "lt_args_"
 
 %{
 
@@ -27,18 +28,20 @@
 #include <string.h>
 
 #include "config.h"
+#include "lib-include.h"
 
-int yylex (void);
-void yyerror(const char *m);
+int lt_args_lex(void);
+void lt_args_error(const char *m);
 
 static struct lt_config_shared *scfg;
 static int struct_alive = 0;
+struct lt_include *lt_args_sinc;
 
 #define ERROR(fmt, args...) \
 do { \
 	char ebuf[1024]; \
 	sprintf(ebuf, fmt, ## args); \
-	yyerror(ebuf); \
+	lt_args_error(ebuf); \
 	YYERROR; \
 } while(0)
 
@@ -100,7 +103,7 @@ entry include_def
 |
 entry END
 {
-	if (lt_args_buf_close(scfg))
+	if (lt_inc_close(scfg, lt_args_sinc))
 		return 0;
 }
 |
@@ -289,14 +292,15 @@ ENUM_REF:
 /* include definitions */
 include_def: INCLUDE '"' FILENAME '"'
 {
-	if (lt_args_buf_open(scfg, $3))
+	if (lt_inc_open(scfg, lt_args_sinc, $3))
 		ERROR("failed to process include");
 }
 
 %%
 
-int lt_args_parse_init(struct lt_config_shared *cfg)
+int lt_args_parse_init(struct lt_config_shared *cfg, struct lt_include *inc)
 {
 	scfg = cfg;
+	lt_args_sinc = inc;
 	return 0;
 }

@@ -86,6 +86,7 @@ all::
 
 install:: all
 	$(call install,etc/latrace.d/latrace.conf,$(confdir),644)
+	$(call install,etc/latrace.d/headers/latrace.h,$(headdir),644)
 	$(call install,etc/latrace.d/headers/ctype.h,$(headdir),644)
 	$(call install,etc/latrace.d/headers/inet.h,$(headdir),644)
 	$(call install,etc/latrace.d/headers/misc.h,$(headdir),644)
@@ -162,6 +163,7 @@ all:: $(PROGRAMS) LATRACE-CFLAGS
 clean::
 	$(call remove, $(OBJS) $(PROGRAMS))
 	$(call remove, src/args-bison.c src/args-flex.c src/args-bison.h src/args-bison.output)
+	$(call remove, src/config-bison.c src/config-flex.c src/config-bison.h src/config-bison.output)
 	$(call remove, lib bin share deps.make latrace-$(CONFIG_VERSION))
 
 mrproper::
@@ -187,6 +189,7 @@ package:
 # gcc option to do that.
 #  - no dependency for flex and bison definitions
 DEPS_OBJS=$(filter-out src/args-flex.o src/args-bison.o,$(OBJS))
+DEPS_OBJS:=$(filter-out src/config-bison.o src/config-flex.o,$(DEPS_OBJS))
 
 deps.make:
 	$(QUIET_DEP)$(RM) -f deps.make; \

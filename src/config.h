@@ -70,6 +70,29 @@ struct lt_config_tv {
 	char *name;
 };
 
+enum {
+	LT_OPT_HEADERS = 1,
+	LT_OPT_PIPE,
+	LT_OPT_INDENT_SYM,
+	LT_OPT_TIMESTAMP,
+	LT_OPT_FRAMESIZE,
+	LT_OPT_FRAMESIZE_CHECK,
+	LT_OPT_HIDE_TID,
+	LT_OPT_FOLLOW_FORK,
+	LT_OPT_FOLLOW_EXEC,
+	LT_OPT_DEMANGLE,
+	LT_OPT_BRACES,
+	LT_OPT_ENABLE_ARGS,
+	LT_OPT_DETAIL_ARGS,
+};
+
+struct lt_config_opt {
+	int idx;
+	char *sval;
+	unsigned long nval;
+	struct lt_list_head list;
+};
+
 struct lt_config_shared {
 #define LT_CONFIG_VERSION	1
 #define LT_CONFIG_MAGIC		((LT_CONFIG_VERSION << 16) + 0xdead)
@@ -322,6 +345,10 @@ struct lt_symbol* lt_symbol_bind(struct lt_config_shared *cfg,
 				void *ptr, const char *name);
 struct lt_symbol* lt_symbol_get(struct lt_config_shared *cfg,
 				void *ptr, const char *name);
+
+/* config options */
+struct lt_config_opt *lt_config_opt_new(int idx, char *sval, long nval);
+int lt_config_opt_process(struct lt_config_app *cfg, struct lt_list_head *list);
 
 #define PRINT(fmt, args...) \
 do { \

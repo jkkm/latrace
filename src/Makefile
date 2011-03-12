@@ -29,7 +29,8 @@ AUDIT_OBJS=\
 	src/output.o \
 	src/objsearch.o \
 	src/stack.o \
-	src/symbol.o
+	src/symbol.o \
+	src/lib-include.o
 
 ifeq ($(CONFIG_ARCH_HAVE_ARGS),y)
 AUDIT_OBJS+=\
@@ -61,13 +62,17 @@ LATRACE_OBJS=\
 	src/stats.o \
 	src/fifo.o \
 	src/thread.o \
-	src/output.o
+	src/output.o \
+	src/config-bison.o \
+	src/config-flex.o \
+	src/lib-include.o
 
 OBJS+=$(LATRACE_OBJS)
 PROGRAMS+=$(LATRACE_BIN)
 CPPFLAGS+=-DCONFIG_LIBDIR=\"$(libdir)\"
-CPPFLAGS+=-DLT_ARGS_DEF_DIR=\"$(confdir)\"
-CPPFLAGS+=-DLT_ARGS_DEF_CONF=\"$(sysconfdir)/headers/latrace.h\"
+CPPFLAGS+=-DLT_CONF_DIR=\"$(sysconfdir)/latrace.d\"
+CPPFLAGS+=-DLT_CONF_HEADERS_DIR=\"$(sysconfdir)/latrace.d/headers\"
+CPPFLAGS+=-DLT_CONF_HEADERS_FILE=\"$(sysconfdir)/latrace.d/headers/latrace.h\"
 
 $(LATRACE_BIN): $(LATRACE_OBJS)
 	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(LATRACE_OBJS) $(LATRACE_LIBS) $(LATRACE_LIB)

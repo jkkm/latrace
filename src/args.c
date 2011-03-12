@@ -28,26 +28,26 @@
 #include <stdio.h>
 
 #include "config.h"
+#include "lib-include.h"
 
-
-#define YY_BUF_SIZE        16384
-#define MAX_INCLUDE_DEPTH  10
 #define LT_EQUAL           " = "
 
-
 extern int errno;
+extern FILE *lt_args_in;
+int  lt_args_parse();
+void lt_args__switch_to_buffer (YY_BUFFER_STATE new_buffer  );
+void lt_args__delete_buffer (YY_BUFFER_STATE b  );
+YY_BUFFER_STATE lt_args__create_buffer (FILE *file,int size  );
 
-typedef struct  yy_buffer_state *YY_BUFFER_STATE;
-YY_BUFFER_STATE yy_create_buffer(FILE *file, int size);
-extern FILE    *yyin;
+static struct lt_include inc = {
+	.create_buffer    = lt_args__create_buffer,
+	.switch_to_buffer = lt_args__switch_to_buffer,
+	.delete_buffer    = lt_args__delete_buffer,
+	.in               = &lt_args_in,
+};
 
-int  yyparse();
-void yy_switch_to_buffer (YY_BUFFER_STATE new_buffer);
-void yy_delete_buffer(YY_BUFFER_STATE b);
+int lt_args_parse_init(struct lt_config_shared *cfg, struct lt_include *inc);
 
-int lt_args_parse_init(struct lt_config_shared *cfg);
-static struct lt_args_include include_stack[MAX_INCLUDE_DEPTH];
-static int include_stack_ptr = 0;
 static int enum_init = 0;
 
 
@@ -706,7 +706,7 @@ int lt_args_add_typedef(struct lt_config_shared *cfg, char *base,
 
 int lt_args_init(struct lt_config_shared *cfg)
 {
-	char *file = LT_ARGS_DEF_CONF;
+	char *file = LT_CONF_HEADERS_FILE;
 	int ret = 0;
 
 	if (!hcreate_r(LT_ARGS_TAB, &cfg->args_tab)) {
@@ -714,37 +714,32 @@ int lt_args_init(struct lt_config_shared *cfg)
 		return -1;
 	}
 
-	lt_args_parse_init(cfg);
+	lt_args_parse_init(cfg, &inc);
 
 	if (*cfg->args_def)
 		file = cfg->args_def;
 
 	PRINT_VERBOSE(cfg, 1, "arguments definition file %s\n", file);
 
-	if (lt_args_buf_open(cfg, file))
+	if (lt_inc_open(cfg, &inc, file))
 		return -1;
 
-	if (yyparse()) {
-		printf("failed to parse config file %s\n", file);
+	if (lt_args_parse()) {
+		printf("failed to header file(s) %s\n", file);
 		ret = -1;
 	}
 
 #if defined(LT_ARGS_ARCH_CONF)
 	/* Some architectures provides specific
 	 * configuration file. */
-	if (lt_args_buf_open(cfg, lt_args_arch_conf(cfg)))
+	if (lt_inc_open(cfg, &inc, lt_args_arch_conf(cfg)))
 		return -1;
 
-	if (yyparse()) {
+	if (lt_args_parse()) {
 		printf("failed to parse config file %s\n", file);
 		ret = -1;
 	}
 #endif
-
-	if (fclose(yyin)) {
-		perror("failed to close " LT_ARGS_DEF_CONF);
-		return -1;
-	}
 
 	return ret;
 }
@@ -974,107 +969,6 @@ static int getargs(struct lt_config_shared *cfg, struct lt_args_sym *asym,
 	data.args_len = cfg->args_maxlen;
 
 	return lt_stack_process(cfg, asym, regs, &data);
-}
-
-static FILE* open_include(struct lt_config_shared *cfg, char *file)
-{
-	FILE *f;
-	char fn[LT_MAXFILE];
-
-	/* we got an absolute path */
-	if ((NULL != (f = fopen(file, "r")))) {
-		PRINT_VERBOSE(cfg, 1, "open ok [%s]\n", file);
-		return f;
-	}
-
-	PRINT_VERBOSE(cfg, 1, "open failed [%s]: %s\n",
-			file, strerror(errno));
-
-	/* give up if there was already the absolute name */
-	if (*file == '/') {
-		printf("open failed [%s]: %s\n", file, strerror(errno));
-		return NULL;
-	}
-
-	/* not an absolute name, give it a chance 
-	   inside of the /etc config directory */
-	if (strlen(file) > (LT_MAXFILE - sizeof(LT_ARGS_DEF_DIR))) {
-		printf("file name length crossed the max %u: %s\n", 
-			(u_int) (LT_MAXFILE - sizeof(LT_ARGS_DEF_DIR)), file);
-		return NULL;
-	}
-
-	sprintf(fn, "%s/%s", LT_ARGS_DEF_DIR, file);
-
-	if ((NULL == (f = fopen(fn, "r")))) {
-		PRINT_VERBOSE(cfg, 1, "open failed [%s]: %s\n",
-				fn, strerror(errno));
-		printf("open failed [%s]: %s\n", file, strerror(errno));
-		return NULL;
-	}
-
-	PRINT_VERBOSE(cfg, 1, "open ok [%s]\n", fn);
-	return f;
-}
-
-int lt_args_buf_open(struct lt_config_shared *cfg, char *file)
-{
-	struct lt_args_include *inc;
-
-	PRINT_VERBOSE(cfg, 1, "opening buffer for [%s] depth %d\n",
-			file, include_stack_ptr);
-
-	if ((include_stack_ptr + 1) == MAX_INCLUDE_DEPTH) {
-		printf("include depth overstep");
-		return -1;
-	}
-
-	if (NULL == (yyin = open_include(cfg, file)))
-		return -1;
-
-	inc = &include_stack[include_stack_ptr++];
-	memset(inc, 0, sizeof(*inc));
-
-	inc->yyin   = yyin;
-	inc->file   = strdup(file);
-	inc->lineno = 1;
-	inc->yybuf  = yy_create_buffer(yyin, YY_BUF_SIZE);
-
-	yy_switch_to_buffer(inc->yybuf);
-
-	PRINT_VERBOSE(cfg, 1, "opened buffer for [%s] depth %d\n",
-			file, include_stack_ptr);
-	return 0;
-}
-
-int lt_args_buf_close(struct lt_config_shared *cfg)
-{
-	struct lt_args_include *inc = &include_stack[--include_stack_ptr];
-
-	PRINT_VERBOSE(cfg, 1, "buffer closed [%s], depth [%d]\n",
-			inc->file, include_stack_ptr);
-
-	free(inc->file);
-
-	/* EOF with no other includes on stack */
-	if (!include_stack_ptr)
-		return -1;
-
-	/* looks like the base buffer is  cleaned up by the 
-	   flex itself, so we do the actual cleaning 
-	   only for includes */
-	yy_delete_buffer(inc->yybuf);
-	fclose(inc->yyin);
-
-	inc = &include_stack[include_stack_ptr - 1];
-	yy_switch_to_buffer(inc->yybuf);
-	return 0;
-}
-
-struct lt_args_include* lt_args_buf_get(void)
-{
-	struct lt_args_include *inc = &include_stack[include_stack_ptr - 1];
-	return inc;
 }
 
 struct lt_args_sym* lt_args_sym_get(struct lt_config_shared *cfg,
