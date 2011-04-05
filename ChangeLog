@@ -1,5 +1,7 @@
 2011-04-05 Jiri Olsa <olsajiri@gmail.com>
 	* fix controled config bug - missing shared config assignment
+	* moving conf header files to new location + rename s/conf/h/
+	* adding support for configuration file
 
 2011-02-15 Jiri Olsa <olsajiri@gmail.com>
 	* moving debian directory to the packaging
