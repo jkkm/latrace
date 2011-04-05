@@ -196,6 +196,12 @@ do { \
 		return ret; \
 } while(0)
 
+#define CHECK_DISABLED(ret) \
+do { \
+	if (lt_sh(&cfg, disabled)) \
+		return ret; \
+} while(0)
+
 unsigned int la_version(unsigned int v)
 {
 	return v;
@@ -305,8 +311,7 @@ pltenter(ElfW(Sym) *sym, unsigned int ndx, uintptr_t *refcook,
 	struct link_map *ld = (struct link_map*) *defcook;
 
 	do {
-		if (lt_sh(&cfg, disabled))
-			break;
+		CHECK_DISABLED(sym->st_value);
 
 		CHECK_PID(sym->st_value);
 
@@ -330,9 +335,6 @@ unsigned int pltexit(ElfW(Sym) *sym, unsigned int ndx, uintptr_t *refcook,
 	struct link_map *ld = (struct link_map*) *defcook;
 
 	do {
-		if (lt_sh(&cfg, disabled))
-			break;
-
 		CHECK_PID(0);
 
 		sym_exit(symname, (void*) sym->st_value,

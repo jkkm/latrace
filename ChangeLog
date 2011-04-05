@@ -1,3 +1,6 @@
+2011-04-05 Jiri Olsa <olsajiri@gmail.com>
+	* fix controled config bug - missing shared config assignment
+
 2011-02-15 Jiri Olsa <olsajiri@gmail.com>
 	* moving debian directory to the packaging
 	* Sebastian Pipping <sping@gentoo.org>

@@ -61,6 +61,9 @@ static int init_ctl_config(char *file)
 
 	/* switching to the mmaped shared config */
 	cfg.sh = sh;
+
+	/* PRINT_VERBOSE magic */
+	cfg.sh->sh = sh;
 	return 0;
 }
 
