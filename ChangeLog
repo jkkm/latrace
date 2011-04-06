@@ -1,3 +1,6 @@
+2011-04-06 Jiri Olsa <olsajiri@gmail.com>
+	* fix memory leak in the argument display code
+
 2011-04-05 Jiri Olsa <olsajiri@gmail.com>
 	* fix controled config bug - missing shared config assignment
 	* moving conf header files to new location + rename s/conf/h/

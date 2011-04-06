@@ -70,6 +70,16 @@ static int check_flow_below(const char *symname, int in)
 	return ret;
 }
 
+static void free_argbuf(int argret, char *argbuf, char *argdbuf)
+{
+	if (argret)
+		return;
+
+	free(argbuf);
+	if (lt_sh(&cfg, args_detailed) && (*argdbuf))
+		free(argdbuf);
+}
+
 static int sym_entry(const char *symname, void *ptr,
 		     char *lib_from, char *lib_to, La_regs *regs)
 {
@@ -104,6 +114,7 @@ static int sym_entry(const char *symname, void *ptr,
 		len = lt_fifo_msym_get(&cfg, buf, FIFO_MSG_TYPE_ENTRY, &tv,
 				(char*) symname, lib_to, argbuf, argdbuf);
 
+		free_argbuf(argret, argbuf, argdbuf);
 		return lt_fifo_send(&cfg, pipe_fd, buf, len);
 	}
 
@@ -114,12 +125,7 @@ static int sym_entry(const char *symname, void *ptr,
 			symname, lib_to,
 			argbuf, argdbuf);
 
-	if (!argret) {
-		free(argbuf);
-		if (lt_sh(&cfg, args_detailed) && (*argdbuf))
-			free(argdbuf);
-	}
-
+	free_argbuf(argret, argbuf, argdbuf);
 	return 0;
 }
 
@@ -156,6 +162,7 @@ static int sym_exit(const char *symname, void *ptr,
 		len = lt_fifo_msym_get(&cfg, buf, FIFO_MSG_TYPE_EXIT, &tv,
 				(char*) symname, lib_to, argbuf, argdbuf);
 
+		free_argbuf(argret, argbuf, argdbuf);
 		return lt_fifo_send(&cfg, pipe_fd, buf, len);
 	}
 
@@ -166,13 +173,7 @@ static int sym_exit(const char *symname, void *ptr,
 
 	indent_depth--;
 
-	if (!argret) {
-		free(argbuf);
-
-		if (lt_sh(&cfg, args_detailed) && (*argdbuf))
-			free(argdbuf);
-	}
-
+	free_argbuf(argret, argbuf, argdbuf);
 	return 0;
 }
 
