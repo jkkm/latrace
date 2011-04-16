@@ -28,16 +28,35 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
+#include <sys/inotify.h>
 
 #include "config.h"
 
+
+static char *get_notify_dir(char *dir)
+{
+	static char notify_dir[LT_MAXFILE];
+	static int initialized = 0;
+	int s;
+
+	if (initialized)
+		return notify_dir;
+
+	s = snprintf(notify_dir, LT_MAXFILE, "%s/fifo", dir);
+	if (s >= LT_MAXFILE)
+		return NULL;
+
+	initialized = 1;
+	return notify_dir;
+}
 
 int lt_fifo_create(struct lt_config_audit *cfg, char *dir)
 {
 	int fd;
 	char fifo[100];
 
-	sprintf(fifo, "%s/fifo-%d", dir, (pid_t) syscall(SYS_gettid));
+	sprintf(fifo, "%s/fifo-%d", get_notify_dir(dir),
+		(pid_t) syscall(SYS_gettid));
 
 	if (-1 == mkfifo(fifo, 0666)) {
 		perror("mkfifo failed");
@@ -52,14 +71,55 @@ int lt_fifo_create(struct lt_config_audit *cfg, char *dir)
 	return fd;
 }
 
-int lt_fifo_open(struct lt_config_app *cfg, char *name)
+int lt_fifo_open(struct lt_config_app *cfg, char *dir, char *name)
 {
 	int fd;
+	char str_fifo[LT_MAXFILE];
 
-	if (-1 == (fd = open(name, O_RDONLY)))
+	snprintf(str_fifo, LT_MAXFILE, "%s/%s", get_notify_dir(dir), name);
+	PRINT_VERBOSE(cfg, 1, "opening fifo: %s\n", str_fifo);
+
+	if (-1 == (fd = open(str_fifo, O_RDONLY)))
 		perror("open fifo failed");
 
 	PRINT_VERBOSE(cfg, 1, "pipe openned fd: %d\n", fd);
+	return fd;
+}
+
+int lt_fifo_notify_fd(struct lt_config_app *cfg, char *dir)
+{
+	int fd;
+	char *notify_dir = get_notify_dir(dir);
+	struct stat st;
+
+	if (stat(notify_dir, &st)) {
+		if (mkdir(notify_dir, S_IRWXU)) {
+			perror("mkdir failed");
+			return -1;
+		}
+		if (stat(notify_dir, &st)) {
+			perror("stat failed");
+			return -1;
+		}
+	}
+
+	if (!S_ISDIR(st.st_mode)) {
+		PRINT_VERBOSE(cfg, 1, "WTF '%s' is not a directory..\n",
+				notify_dir);
+		return -1;
+	}
+
+	if (-1 == (fd = inotify_init())) {
+		perror("inotify_init failed");
+		return -1;
+	}
+
+	if (-1 == inotify_add_watch(fd, notify_dir, IN_CREATE)) {
+		perror("inotify_add_watch failed");
+		return -1;
+	}
+
+	PRINT_VERBOSE(cfg, 1, "fifo notification set to: %s\n", notify_dir);
 	return fd;
 }
 

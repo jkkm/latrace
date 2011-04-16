@@ -66,24 +66,7 @@ static int store_config(struct lt_config_app *cfg, char *file)
 	return 0;
 }
 
-static int set_dir_notify(char *dir)
-{
-	int fd;
-
-	if (-1 == (fd = inotify_init())) {
-		perror("inotify_init failed");
-		return -1;
-	}
-
-	if (-1 == inotify_add_watch(fd, dir, IN_CREATE)) {
-		perror("inotify_add_watch failed");
-		return -1;
-	}
-
-	return fd;
-}
-
-static int get_fifo_dir(char *buf, int len)
+static int get_config_dir(char *buf, int len)
 {
 	snprintf(buf, len , "%s-XXXXXX", CONFIG_LT_CONFIG);
 	if (NULL == mkdtemp(buf)) {
@@ -97,7 +80,6 @@ static int get_fifo_dir(char *buf, int len)
 static int get_fifo(struct lt_config_app *cfg, int notify_fd, 
 			char *dir, pid_t *pid)
 {
-	char str_fifo[LT_MAXFILE];
 	unsigned char buf[1000];
 	struct inotify_event *event = (struct inotify_event*) buf;
 
@@ -107,12 +89,11 @@ static int get_fifo(struct lt_config_app *cfg, int notify_fd,
 	}
 
 	sscanf(event->name, "fifo-%d", pid);
-	sprintf(str_fifo, "%s/%s", dir, event->name);
 
 	PRINT_VERBOSE(cfg, 1, "thread id %d, got fifo: %s\n",
-			*pid, str_fifo);
+			*pid, event->name);
 
-	return lt_fifo_open(cfg, str_fifo);
+	return lt_fifo_open(cfg, dir, event->name);
 }
 
 static int process_fifo(struct lt_config_app *cfg, struct lt_thread *t)
@@ -238,6 +219,8 @@ static int remove_dir(struct lt_config_app *cfg, char *name)
 	DIR *dir;
 	struct dirent *d;
 
+	PRINT_VERBOSE(cfg, 1, "removing %s\n", name);
+
 	if (NULL == (dir = opendir(name))) {
 		perror("opendir failed");
 		return -1;
@@ -245,13 +228,24 @@ static int remove_dir(struct lt_config_app *cfg, char *name)
 
 	while((d = readdir(dir))) {
 		char file[LT_MAXFILE];
+		struct stat st;
 
 		if (!strcmp(".", d->d_name) ||
 		    (!strcmp("..", d->d_name)))
 			continue;
 
 		sprintf(file, "%s/%s", name, d->d_name);
-		if (-1 == (unlink(file)))
+		if (stat(file, &st)) {
+			perror("stat failed");
+			continue;
+		}
+
+		if (S_ISDIR(st.st_mode)) {
+			remove_dir(cfg, file);
+			continue;
+		}
+
+		if (unlink(file))
 			perror("unlink failed");
 	}
 
@@ -271,9 +265,9 @@ int lt_run(struct lt_config_app *cfg)
 	char str_dir[LT_MAXFILE];
 	char str_cfg[LT_MAXFILE];
 	int status;
-	int notify_fd = -1;
+	int fifo_notify_fd = -1;
 
-	if (-1 == get_fifo_dir(str_dir, LT_MAXFILE))
+	if (-1 == get_config_dir(str_dir, LT_MAXFILE))
 		return -1;
 
 	sprintf(str_cfg, "%s/config", str_dir);
@@ -281,7 +275,7 @@ int lt_run(struct lt_config_app *cfg)
 		return -1;
 
 	if (lt_sh(cfg, pipe) &&
-	   (-1 == (notify_fd = set_dir_notify(str_dir))))
+	   (-1 == (fifo_notify_fd = lt_fifo_notify_fd(cfg, str_dir))))
 		return -1;
 
 	gettimeofday(&tv_program_start, NULL);
@@ -307,7 +301,7 @@ int lt_run(struct lt_config_app *cfg)
 	}
 
 	if (lt_sh(cfg, pipe))
-		status = process(cfg, child_pid, str_dir, notify_fd);
+		status = process(cfg, child_pid, str_dir, fifo_notify_fd);
 	else
 		waitpid(child_pid, &status, 0);
 

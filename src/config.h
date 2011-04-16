@@ -302,7 +302,8 @@ int lt_run(struct lt_config_app *cfg);
 
 /* fifo */
 int lt_fifo_create(struct lt_config_audit *cfg, char *dir);
-int lt_fifo_open(struct lt_config_app *cfg, char *name);
+int lt_fifo_open(struct lt_config_app *cfg, char *dir, char *name);
+int lt_fifo_notify_fd(struct lt_config_app *cfg, char *dir);
 int lt_fifo_send(struct lt_config_audit *cfg, int fd, char *buf, int len);
 int lt_fifo_recv(struct lt_config_app *cfg, struct lt_thread *t, 
 		void *buf, int bufsize);

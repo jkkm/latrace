@@ -1,5 +1,7 @@
 2011-04-16 Jiri Olsa <olsajiri@gmail.com>
 	* fix display of char arguments
+	* add threads fifo management to special directory
+	  so the notification is not affected by other files
 
 2011-04-06 Jiri Olsa <olsajiri@gmail.com>
 	* fix memory leak in the argument display code
