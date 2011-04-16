@@ -849,10 +849,10 @@ do {                                                                 \
 
 			if (*((char*) pval) <= ' ')
 				len = snprintf(argbuf, alen, "0x%02x",
-						*((char*) pval));
+						*((unsigned char*) pval));
 			else
 				len = snprintf(argbuf, alen, "0x%02x \'%c\'",
-						*((char*) pval), *((char*) pval));
+						*((unsigned char*) pval), *((char*) pval));
 		}
 		break;
 
