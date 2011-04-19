@@ -265,7 +265,7 @@ static unsigned int la_symbind(ElfW(Sym) *sym, const char *symname)
 
 void la_activity(uintptr_t *cookie, unsigned int act)
 {
-	PRINT_VERBOSE(&cfg, 2, "entry\n");
+	PRINT_VERBOSE(&cfg, 2, "%s\n", "entry");
 }
 
 char* la_objsearch(const char *name, uintptr_t *cookie, unsigned int flag)
@@ -278,12 +278,12 @@ char* la_objsearch(const char *name, uintptr_t *cookie, unsigned int flag)
 
 void la_preinit(uintptr_t *__cookie)
 {
-	PRINT_VERBOSE(&cfg, 2, "entry\n");
+	PRINT_VERBOSE(&cfg, 2, "%s\n", "entry");
 }
 
 unsigned int la_objclose(uintptr_t *__cookie)
 {
-	PRINT_VERBOSE(&cfg, 2, "entry\n");
+	PRINT_VERBOSE(&cfg, 2, "%s\n", "entry");
 	return 0;
 }
 
