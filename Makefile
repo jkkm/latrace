@@ -142,7 +142,11 @@ OBJS=
 include src/Makefile
 include doc/Makefile
 
-INCLUDES= -Isrc -Isrc/sysdeps/$(CONFIG_SYSDEP_DIR)
+ifeq ($(CONFIG_ARCH_HAVE_TEST),y)
+include test/Makefile
+endif
+
+INCLUDES= -I. -Isrc -Isrc/sysdeps/$(CONFIG_SYSDEP_DIR)
 ALL_CFLAGS=$(CPPFLAGS) $(CFLAGS) -O2 -fPIC -Wall $(INCLUDES) -D_GNU_SOURCE
 
 

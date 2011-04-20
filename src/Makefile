@@ -44,7 +44,7 @@ OBJS+=$(AUDIT_OBJS)
 PROGRAMS+= $(AUDIT_BIN)
 
 $(AUDIT_BIN): $(AUDIT_OBJS)
-	$(QUIET_LD)$(CC) $(CFLAGS) $(AUDIT_LDFLAGS) -o $@ $(AUDIT_OBJS) $(AUDIT_LIBS)
+	$(QUIET_LD)$(CC) $(CFLAGS) $(AUDIT_LDFLAGS) -o $@ $^ $(AUDIT_LIBS)
 
 install::
 	$(call install,$(AUDIT_BIN),$(libdir),755)
@@ -75,7 +75,7 @@ CPPFLAGS+=-DLT_CONF_HEADERS_DIR=\"$(sysconfdir)/latrace.d/headers\"
 CPPFLAGS+=-DLT_CONF_HEADERS_FILE=\"$(sysconfdir)/latrace.d/headers/latrace.h\"
 
 $(LATRACE_BIN): $(LATRACE_OBJS)
-	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(LATRACE_OBJS) $(LATRACE_LIBS) $(LATRACE_LIB)
+	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LATRACE_LIB)
 
 install::
 	$(call install,$(LATRACE_BIN),$(bindir),755)

@@ -1,5 +1,8 @@
-2011-04-19 Jiri Olsa <olsajiri@gmail.com>
+2011-04-20 Jiri Olsa <olsajiri@gmail.com>
 	* prevent gcc warning with single printf like arg passing
+	* adding automated test support, so far for x86 and x86_64,
+	  others are disabled. From this time on, I'll try to force
+	  addition of automated test for each  fix/feature.. ;)
 
 2011-04-16 Jiri Olsa <olsajiri@gmail.com>
 	* fix display of char arguments

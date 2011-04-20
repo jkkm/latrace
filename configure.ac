@@ -93,6 +93,14 @@ else
 	AC_MSG_WARN([Arguments display support disabled])
 fi
 
+# for following architectures we have automated tests support
+if test "$unamem" = "x86_64" -o\
+	"$unamem" = "i686"; then
+	AC_SUBST(CONFIG_ARCH_HAVE_TEST, "y")
+else
+	AC_MSG_WARN([No automated test support])
+fi
+
 AC_SEARCH_LIBS([cplus_demangle], [iberty_pic iberty],
 	[AC_DEFINE(CONFIG_LIBERTY, 1, "Liberty found.")],
 	[AC_MSG_WARN([libiberty not found, no demangle support (install binutils-dev)])])
