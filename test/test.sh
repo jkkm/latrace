@@ -1,7 +1,14 @@
 #!/bin/sh
 
 # common tests
-LD_LIBRARY_PATH=$PWD ./latrace -q ./test-common
+echo "[APP test-common]"
+LD_LIBRARY_PATH=$PWD ./latrace -qR ./test-common
 
 # arguments tests
-LD_LIBRARY_PATH=$PWD ./latrace -q -a $PWD/test/lib-test-args.conf ./test-args
+echo "[APP test-args]"
+LD_LIBRARY_PATH=$PWD ./latrace -qR -a $PWD/test/lib-test-args.conf ./test-args
+
+# script tests
+echo "[SCRIPTS]"
+. $PWD/test/script/test_tty_output.sh
+test_tty_output

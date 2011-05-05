@@ -84,7 +84,7 @@ static void usage()
 	printf("    -o, --output file               store output to file\n");
 	printf("\n");
 	printf("    -R, --ctl-config                controled config\n");
-	printf("    -q, --disable                   disable auditing (enables -R)\n");
+	printf("    -q, --disable                   disable auditing\n");
 	printf("\n");
 	printf("    -v, --verbose                   verbose output\n");
 	printf("    -V, --version                   display version\n");
@@ -275,6 +275,14 @@ static int process_option_val(struct lt_config_app *cfg, int idx,
 			      lt_sh(cfg, args_detailed));
 		break;
 
+	case LT_OPT_OUTPUT_TTY:
+		cfg->output_tty = 1;
+		strcpy(cfg->output_tty_file, sval);
+
+		PRINT_VERBOSE(cfg, 1, "OUTPUT_TTY '%s'\n",
+			      cfg->output_tty_file);
+		break;
+
 	default:
 		return -1;
 	}
@@ -334,7 +342,6 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 	lt_sh(cfg, args_maxlen)     = LR_ARGS_MAXLEN;
 	lt_sh(cfg, args_detail_maxlen) = LR_ARGS_DETAIL_MAXLEN;
 	cfg->csort = LT_CSORT_CALL;
-
 
 	/* read the default config file first */
 	if (read_config(cfg, conf_file)) {
@@ -529,7 +536,8 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 
 		case 'q':
 			lt_sh(cfg, disabled) = 1;
-			/* falling through */
+			break;
+
 		case 'R':
 			lt_sh(cfg, ctl_config) = 1;
 			break;

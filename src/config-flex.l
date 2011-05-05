@@ -85,6 +85,7 @@ OPTIONS				{ BEGIN(options); return OPTIONS; }
 <options>BRACES			{ return OPT_BRACES; }
 <options>ENABLE_ARGS		{ return OPT_ENABLE_ARGS; }
 <options>DETAIL_ARGS		{ return OPT_DETAIL_ARGS; }
+<options>OUTPUT_TTY		{ return OPT_OUTPUT_TTY; }
 
 <options>{bool}		{ RETURN_STR(BOOL); }
 <options>{value}	{ RETURN_LONG(VALUE); }

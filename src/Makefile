@@ -65,7 +65,8 @@ LATRACE_OBJS=\
 	src/output.o \
 	src/config-bison.o \
 	src/config-flex.o \
-	src/lib-include.o
+	src/lib-include.o \
+	src/tty.o
 
 OBJS+=$(LATRACE_OBJS)
 PROGRAMS+=$(LATRACE_BIN)

@@ -84,6 +84,7 @@ enum {
 	LT_OPT_BRACES,
 	LT_OPT_ENABLE_ARGS,
 	LT_OPT_DETAIL_ARGS,
+	LT_OPT_OUTPUT_TTY,
 };
 
 struct lt_config_opt {
@@ -164,6 +165,9 @@ struct lt_config_app {
 	int arg_num;
 
 	int csort;
+
+	int output_tty;
+	char output_tty_file[LT_MAXFILE];
 
 	struct lt_thread *threads;
 	struct lt_thread *iter;
@@ -350,6 +354,12 @@ struct lt_symbol* lt_symbol_get(struct lt_config_shared *cfg,
 /* config options */
 struct lt_config_opt *lt_config_opt_new(int idx, char *sval, long nval);
 int lt_config_opt_process(struct lt_config_app *cfg, struct lt_list_head *list);
+
+/* tty */
+int tty_master(struct lt_config_app *cfg);
+int tty_init(struct lt_config_app *cfg, int master);
+int tty_restore(struct lt_config_app *cfg);
+int tty_process(struct lt_config_app *cfg, int master);
 
 #define PRINT(fmt, args...) \
 do { \

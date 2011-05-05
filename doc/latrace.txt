@@ -114,7 +114,7 @@ OPTIONS
 	controled config feature
 
 *-q, --disable*::
-	run with disabled auditing (enabled -R)
+	run with disabled auditing
 
 
 EXAMPLES

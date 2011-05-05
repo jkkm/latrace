@@ -1,3 +1,7 @@
+2011-05-05 Jiri Olsa <olsajiri@gmail.com>
+	* adding OUTPUT_TTY config file option
+	* disabling connection between -R and -q options
+
 2011-04-20 Jiri Olsa <olsajiri@gmail.com>
 	* prevent gcc warning with single printf like arg passing
 	* adding automated test support, so far for x86 and x86_64,

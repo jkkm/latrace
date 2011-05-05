@@ -57,4 +57,8 @@ OPTIONS {
 	# -D, --detail-args
 	# display struct arguments in more detail
 	DETAIL_ARGS = NO
+
+	# no command line option equivalent
+	# stores terminal output to the file
+	# OUTPUT_TTY = "output-tty"
 }
