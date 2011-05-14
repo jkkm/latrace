@@ -74,7 +74,7 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT8_T
 
 date=`date "+%B %G"`
-unamem=`uname -m | sed 's/i.86/i686/'`
+unamem=`uname -m | sed -e 's/i.86/i686/' -e 's/^armv.*/arm/'`
 
 AC_SUBST(CONFIG_DATE, "$date")
 AC_SUBST(CONFIG_SYSDEP_DIR, "$unamem")

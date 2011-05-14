@@ -1,3 +1,7 @@
+2011-05-13 Jiri Olsa <olsajiri@gmail.com>
+	* build fix for ARM
+	  (contributed by Dr. David Alan Gilbert <david.gilbert@linaro.org>)
+
 2011-05-05 Jiri Olsa <olsajiri@gmail.com>
 	* adding OUTPUT_TTY config file option
 	* disabling connection between -R and -q options
