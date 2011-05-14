@@ -314,6 +314,7 @@ int lt_args_add_enum(struct lt_config_shared *cfg, char *name,
 	if (!enum_init) {
 	        if (!hcreate_r(LT_ARGS_DEF_ENUM_NUM, &args_enum_tab)) {
 	                perror("failed to create has table:");
+			free(en);
 	                return -1;
 	        }
 		enum_init = 1;
@@ -325,11 +326,7 @@ int lt_args_add_enum(struct lt_config_shared *cfg, char *name,
 	if (!hsearch_r(e, ENTER, &ep, &args_enum_tab)) {
 		perror("hsearch_r failed");
 		free(en);
-		/* we dont want to exit just because 
-		   we ran out of our symbol limit */
-		PRINT_VERBOSE(cfg, 3,
-			"reach the enum number limit %u\n", 
-			LT_ARGS_DEF_ENUM_NUM);
+		return 1;
 	}
 
 	/* We've got enum inside the hash, let's prepare the enum itself.
@@ -436,8 +433,10 @@ struct lt_enum_elem* lt_args_get_enum(struct lt_config_shared *cfg,
 
 		/* parse errors */
 		if ((errno == ERANGE && (num == LONG_MAX || num == LONG_MIN)) || 
-		    (errno != 0 && num == 0))
+		    (errno != 0 && num == 0)) {
+			free(elem);
 			return NULL;
+		}
 
 		if (endptr != val) {
 			elem->val   = num;
@@ -573,6 +572,7 @@ static struct lt_arg* argdup(struct lt_config_shared *cfg, struct lt_arg *asrc)
 
         if (NULL == (h = (struct lt_list_head*) malloc(sizeof(*h)))) {
 		perror("malloc failed");
+		free(arg);
 		return NULL;
 	}
                 
@@ -583,8 +583,11 @@ static struct lt_arg* argdup(struct lt_config_shared *cfg, struct lt_arg *asrc)
 
 		/* XXX Not sure how safe is this one... 
 		   might need some attention in future :) */
-		if (NULL == (aa = argdup(cfg, a)))
+		if (NULL == (aa = argdup(cfg, a))) {
+			free(h);
+			free(arg);
 			return NULL;
+		}
 
 		lt_list_add_tail(&aa->args_list, h);
 	}

@@ -73,7 +73,7 @@ static int compare(const void *a, const void *b)
 static int symbol_init(struct lt_config_shared *cfg,
 		       struct lt_symbol *sym, const char *name)
 {
-	struct lt_args_sym* a;
+	struct lt_args_sym* a = NULL;
 
 	if (lt_sh(cfg, args_enabled)) {
 		a = lt_args_sym_get(cfg, name);
