@@ -95,7 +95,8 @@ fi
 
 # for following architectures we have automated tests support
 if test "$unamem" = "x86_64" -o\
-	"$unamem" = "i686"; then
+	"$unamem" = "i686" -o\
+	"$unamem" = "arm" ; then
 	AC_SUBST(CONFIG_ARCH_HAVE_TEST, "y")
 else
 	AC_MSG_WARN([No automated test support])
