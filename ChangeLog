@@ -3,6 +3,7 @@
 	  force test.sh to use bash
 	  (contributed by Dr. David Alan Gilbert <david.gilbert@linaro.org>)
 	* fix test_[char|short|int|long] tests
+	* test_long - separate 32/64 versions
 
 2011-05-13 Jiri Olsa <olsajiri@gmail.com>
 	* build fix for ARM
