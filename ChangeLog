@@ -2,7 +2,7 @@
 	* args - use isprint to decide whether to print the character,
 	  force test.sh to use bash
 	  (contributed by Dr. David Alan Gilbert <david.gilbert@linaro.org>)
-	* fix test_char tests
+	* fix test_[char|short|int|long] tests
 
 2011-05-13 Jiri Olsa <olsajiri@gmail.com>
 	* build fix for ARM

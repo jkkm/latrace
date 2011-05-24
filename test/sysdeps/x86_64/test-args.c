@@ -11,42 +11,42 @@ int test_long(struct lt_config_shared *sh)
 	struct re_test_data data2[] = {
 		{ RE_TEST_TYPE_STR,  0, 47, "test_long_2\\(a = 123410, b = -12391243214298120\\)" },
 		{ RE_TEST_TYPE_STR, 48, -1, "\\[.*lib-test-args.so\\] \\{" },
-		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_2 = -12391243214174710" },
+		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_2 = 1876433041361794928" },
 	};
 	struct re_test_data data3[] = {
 		{ RE_TEST_TYPE_STR,  0, 38, "test_long_3\\(a = 1, b = -2, c = 234217\\)" },
 		{ RE_TEST_TYPE_STR, 39, -1, "\\[.*lib-test-args.so\\] \\{" },
-		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_3 = -234218" },
+		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_3 = -468434" },
 	};
 	struct re_test_data data4[] = {
 		{ RE_TEST_TYPE_STR,  0, 61, "test_long_4\\(a = 1999990880043210, b = 2, c = 9119999, d = -1\\)" },
 		{ RE_TEST_TYPE_STR, 62, -1, "\\[.*lib-test-args.so\\] \\{" },
-		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_4 = 1999990898283207" },
+		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_4 = 7830125791102782868" },
 	};
 	struct re_test_data data5[] = {
 		{ RE_TEST_TYPE_STR,  0, 63, "test_long_5\\(a = -1, b = 2147483647, c = 13, d = 100, e = 34121\\)" },
 		{ RE_TEST_TYPE_STR, 64, -1, "\\[.*lib-test-args.so\\] \\{" },
-		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_5 = 2150895733" },
+		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_5 = -95256576375073100" },
 	};
 	struct re_test_data data6[] = {
 		{ RE_TEST_TYPE_STR,  0, 91, "test_long_6\\(a = 100, b = 20432143210, c = -345436543, d = 12, e = 9999999999999, f = -1324\\)" },
 		{ RE_TEST_TYPE_STR, 92, -1, "\\[.*lib-test-args.so\\] \\{" },
-		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_6 = -4824496853369340280" },
+		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_6 = -4763653747676887424" },
 	};
 	struct re_test_data data7[] = {
 		{ RE_TEST_TYPE_STR,  0, 71, "test_long_7\\(a = 1, b = 24321, c = -3, d = 4, e = 432145, f = 6, g = 27\\)" },
 		{ RE_TEST_TYPE_STR, 72, -1, "\\[.*lib-test-args.so\\] \\{" },
-		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_7 = 1728415" },
+		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_7 = -20431825971480" },
 	};
 	struct re_test_data data8[] = {
 		{ RE_TEST_TYPE_STR,  0, 96, "test_long_8\\(a = -11111, b = 214321543, c = 30, d = -4, e = 51432123, f = -123, g = 7000, h = 76\\)" },
 		{ RE_TEST_TYPE_STR, 97, -1, "\\[.*lib-test-args.so\\] \\{" },
-		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_8 = 265749534" },
+		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_long_8 = 0" },
 	};
 	struct re_test_data data9[] = {
 		{ RE_TEST_TYPE_STR,   0, 100, "test_long_9\\(a = -10, b = 1, c = 3, d = 124321432234134, e = 9, f = 3, g = 14321311, h = -99, i = 10\\)" },
 		{ RE_TEST_TYPE_STR, 101,  -1, "\\[.*lib-test-args.so\\] \\{" },
-		{ RE_TEST_TYPE_STR,  -1,  -1, "\\} test_long_9 = -124321446555382" },
+		{ RE_TEST_TYPE_STR,  -1,  -1, "\\} test_long_9 = -3544365624466803272" },
 	};
 	#define DATA_CNT(num) (sizeof(data ## num)/sizeof(struct re_test_data))
 
