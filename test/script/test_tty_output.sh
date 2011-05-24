@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. $PWD/test/script/functions.sh
+
 function tto_init
 {
 	cat > /tmp/tto_latrace.conf <<EOF
@@ -23,12 +25,7 @@ function test_tty_output
 		$PWD/test/script/test_tty_output.sh > /dev/null
 
 	diff /tmp/tto_latrace.output $PWD/test/script/test_tty_output.sh
-	if [ $? -ne 0 ]; then
-		echo "FAILED test_tty_output"
-		exit
-	fi
+	CHECK_RET
 
 	tto_cleanup
-
-	echo .
 }

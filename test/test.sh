@@ -13,5 +13,7 @@ LD_LIBRARY_PATH=$PWD ./latrace -qR -a $PWD/test/lib-test-args.conf ./test-args
 
 # script tests
 echo "[SCRIPTS]"
-. $PWD/test/script/test_tty_output.sh
-test_tty_output
+. $PWD/test/script/functions.sh
+
+TEST test_tty_output
+TEST test_kill

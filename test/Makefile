@@ -13,16 +13,20 @@ test-common: test/test-lib.o test/test-common.o
 test-args: test/test-lib.o test/test-args.o test/sysdeps/$(CONFIG_SYSDEP_DIR)/test-args.o
 	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ lib-test-args.so
 
+test-kill: test/test-kill.o
+	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+
 OBJS+=test/test-lib.o
 
-OBJS+=\
-	test/lib-test-args.o \
+PROGRAMS+=lib-test-args.so test-args
+OBJS+=test/lib-test-args.o \
 	test/test-args.o \
 	test/sysdeps/$(CONFIG_SYSDEP_DIR)/test-args.o
 
-OBJS+=\
-	test/lib-test-common.o \
-	test/test-common.o
 
 PROGRAMS+=lib-test-common.so test-common
-PROGRAMS+=lib-test-args.so test-args
+OBJS+=test/lib-test-common.o \
+	test/test-common.o
+
+PROGRAMS+=test-kill
+OBJS+=	test/test-kill.o
