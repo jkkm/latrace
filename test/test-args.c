@@ -27,9 +27,9 @@ static int test_char(struct lt_config_shared *sh)
 		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_char_4 = 0xc9" },
 	};
 	struct re_test_data data5[] = {
-		{ RE_TEST_TYPE_STR,  0, 65, "test_char_5\\(a = 0xff, b = 0x15, c = 0x0d, d = 0x20, e = 0x79 'y'\\)" },
-		{ RE_TEST_TYPE_STR, 66, -1, "\\[.*lib-test-args.so\\] \\{" },
-		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_char_5 = 0xc7" },
+		{ RE_TEST_TYPE_STR,  0, 69, "test_char_5\\(a = 0xff, b = 0x15, c = 0x0d, d = 0x20 ' ', e = 0x79 'y'\\)" },
+		{ RE_TEST_TYPE_STR, 70, -1, "\\[.*lib-test-args.so\\] \\{" },
+		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_char_5 = 0x02" },
 	};
 	struct re_test_data data6[] = {
 		{ RE_TEST_TYPE_STR,  0, 75, "test_char_6\\(a = 0x64 'd', b = 0xc8, c = 0xd5, d = 0x0c, e = 0xc7, f = 0xf2\\)" },
@@ -44,7 +44,7 @@ static int test_char(struct lt_config_shared *sh)
 	struct re_test_data data8[] = {
 		{ RE_TEST_TYPE_STR,  0, 95, "test_char_8\\(a = 0xf5, b = 0x15, c = 0x1e, d = 0xfc, e = 0x17, f = 0x85, g = 0x46 'F', h = 0x06\\)" },
 		{ RE_TEST_TYPE_STR, 96, -1, "\\[.*lib-test-args.so\\] \\{" },
-		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_char_8 = 0xc9" },
+		{ RE_TEST_TYPE_STR, -1, -1, "\\} test_char_8 = 0x39 '9'" },
 	};
 	struct re_test_data data9[] = {
 		{ RE_TEST_TYPE_STR,   0, 109, "test_char_9\\(a = 0xf6, b = 0x01, c = 0x03, d = 0x04, e = 0x09, f = 0x63 'c', g = 0x4e 'N', h = 0xf7, i = 0x0c\\)" },

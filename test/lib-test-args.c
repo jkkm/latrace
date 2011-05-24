@@ -1,47 +1,47 @@
 
 char test_char_1(char a)
 {
-	return a*a;
+	return 'd';
 }
 
 char test_char_2(char a, char b)
 {
-	return a - b;
+	return 0xf6;
 }
 
 char test_char_3(char a, char b, char c)
 {
-	return a * b - c;
+	return 0xf7;
 }
 
 char test_char_4(char a, char b, char c, char d)
 {
-	return a + b - c * d;
+	return 0xc9;
 }
 
 char test_char_5(char a, char b, char c, char d, char e)
 {
-	return a + b * c / d * e;
+	return 0x2;
 }
 
 char test_char_6(char a, char b, char c, char d, char e, char f)
 {
-	return a / b * c / d * e - f;
+	return 'c';
 }
 
 char test_char_7(char a, char b, char c, char d, char e, char f, char g)
 {
-	return a / b + c - d * e + f * g;
+	return 0x19;
 }
 
 char test_char_8(char a, char b, char c, char d, char e, char f, char g, char h)
 {
-	return a + b + c - d + e - f + g / h;
+	return '9';
 }
 
 char test_char_9(char a, char b, char c, char d, char e, char f, char g, char h, char i)
 {
-	return a - b + c - d * e - f / g - h - i;
+	return 0xd0;
 }
 
 short test_short_1(short a)

@@ -19,6 +19,7 @@
 */
 
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <search.h>
@@ -850,7 +851,7 @@ do {                                                                 \
 				len = snprintf(argbuf, alen, "NULL");
 		} else {
 
-			if (*((char*) pval) <= ' ')
+			if (!isprint(*((char*) pval)))
 				len = snprintf(argbuf, alen, "0x%02x",
 						*((unsigned char*) pval));
 			else

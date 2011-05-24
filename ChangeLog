@@ -1,3 +1,9 @@
+2011-05-24 Jiri Olsa <olsajiri@gmail.com>
+	* args - use isprint to decide whether to print the character,
+	  force test.sh to use bash
+	  (contributed by Dr. David Alan Gilbert <david.gilbert@linaro.org>)
+	* fix test_char tests
+
 2011-05-13 Jiri Olsa <olsajiri@gmail.com>
 	* build fix for ARM
 	  (contributed by Dr. David Alan Gilbert <david.gilbert@linaro.org>)

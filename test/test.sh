@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+# Force locale to ensure we always get the same output
+export LC_ALL=C
 
 # common tests
 echo "[APP test-common]"
