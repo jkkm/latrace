@@ -39,12 +39,12 @@ void setlinebuf(FILE *stream);
 
 int fprintf(FILE *stream, char *format);
 int printf(char *format);
-int sprintf(char *s, char *format);
+int sprintf(void *s, char *format);
 int vfprintf(FILE *s, char *format);
 int vprintf(char *format);
-int vsprintf(char *s, char *format);
-int snprintf(char *s, size_t maxlen, char *format);
-int vsnprintf(char *s, size_t maxlen, char *format);
+int vsprintf(void *s, char *format);
+int snprintf(void *s, size_t maxlen, char *format);
+int vsnprintf(void *s, size_t maxlen, char *format);
 int vasprintf(void *ptr, char *f);
 int __asprintf(void *ptr, char *fmt);
 int asprintf(void *ptr, char *fmt);

@@ -2,6 +2,7 @@
 	* adding SIGTERM/SIGINT handlers,
 	  refactoring lt_run to check the latrace got killed
 	* adding tests for latrace termination
+	* args - replacing destination strings with void pointers
 
 2011-05-24 Jiri Olsa <olsajiri@gmail.com>
 	* args - use isprint to decide whether to print the character,
