@@ -83,12 +83,19 @@ int tty_init(struct lt_config_app *cfg, int master)
 	return 0;
 }
 
+void tty_close(struct lt_config_app *cfg)
+{
+	close(cfg->output_tty_fd);
+}
+
 int tty_restore(struct lt_config_app *cfg)
 {
 	int i, num_files = getdtablesize();
 
-	for(i = 0; i < num_files; i++)
-		close(i);
+	for(i = 0; i < num_files; i++) {
+		if (fcntl(i, F_GETFD, NULL) != -1)
+			close(i);
+	}
 
 	open("/dev/tty", O_RDWR);
 	dup(0);
@@ -102,9 +109,9 @@ int tty_process(struct lt_config_app *cfg, int master)
 #define BUFSIZE 4096
 	char buf[BUFSIZE];
 	ssize_t ret;
-	static int fd = 0;
+	int fd = cfg->output_tty_fd;
 
-	if (!fd) {
+	if (fd == -1) {
 		fd = open(cfg->output_tty_file, O_RDWR | O_CREAT | O_TRUNC,
 				S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
 		if (fd < 0) {
@@ -114,6 +121,8 @@ int tty_process(struct lt_config_app *cfg, int master)
 		}
 		PRINT_VERBOSE(cfg, 1, "opened tty output file %s\n",
 				cfg->output_tty_file);
+
+		cfg->output_tty_fd = fd;
 	}
 
 	ret = read(master, buf, BUFSIZE);

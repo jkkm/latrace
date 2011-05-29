@@ -342,6 +342,7 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 	lt_sh(cfg, args_maxlen)     = LR_ARGS_MAXLEN;
 	lt_sh(cfg, args_detail_maxlen) = LR_ARGS_DETAIL_MAXLEN;
 	cfg->csort = LT_CSORT_CALL;
+	cfg->output_tty_fd = -1;
 
 	/* read the default config file first */
 	if (read_config(cfg, conf_file)) {

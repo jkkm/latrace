@@ -357,8 +357,9 @@ static void run_cleanup(struct lt_config_app *cfg,
 {
 	if (lt_sh(cfg, pipe))
 		close(pa->fd_notify);
+
 	if (cfg->output_tty)
-		close(pa->fd_tty_master);
+		tty_close(cfg);
 
 	remove_dir(cfg, pa->dir);
 }

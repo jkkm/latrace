@@ -166,7 +166,8 @@ struct lt_config_app {
 
 	int csort;
 
-	int output_tty;
+	int  output_tty;
+	int  output_tty_fd;
 	char output_tty_file[LT_MAXFILE];
 
 	struct lt_thread *threads;
@@ -360,6 +361,7 @@ int tty_master(struct lt_config_app *cfg);
 int tty_init(struct lt_config_app *cfg, int master);
 int tty_restore(struct lt_config_app *cfg);
 int tty_process(struct lt_config_app *cfg, int master);
+void tty_close(struct lt_config_app *cfg);
 
 #define PRINT(fmt, args...) \
 do { \
