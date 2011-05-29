@@ -33,6 +33,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <errno.h>
+#include <signal.h>
 
 #include "config.h"
 
@@ -46,6 +47,8 @@ struct lt_process_args {
 	int fd_notify;
 	int fd_tty_master;
 };
+
+static volatile int exit_flag = 0;
 
 static int store_config(struct lt_config_app *cfg, char *file)
 {
@@ -152,7 +155,7 @@ static int process(struct lt_config_app *cfg, struct lt_process_args *pa)
 	fd_set cfg_set, wrk_set;
 	int fd_notify = pa->fd_notify;
 	int fd_tty_master = pa->fd_tty_master;
-	int max_fd = fd_notify;
+	int max_fd = 0, wait;
 #define MAX(a,b) ((a) < (b) ? (b) : (a))
 
 	FD_ZERO(&cfg_set);
@@ -173,7 +176,7 @@ static int process(struct lt_config_app *cfg, struct lt_process_args *pa)
 		max_fd = MAX(fd_notify, fd_tty_master);
 	}
 
-	while(!waitpid(pa->pid, &status, WNOHANG) ||
+	while(((wait = waitpid(pa->pid, &status, WNOHANG)) == 0) ||
 		/* let all the thread fifo close */
 		(finish) || 
 		/* Get inside at least once, in case the traced program 
@@ -194,12 +197,18 @@ if (ret < 0) \
 		struct lt_thread *t;
 		int ret;
 
+		/* we either got a signal or we lost the child,
+		 * either way there's nothing to wait for.. */
+		if (exit_flag || (wait == -1))
+			break;
+
 		getin = 0;
 		wrk_set = cfg_set;
 
 		ret = select(max_fd + 1, &wrk_set, NULL, NULL, &tv);
 		if (-1 == ret) {
-			perror("select failed");
+			if (errno != EINTR)
+				perror("select failed");
 			return -1;
 		}
 
@@ -302,73 +311,166 @@ static int remove_dir(struct lt_config_app *cfg, char *name)
 	return 0;
 }
 
-int lt_run(struct lt_config_app *cfg)
+static void sig_term_handler(int sig)
 {
-	char str_dir[LT_MAXFILE];
-	char str_cfg[LT_MAXFILE];
-	struct lt_process_args pa = { .dir = str_dir };
-	int status;
+	exit_flag = 1;
+}
 
-	if (get_config_dir(str_dir, LT_MAXFILE))
+static int setup_signals(void)
+{
+	struct sigaction act;
+
+	bzero(&act, sizeof(act));
+	act.sa_handler = sig_term_handler;
+
+        if (sigaction(SIGTERM, &act, NULL) ||
+	    sigaction(SIGINT,  &act, NULL))
 		return -1;
 
-	sprintf(str_cfg, "%s/config", str_dir);
+	return 0;
+}
+
+static int run_setup(struct lt_config_app *cfg,
+		     struct lt_process_args *pa)
+{
+	char str_cfg[LT_MAXFILE];
+
+	sprintf(str_cfg, "%s/config", pa->dir);
 	if (store_config(cfg, str_cfg))
 		return -1;
 
 	/* new thread notification descriptor */
 	if (lt_sh(cfg, pipe) &&
-	   (-1 == (pa.fd_notify = lt_fifo_notify_fd(cfg, str_dir))))
+	   (-1 == (pa->fd_notify = lt_fifo_notify_fd(cfg, pa->dir))))
 		return -1;
 
 	/* tty master descriptor */
 	if (cfg->output_tty &&
-	    (-1 == (pa.fd_tty_master = tty_master(cfg))))
+	    (-1 == (pa->fd_tty_master = tty_master(cfg))))
 		return -1;
 
-	gettimeofday(&tv_program_start, NULL);
+	return 0;
+}
 
-	if (0 == (pa.pid = fork())) {
+static void run_cleanup(struct lt_config_app *cfg,
+			struct lt_process_args *pa)
+{
+	if (lt_sh(cfg, pipe))
+		close(pa->fd_notify);
+	if (cfg->output_tty)
+		close(pa->fd_tty_master);
+
+	remove_dir(cfg, pa->dir);
+}
+
+static int run_child(struct lt_config_app *cfg,
+		     struct lt_process_args *pa)
+{
+
+	if (0 == (pa->pid = fork())) {
 		char str_audit[100];
 
 		sprintf(str_audit, "%s/libltaudit.so.%s", CONFIG_LIBDIR,
 			CONFIG_VERSION);
 
 		setenv("LD_AUDIT", str_audit, 1);
-		setenv("LT_DIR", str_dir, 1);
+		setenv("LT_DIR", pa->dir, 1);
 
 		if (cfg->output_tty &&
-		    tty_init(cfg, pa.fd_tty_master))
+		    tty_init(cfg, pa->fd_tty_master))
 			return -1;
 
 		PRINT_VERBOSE(cfg, 1, "executing %s\n", cfg->prog);
 
 		if (-1 == execvp(cfg->prog, cfg->arg)) {
+			int err = errno;
 			tty_restore(cfg);
 			printf("execve failed for \"%s\" : %s\n", 
-				cfg->prog, strerror(errno));
-			return -1;
+				cfg->prog, strerror(err));
 		}
-	} else if (pa.pid < 0) {
+		exit(-1);
+
+	} else if (pa->pid < 0) {
 		perror("fork failed");
 		return -1;
 	}
 
-	if (lt_sh(cfg, pipe) || cfg->output_tty)
-		status = process(cfg, &pa);
-	else
-		waitpid(pa.pid, &status, 0);
+	return 0;
+}
 
-	gettimeofday(&tv_program_stop, NULL);
+static int kill_child(struct lt_config_app *cfg,
+		      struct lt_process_args *pa)
+{
+	int status;
+	int cnt = 5 * 1000;
+	int nomercy = 1;
 
-	printf("\n%s finished - ", cfg->prog);
+	kill(pa->pid, SIGTERM);
 
-	if (WIFEXITED(status)) {
-		printf("exited, status=%d\n", WEXITSTATUS(status));
-	} else if (WIFSIGNALED(status)) {
-		printf("killed by signal %d\n", WTERMSIG(status));
+	/* be gracious, 5 seconds should be enough
+	 * for everyone ;) */
+	while(cnt--) {
+		if (waitpid(pa->pid, &status, WNOHANG)) {
+			nomercy = 0;
+			break;
+		}
+		usleep(1000);
 	}
 
-	remove_dir(cfg, str_dir);
-	return 0;
+	if (nomercy) {
+		kill(pa->pid, SIGKILL);
+		waitpid(pa->pid, &status, 0);
+	}
+
+	return status;
+}
+
+int lt_run(struct lt_config_app *cfg)
+{
+	char str_dir[LT_MAXFILE];
+	struct lt_process_args pa = { .dir = str_dir };
+	int ret = -1;
+
+	if (setup_signals())
+		return -1;
+
+	if (get_config_dir(pa.dir, LT_MAXFILE))
+		return -1;
+
+	do {
+		int status;
+
+		if (run_setup(cfg, &pa))
+			break;
+
+		gettimeofday(&tv_program_start, NULL);
+
+		if (run_child(cfg, &pa))
+			break;
+
+		if (lt_sh(cfg, pipe) || cfg->output_tty)
+			status = process(cfg, &pa);
+		else
+			waitpid(pa.pid, &status, 0);
+
+		gettimeofday(&tv_program_stop, NULL);
+
+		if (exit_flag) {
+			printf("\nlatrace interrupted, killing child (pid %d)\n",
+				pa.pid);
+			status = kill_child(cfg, &pa);
+		}
+
+		printf("\n%s finished - ", cfg->prog);
+
+		if (WIFEXITED(status)) {
+			printf("exited, status=%d\n", WEXITSTATUS(status));
+		} else if (WIFSIGNALED(status)) {
+			printf("killed by signal %d\n", WTERMSIG(status));
+		}
+
+	} while(0);
+
+	run_cleanup(cfg, &pa);
+	return ret;
 }
