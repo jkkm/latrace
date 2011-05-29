@@ -42,6 +42,10 @@ endif
 
 OBJS+=$(AUDIT_OBJS)
 PROGRAMS+= $(AUDIT_BIN)
+# no dependency for flex and bison definitions
+OBJS_DEPS_OMIT+=\
+	src/args-flex.o \
+	src/args-bison.o
 
 $(AUDIT_BIN): $(AUDIT_OBJS)
 	$(QUIET_LD)$(CC) $(CFLAGS) $(AUDIT_LDFLAGS) -o $@ $^ $(AUDIT_LIBS)
@@ -74,6 +78,10 @@ CPPFLAGS+=-DCONFIG_LIBDIR=\"$(libdir)\"
 CPPFLAGS+=-DLT_CONF_DIR=\"$(sysconfdir)/latrace.d\"
 CPPFLAGS+=-DLT_CONF_HEADERS_DIR=\"$(sysconfdir)/latrace.d/headers\"
 CPPFLAGS+=-DLT_CONF_HEADERS_FILE=\"$(sysconfdir)/latrace.d/headers/latrace.h\"
+# no dependency for flex and bison definitions
+OBJS_DEPS_OMIT+=\
+	src/config-bison.o \
+	src/config-flex.o
 
 $(LATRACE_BIN): $(LATRACE_OBJS)
 	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LATRACE_LIB)
@@ -82,3 +90,7 @@ install::
 	$(call install,$(LATRACE_BIN),$(bindir),755)
 	$(call link,$(LATRACE_BIN),$(LATRACE_CTL),$(bindir))
 
+clean::
+	$(call remove, src/config-bison.[ch] src/config-flex.c)
+	$(call remove, src/args-bison.[ch] src/args-flex.c)
+	$(call remove, src/config-bison.output src/args-bison.output)

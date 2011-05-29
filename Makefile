@@ -166,8 +166,6 @@ all:: $(PROGRAMS) LATRACE-CFLAGS
 
 clean::
 	$(call remove, $(OBJS) $(PROGRAMS))
-	$(call remove, src/args-bison.c src/args-flex.c src/args-bison.h src/args-bison.output)
-	$(call remove, src/config-bison.c src/config-flex.c src/config-bison.h src/config-bison.output)
 	$(call remove, lib bin share deps.make latrace-$(CONFIG_VERSION))
 
 mrproper::
@@ -191,9 +189,7 @@ package:
 # The gcc -M depedencies generation needs to repaired to include
 # subdirectory name within the target.. at least I haven't find any
 # gcc option to do that.
-#  - no dependency for flex and bison definitions
-DEPS_OBJS=$(filter-out src/args-flex.o src/args-bison.o,$(OBJS))
-DEPS_OBJS:=$(filter-out src/config-bison.o src/config-flex.o,$(DEPS_OBJS))
+DEPS_OBJS=$(filter-out $(OBJS_DEPS_OMIT),$(OBJS))
 
 deps.make:
 	$(QUIET_DEP)$(RM) -f deps.make; \
