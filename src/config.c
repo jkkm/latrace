@@ -131,7 +131,7 @@ static int read_config(struct lt_config_app *cfg, char *file)
 	int ret = 0;
 	lt_config_parse_init(cfg, &inc);
 
-	PRINT_VERBOSE(cfg, 1, "arguments definition file %s\n", file);
+	PRINT_VERBOSE(cfg, 1, "config file %s\n", file);
 
 	if (lt_inc_open(cfg->sh, &inc, file))
 		return -1;
@@ -327,8 +327,6 @@ struct lt_config_opt *lt_config_opt_new(int idx, char *sval, long nval)
 
 int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 {
-	char *conf_file = LT_CONF_DIR "/latrace.conf";
-
 	memset(cfg, 0, sizeof(*cfg));
 	cfg->sh = cfg->sh_storage.sh = &cfg->sh_storage;
 
@@ -345,12 +343,10 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 	cfg->output_tty_fd = -1;
 
 	/* read the default config file first */
-	if (read_config(cfg, conf_file)) {
-		printf("failed: read config file '%s'\n", conf_file);
+	if (read_config(cfg, LT_CONF_DIR "/latrace.conf")) {
+		printf("failed: read config file '" LT_CONF_DIR "/latrace.conf'\n");
 		usage();
 	}
-
-	conf_file = NULL;
 
 	while (1) {
 		int c;
@@ -528,7 +524,11 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 		#endif /* CONFIG_ARCH_HAVE_ARGS */
 
 		case 'N':
-			conf_file = optarg;
+			/* read user-specifide config file */
+			if (read_config(cfg, optarg)) {
+				printf("failed: read config file '%s'\n", optarg);
+				usage();
+			}
 			break;
 
 		case 'o':
@@ -565,12 +565,6 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 			cfg->arg[i_arg++] = argv[optind++];
 		}
 		cfg->arg_num = i_arg;
-	}
-
-	/* read user-specifide config file */
-	if (conf_file && read_config(cfg, conf_file)) {
-		printf("failed: read config file '%s'\n", conf_file);
-		usage();
 	}
 
 	if (!cfg->prog) {
