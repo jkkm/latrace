@@ -1,3 +1,7 @@
+2011-05-30 Jiri Olsa <olsajiri@gmail.com>
+	* fixed bug in tracer waiting code
+	  (do not exit the loop prematurely)
+
 2011-05-25 Jiri Olsa <olsajiri@gmail.com>
 	* adding SIGTERM/SIGINT handlers,
 	  refactoring lt_run to check the latrace got killed

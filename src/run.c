@@ -155,7 +155,7 @@ static int process(struct lt_config_app *cfg, struct lt_process_args *pa)
 	fd_set cfg_set, wrk_set;
 	int fd_notify = pa->fd_notify;
 	int fd_tty_master = pa->fd_tty_master;
-	int max_fd = 0, wait;
+	int max_fd = 0;
 #define MAX(a,b) ((a) < (b) ? (b) : (a))
 
 	FD_ZERO(&cfg_set);
@@ -176,7 +176,7 @@ static int process(struct lt_config_app *cfg, struct lt_process_args *pa)
 		max_fd = MAX(fd_notify, fd_tty_master);
 	}
 
-	while(((wait = waitpid(pa->pid, &status, WNOHANG)) == 0) ||
+	while((waitpid(pa->pid, &status, WNOHANG) == 0) ||
 		/* let all the thread fifo close */
 		(finish) || 
 		/* Get inside at least once, in case the traced program 
@@ -197,9 +197,8 @@ if (ret < 0) \
 		struct lt_thread *t;
 		int ret;
 
-		/* we either got a signal or we lost the child,
-		 * either way there's nothing to wait for.. */
-		if (exit_flag || (wait == -1))
+		/* we got a signal, there's nothing to wait for.. */
+		if (exit_flag)
 			break;
 
 		getin = 0;
