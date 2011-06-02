@@ -33,4 +33,8 @@
 /* liberty */
 #undef CONFIG_LIBERTY
 
+/* large file support */
+#undef _LARGE_FILES
+#undef _FILE_OFFSET_BITS
+
 #endif

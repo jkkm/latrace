@@ -1,3 +1,6 @@
+2011-06-02 Jiri Olsa <olsajiri@gmail.com>
+	* adding large file support
+
 2011-05-30 Jiri Olsa <olsajiri@gmail.com>
 	* fixed bug in tracer waiting code
 	  (do not exit the loop prematurely)

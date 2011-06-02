@@ -31,7 +31,6 @@
 
 #include "audit.h"
 #include "list.h"
-#include "autoconf.h"
 
 #ifdef CONFIG_ARCH_HAVE_ARGS
 #include "args.h"

@@ -72,6 +72,7 @@ AC_TYPE_INT32_T
 AC_TYPE_INT8_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT8_T
+AC_SYS_LARGEFILE
 
 date=`date "+%B %G"`
 unamem=`uname -m | sed -e 's/i.86/i686/' -e 's/^armv.*/arm/'`

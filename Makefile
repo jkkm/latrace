@@ -147,7 +147,8 @@ include test/Makefile
 endif
 
 INCLUDES= -I. -Isrc -Isrc/sysdeps/$(CONFIG_SYSDEP_DIR)
-ALL_CFLAGS=$(CPPFLAGS) $(CFLAGS) -O2 -fPIC -Wall $(INCLUDES) -D_GNU_SOURCE
+ALL_CFLAGS=$(CPPFLAGS) $(CFLAGS) -O2 -fPIC -Wall $(INCLUDES)
+ALL_CFLAGS+=-D_GNU_SOURCE -imacros src/autoconf.h
 
 
 %.o: %.c LATRACE-CFLAGS
