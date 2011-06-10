@@ -46,7 +46,7 @@ static LT_LIST_HEAD(opt_list);
 #define OPTION_ADD(idx, sval, nval) \
 do { \
 	struct lt_config_opt *opt; \
-	opt = lt_config_opt_new(idx, sval, nval); \
+	opt = lt_config_opt_new(scfg, idx, sval, nval); \
 	if (!opt) \
 		ERROR("failed to process option\n"); \
 	lt_list_add_tail(&opt->list, &opt_list); \
@@ -65,6 +65,7 @@ static struct lt_list_head ln_names;
 %token OPT_DETAIL_ARGS OPT_OUTPUT_TTY
 %token OPT_LIBS OPT_LIBS_TO OPT_LIBS_FROM
 %token OPT_SYM OPT_SYM_OMIT OPT_SYM_BELOW OPT_SYM_NOEXIT
+%token OPT_ARGS_STRING_POINTER_LENGTH
 
 %union
 {
@@ -248,6 +249,11 @@ OPTIONS_DEF OPT_SYM_NOEXIT '=' list_names_comma
 		ERROR("failed to process sym_below option");
 
 	OPTION_ADD(LT_OPT_SYM_NOEXIT, sym_noexit, -1);
+}
+|
+OPTIONS_DEF OPT_ARGS_STRING_POINTER_LENGTH '=' BOOL
+{
+	OPTION_ADD(LT_OPT_ARGS_STRING_POINTER_LENGTH, $4, -1);
 }
 |
 /* left blank intentionally */

@@ -325,6 +325,14 @@ static int process_option_val(struct lt_config_app *cfg, int idx,
 			      lt_sh(cfg, symbols_noexit));
 		break;
 
+	case LT_OPT_ARGS_STRING_POINTER_LENGTH:
+		CHECK_BOOL(val, sval, ival);
+		lt_sh(cfg, args_string_pointer_length) = val;
+
+		PRINT_VERBOSE(cfg, 1, "ARGS_STRING_POINTER_LENGTH %d\n",
+			      lt_sh(cfg, args_detailed));
+		break;
+
 	default:
 		return -1;
 	}
@@ -351,7 +359,8 @@ int lt_config_opt_process(struct lt_config_app *cfg, struct lt_list_head *list)
 	return 0;
 }
 
-struct lt_config_opt *lt_config_opt_new(int idx, char *sval, long nval)
+struct lt_config_opt *lt_config_opt_new(struct lt_config_app *cfg,
+					int idx, char *sval, long nval)
 {
 	struct lt_config_opt *opt;
 
@@ -364,6 +373,8 @@ struct lt_config_opt *lt_config_opt_new(int idx, char *sval, long nval)
 	opt->sval = sval ? strdup(sval) : NULL;
 	opt->nval = nval;
 
+	PRINT_VERBOSE(cfg, 1, "idx %d = %s, %d\n",
+		      opt->idx, opt->sval , opt->nval);
 	return opt;
 }
 

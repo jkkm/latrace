@@ -838,12 +838,18 @@ do {                                                                 \
 				char *s = val;
 				int slen = strlen(s);
 				int left = alen;
+				int info_len = 0;
+
+				if (lt_sh(cfg, args_string_pointer_length)) {
+					info_len = snprintf(argbuf, left, "(%p, %lu) ", s, strlen(s));
+					left -= info_len;
+				}
 
 				if ((slen + 2) > left) {
-					snprintf(argbuf, left, "\"%s", s);
+					snprintf(argbuf + info_len, left, "\"%s", s);
 					strncpy(argbuf + left - sizeof("...\"") + 1, "...\"", sizeof("...\""));
 				} else {
-					strcpy(argbuf, "\"");
+					strcpy(argbuf + info_len, "\"");
 					strcat(argbuf, s);
 					strcat(argbuf, "\"");
 				}

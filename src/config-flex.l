@@ -91,6 +91,7 @@ OPTIONS				{ BEGIN(options); return OPTIONS; }
 <options>SYM_OMIT		{ return OPT_SYM_OMIT; }
 <options>SYM_BELOW		{ return OPT_SYM_BELOW; }
 <options>SYM_NOEXIT		{ return OPT_SYM_NOEXIT; }
+<options>ARGS_STRING_POINTER_LENGTH { return OPT_ARGS_STRING_POINTER_LENGTH; }
 
 <options>{bool}		{ RETURN_STR(BOOL); }
 <options>{value}	{ RETURN_LONG(VALUE); }

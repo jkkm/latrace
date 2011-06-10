@@ -91,6 +91,7 @@ enum {
 	LT_OPT_SYM_OMIT,
 	LT_OPT_SYM_BELOW,
 	LT_OPT_SYM_NOEXIT,
+	LT_OPT_ARGS_STRING_POINTER_LENGTH,
 };
 
 struct lt_config_opt {
@@ -126,6 +127,7 @@ struct lt_config_shared {
 	char args_def[LT_MAXFILE];
 	char args_enabled;
 	char args_detailed;
+	char args_string_pointer_length;
 #define LR_ARGS_MAXLEN 1000
 	int  args_maxlen;
 #define LR_ARGS_DETAIL_MAXLEN 1000
@@ -369,7 +371,8 @@ struct lt_symbol* lt_symbol_get(struct lt_config_shared *cfg,
 				void *ptr, const char *name);
 
 /* config options */
-struct lt_config_opt *lt_config_opt_new(int idx, char *sval, long nval);
+struct lt_config_opt *lt_config_opt_new(struct lt_config_app *cfg,
+					int idx, char *sval, long nval);
 int lt_config_opt_process(struct lt_config_app *cfg, struct lt_list_head *list);
 int lt_config_ln_add(struct lt_list_head *head, char *name);
 int lt_config_ln_fill(struct lt_list_head *head, char *buf, int size);

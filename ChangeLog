@@ -5,6 +5,9 @@
 	* added following options
 	  LIBS, LIBS_TO, LIBS_FROM, SYM, SYM_OMIT, SYM_BELOW, SYM_NOEXIT
 	* automated tests for LIBS*/SYM*
+	* args - adding support to display string pointer and length,
+	  ARGS_STRING_POINTER_LENGTH option
+	  (contributed by Dr. David Alan Gilbert <david.gilbert@linaro.org>)
 
 2011-06-02 Jiri Olsa <olsajiri@gmail.com>
 	* adding large file support

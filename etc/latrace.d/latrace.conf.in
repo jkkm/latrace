@@ -91,4 +91,8 @@ OPTIONS {
 
 	# no command line option equivalent
 	SYM_NOEXIT = _setjmp
+
+	# no command line option equivalent
+	# function arguments - display string length and pointer value
+	ARGS_STRING_POINTER_LENGTH = NO
 }
