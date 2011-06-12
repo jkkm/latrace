@@ -283,6 +283,42 @@ static int process_option_val(struct lt_config_app *cfg, int idx,
 			      cfg->output_tty_file);
 		break;
 
+	case LT_OPT_LIBS:
+		strcpy(lt_sh(cfg, libs_both), sval);
+		PRINT_VERBOSE(cfg, 1, "LIBS '%s'\n",
+			      lt_sh(cfg, libs_both));
+		break;
+
+	case LT_OPT_LIBS_TO:
+		strcpy(lt_sh(cfg, libs_to), sval);
+		PRINT_VERBOSE(cfg, 1, "LIBS_TO '%s'\n",
+			      lt_sh(cfg, libs_to));
+		break;
+
+	case LT_OPT_LIBS_FROM:
+		strcpy(lt_sh(cfg, libs_from), sval);
+		PRINT_VERBOSE(cfg, 1, "LIBS_FROM '%s'\n",
+			      lt_sh(cfg, libs_from));
+		break;
+
+	case LT_OPT_SYM:
+		strcpy(lt_sh(cfg, symbols), sval);
+		PRINT_VERBOSE(cfg, 1, "SYM '%s'\n",
+			      lt_sh(cfg, symbols));
+		break;
+
+	case LT_OPT_SYM_OMIT:
+		strcpy(lt_sh(cfg, symbols_omit), sval);
+		PRINT_VERBOSE(cfg, 1, "SYM_OMIT '%s'\n",
+			      lt_sh(cfg, symbols_omit));
+		break;
+
+	case LT_OPT_SYM_BELOW:
+		strcpy(lt_sh(cfg, flow_below), sval);
+		PRINT_VERBOSE(cfg, 1, "SYM_BELOW '%s'\n",
+			      lt_sh(cfg, flow_below));
+		break;
+
 	default:
 		return -1;
 	}
@@ -323,6 +359,45 @@ struct lt_config_opt *lt_config_opt_new(int idx, char *sval, long nval)
 	opt->nval = nval;
 
 	return opt;
+}
+
+int lt_config_ln_add(struct lt_list_head *head, char *name)
+{
+	struct lt_config_ln *ln = malloc(sizeof(*ln));
+
+        if (!ln)
+                return -1;
+
+        ln->name = strdup(name);
+        lt_init_list_head(&ln->list);
+        lt_list_add_tail(&ln->list, head);
+	return 0;
+}
+
+int lt_config_ln_fill(struct lt_list_head *head, char *buf, int size)
+{
+        struct lt_config_ln *ln, *n;
+        int first = 1;
+	char *b = buf;
+
+        buf[0] = 0x00;
+
+        lt_list_for_each_entry_safe(ln, n, head, list) {
+		int ret;
+
+		ret = snprintf(b, size, "%s%s",
+				first ? "" : ",",
+				ln->name);
+
+		if (ret >= size)
+			return -1;
+
+		size -= ret;
+		b += ret;
+		first = 0;
+        }
+
+        return 0;
 }
 
 int lt_config(struct lt_config_app *cfg, int argc, char **argv)
@@ -393,45 +468,45 @@ int lt_config(struct lt_config_app *cfg, int argc, char **argv)
 
 		switch (c) {
 		case 'l':
-			if (strlen(optarg) > LT_LIBS_MAXSIZE)
+			if (strlen(optarg) >= LT_LIBS_MAXSIZE)
 				return -1;
 
-			strncpy(lt_sh(cfg, libs_both), optarg, strlen(optarg));
+			process_option_val(cfg, LT_OPT_LIBS, optarg, -1);
 			break;
 
 		case 't':
-			if (strlen(optarg) > LT_LIBS_MAXSIZE)
+			if (strlen(optarg) >= LT_LIBS_MAXSIZE)
 				return -1;
 
-			strncpy(lt_sh(cfg, libs_to), optarg, strlen(optarg));
+			process_option_val(cfg, LT_OPT_LIBS_TO, optarg, -1);
 			break;
 
 		case 'f':
-			if (strlen(optarg) > LT_LIBS_MAXSIZE)
+			if (strlen(optarg) >= LT_LIBS_MAXSIZE)
 				return -1;
 
-			strncpy(lt_sh(cfg, libs_from), optarg, strlen(optarg));
+			process_option_val(cfg, LT_OPT_LIBS_FROM, optarg, -1);
 			break;
 
 		case 's':
-			if (strlen(optarg) > LT_SYMBOLS_MAXSIZE)
+			if (strlen(optarg) >= LT_SYMBOLS_MAXSIZE)
 				return -1;
 
-			strncpy(lt_sh(cfg, symbols), optarg, strlen(optarg));
+			process_option_val(cfg, LT_OPT_SYM, optarg, -1);
 			break;
 
 		case 'n':
-			if (strlen(optarg) > LT_SYMBOLS_MAXSIZE)
+			if (strlen(optarg) >= LT_SYMBOLS_MAXSIZE)
 				return -1;
 
-			strncpy(lt_sh(cfg, symbols_omit), optarg, strlen(optarg));
+			process_option_val(cfg, LT_OPT_SYM_OMIT, optarg, -1);
 			break;
 
 		case 'b':
-			if (strlen(optarg) > LT_SYMBOLS_MAXSIZE)
+			if (strlen(optarg) >= LT_SYMBOLS_MAXSIZE)
 				return -1;
 
-			strncpy(lt_sh(cfg, flow_below), optarg, strlen(optarg));
+			process_option_val(cfg, LT_OPT_SYM_BELOW, optarg, -1);
 			break;
 
 		case 'v':

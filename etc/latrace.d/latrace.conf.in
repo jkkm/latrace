@@ -61,4 +61,31 @@ OPTIONS {
 	# no command line option equivalent
 	# stores terminal output to the file
 	# OUTPUT_TTY = "output-tty"
+
+	# Following options:
+	# LIBS/LIBS_TO/LIBS_FROM
+	# SYM/SYM_OMIT/SYM_BELOW
+	#
+	# use list of names as value.  Single names in the list are
+	# separated by comma ','. If the first char of a single name
+	# is '*', then the name is search for as substring, otherwise
+	# exact match is used.
+
+	# -l, --libs
+	# LIBS = krava.so
+
+	# -t, --libs-to
+	# LIBS_TO = krava.so
+
+	# -f, --libs-from
+	# LIBS_FROM = krava.so
+
+	# -s, --sym
+	# SYM = krava
+
+	# -n, --sym-omit
+	# SYM_OMIT = krava
+
+	# -b, --flow-below
+	# SYM_BELOW = krava
 }

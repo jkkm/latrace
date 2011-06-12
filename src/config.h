@@ -84,6 +84,12 @@ enum {
 	LT_OPT_ENABLE_ARGS,
 	LT_OPT_DETAIL_ARGS,
 	LT_OPT_OUTPUT_TTY,
+	LT_OPT_LIBS,
+	LT_OPT_LIBS_TO,
+	LT_OPT_LIBS_FROM,
+	LT_OPT_SYM,
+	LT_OPT_SYM_OMIT,
+	LT_OPT_SYM_BELOW,
 };
 
 struct lt_config_opt {
@@ -228,6 +234,12 @@ struct lt_config_audit {
 	int init_ok;
 };
 
+/* config - list name support */
+struct lt_config_ln {
+	char *name;
+	struct lt_list_head list;
+};
+
 #define lt_sh(cfg, field) ((cfg)->sh->field)
 
 #define FIFO_MSG_MAXLEN       2000
@@ -354,6 +366,8 @@ struct lt_symbol* lt_symbol_get(struct lt_config_shared *cfg,
 /* config options */
 struct lt_config_opt *lt_config_opt_new(int idx, char *sval, long nval);
 int lt_config_opt_process(struct lt_config_app *cfg, struct lt_list_head *list);
+int lt_config_ln_add(struct lt_list_head *head, char *name);
+int lt_config_ln_fill(struct lt_list_head *head, char *buf, int size);
 
 /* tty */
 int tty_master(struct lt_config_app *cfg);

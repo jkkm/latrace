@@ -2,6 +2,8 @@
 	* global_symbol fix - proper tree management
 	* make tracer return actual tracee status
 	* move all tests to scripts
+	* added following options
+	  LIBS, LIBS_TO, LIBS_FROM, SYM, SYM_OMIT, SYM_BELOW
 
 2011-06-02 Jiri Olsa <olsajiri@gmail.com>
 	* adding large file support

@@ -50,9 +50,7 @@ do { \
 
 num		[-0-9]
 value		({num})+
-alphnum		[-0-9a-zA-Z_]
-name		({alphnum})+
-filename	([-0-9a-zA-Z\./_])+
+name		([-0-9a-zA-Z\./_\-\*])+
 bool		YES|NO
 comment		^([\s\t])*#.*
 
@@ -66,7 +64,7 @@ comment		^([\s\t])*#.*
 .			{ ; }
 
 INCLUDE			{ BEGIN(include); return INCLUDE; }
-<include>{filename}	{ RETURN_STR(FILENAME); }
+<include>{name}		{ RETURN_STR(NAME); }
 <include>"\""		{ return '"'; }
 <include>\n		{ BEGIN(INITIAL); NEW_LINE(); }
 <include>.		{ ; }
@@ -86,15 +84,22 @@ OPTIONS				{ BEGIN(options); return OPTIONS; }
 <options>ENABLE_ARGS		{ return OPT_ENABLE_ARGS; }
 <options>DETAIL_ARGS		{ return OPT_DETAIL_ARGS; }
 <options>OUTPUT_TTY		{ return OPT_OUTPUT_TTY; }
+<options>LIBS			{ return OPT_LIBS; }
+<options>LIBS_TO		{ return OPT_LIBS_TO; }
+<options>LIBS_FROM		{ return OPT_LIBS_FROM; }
+<options>SYM			{ return OPT_SYM; }
+<options>SYM_OMIT		{ return OPT_SYM_OMIT; }
+<options>SYM_BELOW		{ return OPT_SYM_BELOW; }
 
 <options>{bool}		{ RETURN_STR(BOOL); }
 <options>{value}	{ RETURN_LONG(VALUE); }
-<options>{filename}	{ RETURN_STR(FILENAME); }
+<options>{name}		{ RETURN_STR(NAME); }
 <options>{comment}	{ ; }
 <options>"}"		{ BEGIN(INITIAL); return '}'; }
 <options>"{"		{ return '{'; }
 <options>"="		{ return '='; }
 <options>"\""		{ return '"'; }
+<options>","		{ return ','; }
 <options>"\\"		{ ; }
 <options>"\n"		{ NEW_LINE(); }
 <options>.		{ ; }
