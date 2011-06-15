@@ -95,6 +95,16 @@ struct lt_symbol* lt_symbol_bind(struct lt_config_shared *cfg,
 	struct lt_symbol *s = NULL;
 	void *val;
 
+	PRINT_VERBOSE(cfg, 1, "checking %s(%p)\n", name, ptr);
+
+	/* symbol already added */
+	s = lt_symbol_get(cfg, ptr, name);
+	if (s) {
+		PRINT_VERBOSE(cfg, 1, "found %s, ptr %p, sym %p\n",
+				name, sym->ptr, sym);
+		return s;
+	}
+
 	if (!sym) {
 		sym = malloc(sizeof(*sym));
 		if (!sym)
@@ -105,29 +115,20 @@ struct lt_symbol* lt_symbol_bind(struct lt_config_shared *cfg,
 	sym->ptr  = ptr;
 	sym->name = name;
 
-	PRINT_VERBOSE(cfg, 1, "checking %s(%p)\n", name, ptr);
+	/* do we care about this symbol? */
+	if (symbol_init(cfg, sym, name))
+		return NULL;
 
+	/* we do, let's add it */
 	val = tsearch((void *) sym, &root, compare);
 	if (!val)
 		return NULL;
 
+	/* symbol properly added */
 	s = (*(void**) val);
-
-	/* symbol already in */
-	if (s != sym) {
-		PRINT_VERBOSE(cfg, 1, "found %s, ptr %p, sym %p\n",
-				name, sym->ptr, sym);
-		return s;
-	}
 
 	PRINT_VERBOSE(cfg, 1, "added %s, ptr %p, sym %p\n",
 			name, sym->ptr, sym);
-
-	/* not interesting symbol */
-	if (symbol_init(cfg, sym, name))
-		return NULL;
-
-	/* symbol properly added */
 	sym = NULL;
 	return s;
 }

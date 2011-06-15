@@ -257,7 +257,8 @@ static unsigned int la_symbind(ElfW(Sym) *sym, const char *symname)
 	}
 
 	/* we are interested in this symbol */
-	if (!(flags & LA_SYMB_NOPLTENTER))
+	if (lt_sh(&cfg, global_symbols) &&
+	    !(flags & LA_SYMB_NOPLTENTER))
 		lt_symbol_bind(cfg.sh, (void*) sym->st_value, symname);
 
 	return flags;
