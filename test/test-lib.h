@@ -62,4 +62,19 @@ do { \
 
 #define BUFSIZE 1000
 
+#define LOCAL_TEST(data, cnt, test) \
+do { \
+	char buf[BUFSIZE]; \
+	int ret; \
+	TEST_START(); \
+	test; \
+	TEST_STOP(); \
+	ret = fout_read(sh, buf, BUFSIZE); \
+	if (!ret) \
+		return -1; \
+	ret = re_test(buf, data, cnt); \
+	if (RE_TEST_OK != ret) \
+		FAILED("test %i, pattern '%s'\n", ret, data[ret].pat); \
+} while(0)
+
 #endif

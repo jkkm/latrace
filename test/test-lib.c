@@ -187,6 +187,8 @@ int re_test(char *line, struct re_test_data *data, int cnt)
 				return i;
 			break;
 		}
+
+		/* TODO ??? line += m[0].rm_eo; */
 	}
 
 	return RE_TEST_OK;
