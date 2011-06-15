@@ -66,11 +66,12 @@ static int get_type(char *name)
 
 static int main_latrace(int argc, char **argv)
 {
+	int ret;
+
 	if (-1 == lt_config(&cfg, argc, argv))
 		return -1;
 
-	if (-1 == lt_run(&cfg))
-		return -1;
+	ret = lt_run(&cfg);
 
 	if ((lt_sh(&cfg, pipe)) && (*lt_sh(&cfg, output)))
 		fclose(lt_sh(&cfg, fout));
@@ -78,7 +79,7 @@ static int main_latrace(int argc, char **argv)
 	if (lt_sh(&cfg, counts))
 		lt_stats_show(&cfg);
 
-	return 0;
+	return ret;
 }
 
 int main(int argc, char **argv)

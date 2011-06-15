@@ -427,9 +427,9 @@ static int kill_child(struct lt_config_app *cfg,
 
 int lt_run(struct lt_config_app *cfg)
 {
+	char ret = (char) -1;
 	char str_dir[LT_MAXFILE];
 	struct lt_process_args pa = { .dir = str_dir };
-	int ret = -1;
 
 	if (setup_signals())
 		return -1;
@@ -469,6 +469,7 @@ int lt_run(struct lt_config_app *cfg)
 			printf("killed by signal %d\n", WTERMSIG(status));
 		}
 
+		ret = WEXITSTATUS(status);
 	} while(0);
 
 	run_cleanup(cfg, &pa);

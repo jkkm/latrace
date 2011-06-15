@@ -1,5 +1,6 @@
 2011-06-15 Jiri Olsa <olsajiri@gmail.com>
 	* global_symbol fix - proper tree management
+	* make tracer return actual tracee status
 
 2011-06-02 Jiri Olsa <olsajiri@gmail.com>
 	* adding large file support
