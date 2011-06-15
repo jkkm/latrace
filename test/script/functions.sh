@@ -3,7 +3,8 @@
 function CHECK_RET
 {
 	if [ $? -ne 0 ]; then
-		echo "FAILED"
+		echo " FAILED"
+		exit -1
 	else
 		echo -n "."
 	fi
