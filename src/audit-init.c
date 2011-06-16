@@ -204,6 +204,14 @@ int audit_init(int argc, char **argv, char **env)
 		return -1;
 	}
 
+	/* SYM_NOEXIT option */
+	if ((*lt_sh(&cfg, symbols_noexit)) &&
+	    (-1 == (cfg.symbols_noexit_cnt = get_names(&cfg, lt_sh(&cfg, symbols_noexit),
+						       cfg.symbols_noexit)))) {
+		printf("latrace failed to parse noexit symbols\n");
+		return -1;
+	}
+
 	/* -b */
 	if ((*lt_sh(&cfg, flow_below)) &&
 	    (-1 == (cfg.flow_below_cnt = get_names(&cfg, lt_sh(&cfg, flow_below),

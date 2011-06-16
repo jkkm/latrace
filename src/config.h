@@ -90,6 +90,7 @@ enum {
 	LT_OPT_SYM,
 	LT_OPT_SYM_OMIT,
 	LT_OPT_SYM_BELOW,
+	LT_OPT_SYM_NOEXIT,
 };
 
 struct lt_config_opt {
@@ -114,6 +115,7 @@ struct lt_config_shared {
 #define LT_SYMBOLS_MAXSIZE  200
 	char symbols[LT_SYMBOLS_MAXSIZE];
 	char symbols_omit[LT_SYMBOLS_MAXSIZE];
+	char symbols_noexit[LT_SYMBOLS_MAXSIZE];
 
 	char flow_below[LT_SYMBOLS_MAXSIZE];
 
@@ -223,6 +225,9 @@ struct lt_config_audit {
 
 	char *symbols_omit[LT_NAMES_MAX];
 	int symbols_omit_cnt;
+
+	char *symbols_noexit[LT_NAMES_MAX];
+	int symbols_noexit_cnt;
 
 	char *flow_below[LT_NAMES_MAX];
 	int flow_below_cnt;

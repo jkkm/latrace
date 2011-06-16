@@ -64,7 +64,7 @@ OPTIONS {
 
 	# Following options:
 	# LIBS/LIBS_TO/LIBS_FROM
-	# SYM/SYM_OMIT/SYM_BELOW
+	# SYM/SYM_OMIT/SYM_BELOW/SYM_NOEXIT
 	#
 	# use list of names as value.  Single names in the list are
 	# separated by comma ','. If the first char of a single name
@@ -88,4 +88,7 @@ OPTIONS {
 
 	# -b, --flow-below
 	# SYM_BELOW = krava
+
+	# no command line option equivalent
+	SYM_NOEXIT = _setjmp
 }

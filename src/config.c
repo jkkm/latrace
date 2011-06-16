@@ -319,6 +319,12 @@ static int process_option_val(struct lt_config_app *cfg, int idx,
 			      lt_sh(cfg, flow_below));
 		break;
 
+	case LT_OPT_SYM_NOEXIT:
+		strcpy(lt_sh(cfg, symbols_noexit), sval);
+		PRINT_VERBOSE(cfg, 1, "SYM_NOEXIT '%s'\n",
+			      lt_sh(cfg, symbols_noexit));
+		break;
+
 	default:
 		return -1;
 	}

@@ -245,12 +245,20 @@ static unsigned int la_symbind(ElfW(Sym) *sym, const char *symname)
 {
 	unsigned int flags = 0;
 
+	/* particular symbols specified, omit all others */
 	if (cfg.symbols_cnt) {
 		flags = LA_SYMB_NOPLTENTER|LA_SYMB_NOPLTEXIT;
 		if (check_names((char*) symname, cfg.symbols))
 			flags = 0;
 	}
 
+	/* we might want just pltenter for some.. eg for _setjmp */
+	if (cfg.symbols_noexit_cnt) {
+		if (check_names((char*) symname, cfg.symbols_noexit))
+			flags = LA_SYMB_NOPLTEXIT;
+	}
+
+	/* and keep omit options the strongest */
 	if (cfg.symbols_omit_cnt) {
 		if (check_names((char*) symname, cfg.symbols_omit))
 			flags = LA_SYMB_NOPLTENTER|LA_SYMB_NOPLTEXIT;

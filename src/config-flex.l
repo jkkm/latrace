@@ -90,6 +90,7 @@ OPTIONS				{ BEGIN(options); return OPTIONS; }
 <options>SYM			{ return OPT_SYM; }
 <options>SYM_OMIT		{ return OPT_SYM_OMIT; }
 <options>SYM_BELOW		{ return OPT_SYM_BELOW; }
+<options>SYM_NOEXIT		{ return OPT_SYM_NOEXIT; }
 
 <options>{bool}		{ RETURN_STR(BOOL); }
 <options>{value}	{ RETURN_LONG(VALUE); }

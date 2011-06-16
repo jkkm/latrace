@@ -64,7 +64,7 @@ static struct lt_list_head ln_names;
 %token OPT_DEMANGLE OPT_BRACES OPT_ENABLE_ARGS
 %token OPT_DETAIL_ARGS OPT_OUTPUT_TTY
 %token OPT_LIBS OPT_LIBS_TO OPT_LIBS_FROM
-%token OPT_SYM OPT_SYM_OMIT OPT_SYM_BELOW
+%token OPT_SYM OPT_SYM_OMIT OPT_SYM_BELOW OPT_SYM_NOEXIT
 
 %union
 {
@@ -238,6 +238,16 @@ OPTIONS_DEF OPT_SYM_BELOW '=' list_names_comma
 		ERROR("failed to process sym_below option");
 
 	OPTION_ADD(LT_OPT_SYM_BELOW, sym_below, -1);
+}
+|
+OPTIONS_DEF OPT_SYM_NOEXIT '=' list_names_comma
+{
+	char sym_noexit[LT_SYMBOLS_MAXSIZE];
+
+	if (lt_config_ln_fill(&ln_names, sym_noexit, LT_SYMBOLS_MAXSIZE))
+		ERROR("failed to process sym_below option");
+
+	OPTION_ADD(LT_OPT_SYM_NOEXIT, sym_noexit, -1);
 }
 |
 /* left blank intentionally */
