@@ -1,3 +1,6 @@
+2011-06-21 Jiri Olsa <olsajiri@gmail.com>
+	* config - fixed memory leak
+
 2011-06-15 Jiri Olsa <olsajiri@gmail.com>
 	* global_symbol fix - proper tree management
 	* make tracer return actual tracee status

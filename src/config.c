@@ -412,6 +412,10 @@ int lt_config_ln_fill(struct lt_list_head *head, char *buf, int size)
 		size -= ret;
 		b += ret;
 		first = 0;
+
+		lt_list_del(&ln->list);
+		free(ln->name);
+		free(ln);
         }
 
         return 0;
