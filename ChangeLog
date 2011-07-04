@@ -1,3 +1,6 @@
+2011-07-07 Jiri Olsa <olsajiri@gmail.com>
+	* args - fix size_t printf compile warning
+
 2011-06-21 Jiri Olsa <olsajiri@gmail.com>
 	* config - fixed memory leak
 

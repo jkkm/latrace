@@ -841,7 +841,7 @@ do {                                                                 \
 				int info_len = 0;
 
 				if (lt_sh(cfg, args_string_pointer_length)) {
-					info_len = snprintf(argbuf, left, "(%p, %lu) ", s, strlen(s));
+					info_len = snprintf(argbuf, left, "(%p, %zu) ", s, strlen(s));
 					left -= info_len;
 				}
 
