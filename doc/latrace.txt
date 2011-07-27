@@ -10,167 +10,180 @@ latrace - LD_AUDIT 2.4+ libc frontend
 
 SYNOPSIS
 --------
-*latrace* [-ltfsnbcCpADaoyIiBdvTFELVh] command [arg ... ]
+latrace [-snltfvhiBdISbcCyYLpoaNADVTFERq] command [arg ... ]
 
 
 DESCRIPTION
 -----------
-*latrace*  is  able  to run a command and display its dynamic library calls using
-a *LD_AUDIT* libc feature (available from libc version 2.4 onward - see <<DISCUSSION>>
-).  It is also capable to measure and display various statistics of
-dynamic calls.
+The latrace tracer is able to run a command and display its dynamic library calls using
+a LD_AUDIT libc feature, available from libc version 2.4 onward. It is also capable
+to measure and display various statistics of dynamic calls.  See <<DISCUSSION>>
+for more details.
 
-If the config file is provided, latrace will display symbol's arguments with
-detailed output for structures.  The config file syntax  is  similar to the C
-language, with several exceptions (see <<CONFIG>>).
+If the header file with functions' declarations is provided, latrace will display
+functions's arguments. The header file file syntax is similar to the C language, with
+several exceptions See <<HEADERS>> for more details.
 
-The latrace by default fully operates inside of the traced program.  However
-another pipe mode is available, to move the main work to the latrace binary
-(see <<PIPEMODE>>).
+The latrace by default fully operates inside of the traced program. However
+another "pipe mode" is available to move the main work to the tracer - the latrace
+binary. See <<PIPEMODE>> for more details.
 
-Its use is very similar to strace(1) and ltrace(1).
+The latrace use is similar to strace(1) and ltrace(1).
 
 
 OPTIONS
 -------
-*-l, --libs lib1[,lib2,...]*::
+-l, --libs lib1[,lib2,...]::
 	audit from and to lib1, lib2 ...
 
-*-t, --libs-to lib1[,lib2,...]*::
+-t, --libs-to lib1[,lib2,...]::
 	audit to lib1, lib2 ...
 
-*-f, --libs-from lib1[,lib2,...]*::
+-f, --libs-from lib1[,lib2,...]::
 	audit from lib1, lib2 ...
 
-*-s, --sym sym1[,sym2,...]*::
+-s, --sym sym1[,sym2,...]::
 	audit symbols sym1, sym2 ...
 
-*-n, --sym-omit sym1[,sym2,...]*::
+-n, --sym-omit sym1[,sym2,...]::
 	omit symbols sym1, sym2 ...
 
-*-S, --timestamp*::
-	display timestamp for each symbol
+-L, --lib-subst s1[,s2,...]::
+	objsearch LD_AUDIT interface (See <<OBJSEARCH>>)
 
-*-b, --flow-below sym1[,sym2,...]*::
-	display flow for sym1, sym2 ...
-
-*-c, --counts*::
+-c, --counts::
 	display statistics counts of symbols - implies pipe mode (see <<PIPEMODE>>)
 	an no symbol output is displayed
 
-*-C, --sort-counts stat*:: 
+-C, --sort-counts stat::
 	implies -c, plus sort the statistics by stat with following values:
 	time,per,call,ucall,lib,sym (default is call)
 
-*-p, --pipe*:: 
+-p, --pipe::
 	use pipe to latrace process to send audit data (see <<PIPEMODE>>)
 
-*-o, --output file*::
-	store output to file
+-N, --conf::
+	config file (see <<CONFIG>>)
 
-*-A, --enable-args*::
+-A, --enable-args::
 	enable arguments output (definitions from /etc/latrace.conf)
 
-*-D, --detail-args*::
+-D, --detail-args::
 	display struct arguments in more detail
 
-*-a, --args file*::
+-a, --args file::
 	specify arguments definition file, implies -A (without the default
 	definition file of course)
 
-*-y, --framesize number*::
+-y, --framesize number::
 	framesize for storing the stack before pltexit (default 100)
 
-*-Y, --no-framesize-check*::
+-Y, --no-framesize-check::
 	disable framesize check
 
-*-I, --no-indent-sym*::
-	do no indent symbols based on the their stack depth
-
-*-i, --indent-sym indent_size*::
-	indent size specification in indent_size
-
-*-B, --braces*::
-	allways display '{' '}' for the around the symbol body
-
-*-d, --demangle*::
-	C++ demangle symbols on the output
-
-*-v, --verbose*::
-	verbose output
-
-*-T, --hide-tid*::
-	dont display thread id
-
-*-F, --no-follow-fork*::
+-F, --no-follow-fork::
 	dont follow fork calls (childs). This is just supressing the latrace
 	output from new childs.  The nature of the *LD_AUDIT* feature  prevents to
 	disable it completely.
 
-*-E, --no-follow-exec*::
+-E, --no-follow-exec::
 	dont follow exec calls
 
-*-R, --ctl-config*::
+-S, --timestamp::
+	display timestamp for each symbol
+
+-b, --flow-below sym1[,sym2,...]::
+	display flow for sym1, sym2 ...
+
+-I, --no-indent-sym::
+	do no indent symbols based on the their stack depth
+
+-i, --indent-sym indent_size::
+	indent size specification in indent_size
+
+-B, --braces::
+	allways display '{' '}' for the around the symbol body
+
+-d, --demangle::
+	C++ demangle symbols on the output
+
+-T, --hide-tid::
+	dont display thread id
+
+-o, --output file::
+	store output to file
+
+-R, --ctl-config::
 	controled config feature
 
-*-q, --disable*::
+-q, --disable::
 	run with disabled auditing
+
+-v, --verbose::
+	verbose output
+
+-V, --version::
+	display version
+
+-h, --help::
+	display help
 
 
 EXAMPLES
 --------
 - The simplest way to run latrace is like this:
 +
-**	latrace cat**
+	latrace cat
 
 - To see the argument values specified by default config file run:
 +
-**	latrace -A cat**
+	latrace -A cat
 
 - Same as above but using the pipe mode to get all the end symbols printed:
 +
-**	latrace -Ap cat**
+	latrace -Ap cat
 
 - To see the argument values specified by specified config file run:
 +
-**	latrace -a latrace.conf cat**
+	latrace -a latrace.conf cat
 
 - To get output only for specified symbol (eg. read and write) run:
 +
-**	latrace -A -s read,write cat**
+	latrace -A -s read,write cat
 
 - To get flow under the specified symbol (eg. sysconf) run:
 +
-**	latrace -b sysconf kill**
+	latrace -b sysconf kill
 
 - To get output only for specified library (eg. libproc) run:
 +
-**	latrace -Al libproc w**
+	latrace -Al libproc w
 
 - To get symbol statistics run:
 +
-**	latrace -c ls**
+	latrace -c ls
 
 - To get symbol statistics sorted by time run:
 +
-**	latrace -C time ls**
+	latrace -C time ls
 
 - To get output stored to the text file run:
 +
-**	latrace -o output.latrace ls**
+	latrace -o output.latrace ls
 
 - To change the libkrava1.so dependency to the libkrava2.so run one of these:
 +
-**	latrace -L krava1%krava2 ex**
+	latrace -L krava1%krava2 ex
 +
-**	latrace -L krava1~libkrava2.so ex**
+	latrace -L krava1~libkrava2.so ex
 +
-**	latrace -L libkrava1.so=libkrava2.so ex**
+	latrace -L libkrava1.so=libkrava2.so ex
 
 
 [[DISCUSSION]]
 DISCUSSION
 ----------
+[[NAMESCHECK]]
 NAMES CHECK
 ~~~~~~~~~~~
 For options *"-l -t -f -s -n -b"* the *** symbol can be used to switch to the
@@ -207,10 +220,11 @@ The audit library needs to export following symbols (the "la_PLTENTER" and
 	"la_PLTENTER"
 	"la_PLTEXIT"
 	"la_objclose"
-+
 
 As for the latrace package the audit shared library is called libltaudit.so.
 
+
+[[OBJSEARCH]]
 OBJSEARCH
 ~~~~~~~~~
 The objsearch *LD_AUDIT* interface provide means for changing traced program
@@ -267,47 +281,130 @@ at the end.
 [[CONFIG]]
 CONFIG
 ~~~~~~
-The  latrace  config  file  allows user to define symbols as an classic C
-functions with arguments.  Argument names will be display together with values
+The latrace provide possibility to enable/disable some of the options
+by means of configuration file. Some of the options are linked to the
+command line arguments some of them are not.  When latrace starts the
+global configuration file is read. This file is usually being placed
+in here:
+
+	/etc/latrace.d/latrace.conf
+
+Having default values read from this file, user can overload any of them
+by command line options or by supling another config file via *-N, --conf*
+option.
+
+
+The configuration file syntax is roughly:
+
+...........................................
+INCLUDE <anotherconfigfile>
+
+OPTIONS {
+	OPTION1 = VALUE
+	OPTION2 = YES|NO
+	...
+	OPTIONN = VALUE
+}
+
+# comment
+...........................................
+
+*Configuration file options*
+
+HEADERS = FILE::
+	-a, --args
+
+INDENT_SYM = VALUE::
+	-i, --indent-sym
+
+PIPE = BOOL::
+	-p, --pipe
+
+TIMESTAMP = BOOL::
+	-S, --timestamp
+
+FRAMESIZE = VALUE::
+	-y, --framesize
+
+FRAMESIZE_CHECK = BOOL::
+	-Y, --no-framesize-check
+
+HIDE_TID = BOOL::
+	-T, --hide-tid
+
+FOLLOW_FORK = BOOL::
+	-F, --no-follow-fork
+
+FOLLOW_EXEC = BOOL::
+	-E, --no-follow-exec
+
+DEMANGLE = BOOL::
+	-d, --demangle
+
+BRACES = BOOL::
+	-B, --braces
+
+ENABLE_ARGS = BOOL::
+	-A, --enable-args
+
+DETAIL_ARGS = BOOL::
+	-D, --detail-args
+
+OUTPUT_TTY = FILE::
+	- stores tracee terminal output to the file
+
+LIBS = LIB1[,LIB2,...]::
+	-l, --libs
+
+LIBS_TO = LIB1[,LIB2,...]::
+	-t, --libs-to
+
+LIBS_FROM = LIB1[,LIB2,...]::
+	-f, --libs-from
+
+SYM = SYM1[,SYM2,...]::
+	-s, --sym
+
+SYM_OMIT = SYM1[,SYM2,...]::
+	-n, --sym-omit
+
+SYM_BELOW = SYM1[,SYM2,...]::
+	-b, --flow-below
+
+SYM_NOEXIT = SYM1[,SYM2,...]::
+	- symbols which do no run exit callback (plt_exit)
+
+ARGS_STRING_POINTER_LENGTH = BOOL::
+	- function arguments - display string length and pointer value
+
+
+[[HEADERS]]
+HEADERS
+~~~~~~
+The latrace header file allows user to define symbols as an classic C
+functions with arguments. Argument names will be displayed together with values
 as the latrace output. The more arguments are defined, the more performance and
 memory penalties should be expected.
 
-The package is delivered with several config files for the most commonly used
-functions.  List of the glibc header files used  follows  (the  list mostly
-follows the ltrace header files list, and author is willing to update it
-according to the needs.
+The package is delivered with several predefined header files for the most
+commonly used functions. List of the glibc header files used  follows
+(the list mostly follows the ltrace header files list, and author is willing to
+update it according to the needs)
 
-	/usr/include/arpa/inet.h
-	/usr/include/ctype.h
-	/usr/include/stdlib.h
-	/usr/include/string.h
-	/usr/include/ctype.h
-	/usr/include/ncurses.h
-	/usr/include/stdio.h
-	/usr/include/dirent.h
-	/usr/include/unistd.h
-	/usr/include/libintl.h
-	/usr/include/dlfcn.h
-	/usr/include/fcntl.h
-	/usr/include/getopt.h
-	/usr/include/signal.h
-	/usr/include/sys/ioctl.h
-	/usr/include/sys/socket.h
-	/usr/include/netdb.h
-	/usr/include/pthread.h
-	/usr/include/sys/resource.h
-	/usr/include/sys/mman.h
-+
+	ctype.h dirent.h dlfcn.h fcntl.h getopt.h inet.h ioctl.h
+	libintl.h libio.h locale.h misc.h mman.h ncurses.h netdb.h
+	pthread.h pwd.h resource.h signal.h socket.h stat.h stdio.h
+	stdlib.h string.h syslog.h term.h termios.h time.h typedefs.h
+	unistd.h utmp.h wait.h
 
-The  config  file structure consists of */etc/latrace.conf* file, which is the
-default one read by latrace.  This config file includes other config files
-placed in the */etc/latrace.d* directory.  This directory contain all the config
-files for the above mentioned header files.
+The latrace header files are usually stored under directory:
 
-As already mentioned, the latrace config file syntax lightly follows the C
-language syntax.  Following part describes  the  latrace  config  file
-language.
+	/etc/latrace.d/headers/
 
+User can specify single header file using command line option or configuration
+file. This file then can include other needed headers. As already mentioned,
+the latrace config file syntax lightly follows the C language syntax. Following
+part describes the latrace config file language.
 
 
 - Several **POD types** (plain old data), are hardcoded in latrace. Size of those
@@ -408,37 +505,31 @@ definition needs to stop before the first variable argument list argument.
 
 PORTS
 -----
+The latrace should work on any glibc system with LD_AUDIT support.
+However arguments details are architecture specific and need special
+support inside latrace itself.
+
 Author is willing to port the latrace to any architecture, as long as he got an
 access to corresponding system. Currently functional ports are:
 
 [horizontal]
 *x86*::     ok
 *x86_64*::  ok
-*arm*::     ok (contributed and maintained by Akos Pasztory)
-
-
-LD_AUDIT related glibc bugs:
-
-- *Bug 7055 (no longer reproducible)* 
-LD_AUDIT - gettimeofday function segfaults if called from interface
-<http://sources.redhat.com/bugzilla/show_bug.cgi?id=7055>
-
-
-- *Bug 9893 (FIXED in 2.10)*
-LD_AUDIT - misaligned _dl_call_pltexit parameter causing crash in audit library
-<http://sources.redhat.com/bugzilla/show_bug.cgi?id=9893>
-
-
-- *Bug 3924 (FIXED in 2.7-2)*
-LD_AUDIT implementation causing process segfaulting
-<http://sourceware.org/bugzilla/show_bug.cgi?id=3924>
+*arm*::     ok
 
 
 BUGS
 ----
 MANY, plz report bugs to <latrace@lists.fedorahosted.org> or <olsajiri@gmail.com>.
+
 You can also visit the http://people.redhat.com/jolsa/latrace/ page to see the
 latest release notes information.
+
+LD_AUDIT related glibc bugs:
+
+- *Bug 7055 (no longer reproducible)*
+- *Bug 9893 (FIXED in 2.10)*
+- *Bug 3924 (FIXED in 2.7-2)*
 
 
 AUTHOR

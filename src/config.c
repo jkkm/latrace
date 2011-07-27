@@ -60,6 +60,7 @@ static void usage()
 	printf("                                    time,per,call,ucall,lib,sym  (default is call)\n");
 	printf("    -p, --pipe                      use pipe to latrace process to send audit data\n");
 	printf("                                    latrace app is then the one displaying the output\n");
+	printf("    -N, --conf                      config file\n");
 	printf("\n");
 #ifndef CONFIG_ARCH_HAVE_ARGS
 	printf("    -[ADa]                          arguments display support not compiled in\n");
