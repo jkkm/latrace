@@ -542,6 +542,8 @@ CONTRIBUTORS
 - Nix <nix@esperi.org.uk>
 - Akos Pasztory <akos.pasztory@gmail.com>
 - Artur Skawina <art.08.09@gmail.com>
+- Dr. David Alan Gilbert <david.gilbert@linaro.org>
+- Sebastian Pipping <sping@gentoo.org>
 
 
 LICENSE

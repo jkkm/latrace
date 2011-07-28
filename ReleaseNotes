@@ -2,6 +2,39 @@
 latrace release notes (olsajiri@gmail.com)
 -------------------------------------------------------------------------------
 
+[x] latrace 0.5.11 (7/25/2011)
+	* enhancing names check with *-logic for
+	  "-l -t -f -s -n -b" options
+	* moving conf header files to new location + rename s/conf/h/
+	* adding support for configuration file
+	* global symbol handling
+	  one global symbol tree to rule them all
+	    - only one tree is searched during the plt entry/exit
+	    - symbols are added during the bind audit callback
+	* adding automated test support, so far for x86 and x86_64,
+	  others are disabled.
+	* adding SIGTERM/SIGINT handlers,
+	  refactoring lt_run to check the latrace got killed
+	* adding large file support
+	* make tracer return actual tracee status
+	* several fixies
+		- fix display of char arguments
+		- add threads fifo management to special directory
+		  so the notification is not affected by other files
+		- fix memory leak in the argument display code
+		- fix controled config bug - missing shared config assignment
+		- fixed errors discovered by cppcheck
+		- build fix for ARM
+		- args - use isprint to decide whether to print the character,
+		  force test.sh to use bash,
+		  enable tests for ARM architecture
+		- args - replacing destination strings with void pointers
+	* thanks to the following for patches:
+	    Dr. David Alan Gilbert
+	    Sebastian Pipping
+	    Artur Skawina
+
+
 [x] latrace 0.5.10 (10/13/2010)
 	* added '-n' option, allowing to omit tracing certain symbols
 	* adding stack limits dynamic check (fixing several SIGSEGV issues)

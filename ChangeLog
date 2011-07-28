@@ -1,6 +1,10 @@
+-------------------------------------------------------------------------------
+latrace 0.5.11
+
 2011-07-28 Jiri Olsa <olsajiri@gmail.com>
 	* doc - update configuration file stuff
 	* config - add missing help for -N option
+	* 0.5.11 release changes
 
 2011-07-07 Jiri Olsa <olsajiri@gmail.com>
 	* args - fix size_t printf compile warning

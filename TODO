@@ -4,11 +4,9 @@ latrace TODO - feel free to contact me with any feature ideas
 olsajiri@gmail.com
 
 
-for 0.5.11
+for 0.5.12
+	- document the config file usage
 	- testing/fixing bugs
-	- make automated tests
-
-for 0.6
 	- config - arrays in structures
 	- add mask enum support (ORed values)
 	- add support for display number at different bases (2,8,10,16)
