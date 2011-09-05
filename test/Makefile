@@ -16,16 +16,16 @@ lib-test-libsym2.so: test/lib-test-libsym2.o
 lib-test-libsym3.so: test/lib-test-libsym3.o
 	$(QUIET_LD)$(CC) $(CFLAGS) -fPIC -shared $(LDFLAGS) -o $@ $^
 
-test-common: test/test-lib.o test/test-common.o
+test-common: lib-test-common.so test/test-lib.o test/test-common.o
 	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ lib-test-common.so
 
-test-args: test/test-lib.o test/test-args.o test/sysdeps/$(CONFIG_SYSDEP_DIR)/test-args.o
+test-args: lib-test-args.so test/test-lib.o test/test-args.o test/sysdeps/$(CONFIG_SYSDEP_DIR)/test-args.o
 	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ lib-test-args.so
 
 test-kill: test/test-kill.o
 	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
-test-libsym: test/test-libsym.o test/test-lib.o
+test-libsym: lib-test-libsym1.so lib-test-libsym2.so lib-test-libsym3.so test/test-libsym.o test/test-lib.o
 	$(QUIET_LD)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ lib-test-libsym1.so lib-test-libsym2.so lib-test-libsym3.so
 
 OBJS+=test/test-lib.o
