@@ -1,3 +1,7 @@
+2011-12-05 Jiri Olsa <olsajiri@gmail.com>
+	* stats bugfix - use timersub() and timeradd()
+	  (contributed by Akos Pasztory <akos.pasztory@gmail.com>)
+
 2011-09-05 Jiri Olsa <olsajiri@gmail.com>
 	* Fixes paraller building like 'make -j16'
 	  (contributed by Tapani Pälli <tapani.palli@intel.com>)
