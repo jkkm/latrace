@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <setjmp.h>
+#include <math.h>
 
 #include "config.h"
 
@@ -229,6 +230,8 @@ static int lt_stats_show_thread(struct lt_config_app *cfg, struct lt_thread *t)
 		u_int time_sym = sym->tv_all.tv_sec*1000000 + sym->tv_all.tv_usec;
 
 		sym->percent = time_sym / (time_global/100);
+		if (isnan(sym->percent))
+			sym->percent = 0.0f;
 		sym->usec_call = time_sym/sym->call;
 	}
 

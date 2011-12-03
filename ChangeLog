@@ -1,5 +1,6 @@
 2011-12-05 Jiri Olsa <olsajiri@gmail.com>
 	* stats bugfix - use timersub() and timeradd()
+	* stats - report zero percents instead of NaN
 	  (contributed by Akos Pasztory <akos.pasztory@gmail.com>)
 
 2011-09-05 Jiri Olsa <olsajiri@gmail.com>
