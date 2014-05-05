@@ -46,13 +46,26 @@
 # define sp_reg lr_sp
 # define La_retval La_arm_retval
 # define int_retval lrv_reg[0]
+#elif defined __aarch64__
+# define pltenter la_aarch64_gnu_pltenter
+# define pltexit la_aarch64_gnu_pltexit
+# define La_regs La_aarch64_regs
+# define sp_reg lr_sp
+# define La_retval La_aarch64_retval
+# define int_retval lrv_xreg[0]
 #elif defined __powerpc__ && __WORDSIZE == 32
 # define pltenter la_ppc32_gnu_pltenter
 # define pltexit la_ppc32_gnu_pltexit
 # define La_regs La_ppc32_regs
 # define La_retval La_ppc32_retval
 # define int_retval lrv_r3
-#elif defined __powerpc__ && __WORDSIZE == 64
+#elif defined __powerpc__ && __WORDSIZE == 64 && _CALL_ELF == 2
+# define pltenter la_ppc64v2_gnu_pltenter
+# define pltexit la_ppc64v2_gnu_pltexit
+# define La_regs La_ppc64v2_regs
+# define La_retval La_ppc64v2_retval
+# define int_retval lrv_r3
+#elif defined __powerpc__ && __WORDSIZE == 64 && _CALL_ELF != 2
 # define pltenter la_ppc64_gnu_pltenter
 # define pltexit la_ppc64_gnu_pltexit
 # define La_regs La_ppc64_regs
